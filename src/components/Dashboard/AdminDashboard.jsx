@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import UserTable from '../Tables/UserTable';
 import { Link } from 'react-router-dom'; 
 import './AdminDashboard.css';
-import OrderTotals from './OrderTotals';
-import AccountTotals from './AccountTotals';
+import OrderTotals from '../Orders/OrderTotals';
+import AccountTotals from '../Accounts/AccountTotals';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
