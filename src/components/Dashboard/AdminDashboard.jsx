@@ -5,25 +5,24 @@ import Sidebar from '../Shared/Sidebar';
 import { toast } from 'react-toastify';
 import UserTable from '../Tables/UserTable';
 import EmployeeTable from '../Tables/EmployeeTable';
+import AccountTable from '../Tables/AccountTable';
 import { Link } from 'react-router-dom'; 
 import './AdminDashboard.css';
-import OrderTotals from './OrderTotals'; // تأكد من صحة المسار
-import AccountTotals from './AccountTotals'; // تأكد من صحة المسار
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [userError, setUserError] = useState('');
   const [employeeError, setEmployeeError] = useState('');
+  const [accountError, setAccountError] = useState('');
   const [showUsers, setShowUsers] = useState(true);
   const [showEmployees, setShowEmployees] = useState(true);
-  const [showOrderTotals, setShowOrderTotals] = useState(true);
-  const [showAccountTotals, setShowAccountTotals] = useState(true);
+  const [showAccounts, setShowAccounts] = useState(true);
 
   const toggleUsers = () => setShowUsers(!showUsers);
   const toggleEmployees = () => setShowEmployees(!showEmployees);
-  const toggleOrderTotals = () => setShowOrderTotals(!showOrderTotals);
-  const toggleAccountTotals = () => setShowAccountTotals(!showAccountTotals);
+  const toggleAccounts = () => setShowAccounts(!showAccounts);
 
   const apiUrl = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
@@ -47,9 +46,20 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchAccounts = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/accounts`);
+      setAccounts(response.data);
+    } catch (error) {
+      toast.error('فشل في جلب الأكوانتات');
+      setAccountError('فشل في جلب الأكوانتات');
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
     fetchEmployees();
+    fetchAccounts();
   }, []);
 
   return (
@@ -68,6 +78,7 @@ const AdminDashboard = () => {
 
           {userError && <p className="text-red-500 mb-4">{userError}</p>}
           {employeeError && <p className="text-red-500 mb-4">{employeeError}</p>}
+          {accountError && <p className="text-red-500 mb-4">{accountError}</p>}
 
           <div className="space-y-6">
             <div className="bg-white p-4 rounded-lg shadow-md">
@@ -92,22 +103,12 @@ const AdminDashboard = () => {
 
             <div className="bg-white p-4 rounded-lg shadow-md">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-gray-700">Order Totals</h2>
-                <button onClick={toggleOrderTotals} className="text-blue-600 hover:text-blue-800 focus:outline-none">
-                  {showOrderTotals ? 'Hide ▲' : 'Show ▼'}
+                <h2 className="text-2xl font-semibold text-gray-700">Accounts</h2>
+                <button onClick={toggleAccounts} className="text-blue-600 hover:text-blue-800 focus:outline-none">
+                  {showAccounts ? 'Hide ▲' : 'Show ▼'}
                 </button>
               </div>
-              {showOrderTotals && <OrderTotals />}
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-md">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-gray-700">Account Totals</h2>
-                <button onClick={toggleAccountTotals} className="text-blue-600 hover:text-blue-800 focus:outline-none">
-                  {showAccountTotals ? 'Hide ▲' : 'Show ▼'}
-                </button>
-              </div>
-              {showAccountTotals && <AccountTotals />}
+              {showAccounts && <AccountTable accounts={accounts} setAccounts={setAccounts} />}
             </div>
           </div>
         </main>
