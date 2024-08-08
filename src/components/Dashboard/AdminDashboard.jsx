@@ -4,10 +4,9 @@ import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import { toast } from 'react-toastify';
 import UserTable from '../Tables/UserTable';
-import { Link } from 'react-router-dom'; 
-import './AdminDashboard.css';
 import OrderTotals from '../Orders/OrderTotals';
-import AccountTotals from '../Accounts/AccountTotals';
+import AccountTotals from '../Accounts/AccountTotals';import { Link } from 'react-router-dom';
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -25,7 +24,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(`${apiUrl}/users`);
-      setUsers(response.data);
+      setUsers(response.data || []);
     } catch (error) {
       toast.error('فشل في جلب المستخدمين');
       setUserError('فشل في جلب المستخدمين');
@@ -39,18 +38,18 @@ const AdminDashboard = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Navbar />
-      <div className="flex flex-1 justify-center">
+      <div className="flex flex-1 justify-center"> {/* هذا السطر لوضع المحتوى في المنتصف */}
         <Sidebar />
-        <main className="flex-1 p-6 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8 text-gray-800 text-center">Admin Control</h1>
+        <main className="flex-1 p-6 bg-white shadow-md rounded-lg ml-64">
+          <h1 className="text-4xl font-bold mb-8 text-gray-800">Admin Control</h1>
 
-          <div className="mb-6 text-center">
+          <div className="mb-6">
             <Link to="/assign-role" className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600">
               Assign Roles
             </Link>
           </div>
 
-          {userError && <p className="text-red-500 mb-4 text-center">{userError}</p>}
+          {userError && <p className="text-red-500 mb-4">{userError}</p>}
 
           <div className="space-y-6">
             <div className="bg-white p-4 rounded-lg shadow-md">
