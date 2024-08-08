@@ -1,36 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FaListAlt, FaUsers, FaBox, FaSearch } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
-const AccountTotals = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [employees, setEmployees] = useState([]);
+const AccountTotals = ({ accounts, employees }) => {
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [psPrice, setPsPrice] = useState(0);
   const [pcPrice, setPcPrice] = useState(0);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [accountsResponse, employeesResponse] = await Promise.all([
-          axios.get('/api/accounts'),
-          axios.get('/api/employees')
-        ]);
-        setAccounts(accountsResponse.data);
-        setEmployees(employeesResponse.data);
-      } catch (error) {
-        console.error('Failed to fetch data', error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const psAccounts = accounts.filter(account => account.type === 'ps');
   const pcAccounts = accounts.filter(account => account.type === 'pc');
@@ -39,7 +19,7 @@ const AccountTotals = () => {
   const totalPsQuantity = psAccounts.reduce((acc, account) => acc + account.quantity, 0);
   const totalPcQuantity = pcAccounts.reduce((acc, account) => acc + account.quantity, 0);
 
-  const employeeRole = 'employee'; // Ensure this matches your system's role value
+  const employeeRole = 'EMPLOYEEROLE'; // Ensure this matches your system's role value
   const filteredEmployees = employees.filter(employee => employee.role === employeeRole);
 
   const totalEmployees = filteredEmployees.length;
@@ -218,7 +198,7 @@ const AccountTotals = () => {
           onClick={() => handleDetailClick('inProgressCount')}
         >
           <div className="flex items-center">
-            <FaListAlt className="text-blue-500 mr-3" />
+            <FaSearch className="text-yellow-500 mr-3" />
             <span className="font-medium text-gray-700">In Progress:</span>
           </div>
           <span className="text-gray-900 font-semibold">{inProgressCount}</span>
@@ -228,118 +208,115 @@ const AccountTotals = () => {
           onClick={() => handleDetailClick('totalSearches')}
         >
           <div className="flex items-center">
-            <FaSearch className="text-gray-500 mr-3" />
+            <FaSearch className="text-blue-500 mr-3" />
             <span className="font-medium text-gray-700">Total Searches:</span>
           </div>
           <span className="text-gray-900 font-semibold">{totalSearches}</span>
         </div>
       </div>
 
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Account Details">
-        <div className="p-6 bg-gray-100 rounded-lg shadow-lg max-w-3xl mx-auto">
-          <h2 className="text-2xl font-extrabold mb-4 text-gray-900 flex items-center space-x-2">
-            <FontAwesomeIcon icon={faInfoCircle} className="text-indigo-600" />
-            <span>
-              {selectedDetail?.type === 'completedAccounts' && 'Completed Accounts'}
-              {selectedDetail?.type === 'totalPsQuantity' && 'Total PS Quantity'}
-              {selectedDetail?.type === 'totalPcQuantity' && 'Total PC Quantity'}
-              {selectedDetail?.type === 'totalEmployees' && 'Total Employees'}
-              {selectedDetail?.type === 'inProgressCount' && 'In Progress Count'}
-              {selectedDetail?.type === 'totalSearches' && 'Total Searches'}
-            </span>
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-sm">
-              <thead className="bg-gray-200 text-gray-700">
-                <tr>
-                  {selectedDetail?.type === 'completedAccounts' && (
-                    <>
-                      <th className="p-3 border-b text-center">Email</th>
-                      <th className="p-3 border-b text-center">Employee</th>
-                    </>
-                  )}
-                  {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
-                    <>
-                      <th className="p-3 border-b text-center">Email</th>
-                      <th className="p-3 border-b text-center">Quantity</th>
-                      <th className="p-3 border-b text-center">Price</th>
-                    </>
-                  ) : null}
-                  {selectedDetail?.type === 'totalEmployees' && (
-                    <>
-                      <th className="p-3 border-b text-center">Name</th>
-                    </>
-                  )}
-                  {selectedDetail?.type === 'inProgressCount' && (
-                    <>
-                      <th className="p-3 border-b text-center">Email</th>
-                      <th className="p-3 border-b text-center">Employee</th>
-                    </>
-                  )}
-                  {selectedDetail?.type === 'totalSearches' && (
-                    <>
-                      <th className="p-3 border-b text-center">Email</th>
-                      <th className="p-3 border-b text-center">Search Count</th>
-                    </>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {selectedDetail?.data.length ? (
-                  selectedDetail.data.map((item, index) => (
-                    <tr key={index} className={`transition-transform duration-300 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:scale-105`}>
-                      {selectedDetail?.type === 'completedAccounts' && (
-                        <>
-                          <td className="p-3 border-b text-center">{item.email}</td>
-                          <td className="p-3 border-b text-center">{item.employee}</td>
-                        </>
-                      )}
-                      {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
-                        <>
-                          <td className="p-3 border-b text-center">{item.email}</td>
-                          <td className="p-3 border-b text-center">{item.quantity}</td>
-                          <td className="p-3 border-b text-center">{item.price}</td>
-                        </>
-                      ) : null}
-                      {selectedDetail?.type === 'totalEmployees' && (
-                        <>
-                          <td className="p-3 border-b text-center">{item.name}</td>
-                        </>
-                      )}
-                      {selectedDetail?.type === 'inProgressCount' && (
-                        <>
-                          <td className="p-3 border-b text-center">{item.email}</td>
-                          <td className="p-3 border-b text-center">{item.employee}</td>
-                        </>
-                      )}
-                      {selectedDetail?.type === 'totalSearches' && (
-                        <>
-                          <td className="p-3 border-b text-center">{item.email}</td>
-                          <td className="p-3 border-b text-center">{item.searchCount}</td>
-                        </>
-                      )}
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="100%" className="p-3 text-center text-gray-500">No data available</td>
-                  </tr>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Details Modal"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <h2 className="text-xl font-semibold mb-4">
+          {selectedDetail && selectedDetail.type.replace(/([A-Z])/g, ' $1').toUpperCase()}
+        </h2>
+        <table className="min-w-full bg-white border border-gray-300">
+          <thead>
+            <tr>
+              {selectedDetail && selectedDetail.type === 'completedAccounts' && (
+                <>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">Employee</th>
+                </>
+              )}
+              {selectedDetail && (selectedDetail.type === 'psAccounts' || selectedDetail.type === 'pcAccounts') && (
+                <>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">Quantity</th>
+                  <th className="border p-2">Price</th>
+                </>
+              )}
+              {selectedDetail && (selectedDetail.type === 'totalPsQuantity' || selectedDetail.type === 'totalPcQuantity') && (
+                <>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">Quantity</th>
+                  <th className="border p-2">Price</th>
+                </>
+              )}
+              {selectedDetail && selectedDetail.type === 'totalEmployees' && (
+                <th className="border p-2">Name</th>
+              )}
+              {selectedDetail && selectedDetail.type === 'inProgressCount' && (
+                <>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">Employee</th>
+                </>
+              )}
+              {selectedDetail && selectedDetail.type === 'totalSearches' && (
+                <>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">Search Count</th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {selectedDetail && selectedDetail.data.map((item, index) => (
+              <tr key={index}>
+                {selectedDetail.type === 'completedAccounts' && (
+                  <>
+                    <td className="border p-2">{item.email}</td>
+                    <td className="border p-2">{item.employee}</td>
+                  </>
                 )}
-              </tbody>
-            </table>
-          </div>
-          {selectedDetail?.type !== 'completedAccounts' && (
-            <div className="mt-4 text-right font-semibold text-gray-800">
-              Total Price: {selectedDetail?.totalPrice?.toFixed(2)}
-            </div>
+                {selectedDetail.type === 'psAccounts' || selectedDetail.type === 'pcAccounts' && (
+                  <>
+                    <td className="border p-2">{item.email}</td>
+                    <td className="border p-2">{item.quantity}</td>
+                    <td className="border p-2">{item.price}</td>
+                  </>
+                )}
+                {selectedDetail.type === 'totalPsQuantity' || selectedDetail.type === 'totalPcQuantity' && (
+                  <>
+                    <td className="border p-2">{item.email}</td>
+                    <td className="border p-2">{item.quantity}</td>
+                    <td className="border p-2">{item.price}</td>
+                  </>
+                )}
+                {selectedDetail.type === 'totalEmployees' && (
+                  <td className="border p-2">{item.name}</td>
+                )}
+                {selectedDetail.type === 'inProgressCount' && (
+                  <>
+                    <td className="border p-2">{item.email}</td>
+                    <td className="border p-2">{item.employee}</td>
+                  </>
+                )}
+                {selectedDetail.type === 'totalSearches' && (
+                  <>
+                    <td className="border p-2">{item.email}</td>
+                    <td className="border p-2">{item.searchCount}</td>
+                  </>
+                )}
+              </tr>
+            ))}
+          </tbody>
+          {selectedDetail && (
+            <tfoot>
+              <tr>
+                <td colSpan={3} className="border p-2 text-right">
+                  Total Price: {selectedDetail.totalPrice.toFixed(2)}
+                </td>
+              </tr>
+            </tfoot>
           )}
-          <button
-            onClick={closeModal}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            Close
-          </button>
-        </div>
+        </table>
+        <button onClick={closeModal} className="mt-4 bg-blue-500 text-white p-2 rounded-md">Close</button>
       </Modal>
     </div>
   );
