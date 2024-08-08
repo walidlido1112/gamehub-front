@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-// قراءة apiurl من متغيرات البيئة
-const apiurl = process.env.REACT_APP_API_URL;
-
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -15,7 +12,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get(`${apiurl}/users/me`, {
+          const response = await axios.get('http://localhost:5000/api/users/me', {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(response.data); // تحديث حالة المستخدم
@@ -36,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post(`${apiurl}/auth/login`, credentials);
+      const response = await axios.post('http://localhost:5000/api/auth/login', credentials);
       const { token, user } = response.data;
       localStorage.setItem('token', token); // حفظ التوكن في localStorage
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // تحديث إعدادات axios
@@ -49,17 +46,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token'); // إزالة التوكن من localStorage
+    localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization']; // إزالة التوكن من إعدادات axios
-    setUser(null); // تحديث حالة المستخدم
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, setUser }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// هوك لاستخدام سياق التوثيق
 export const useAuth = () => useContext(AuthContext);
