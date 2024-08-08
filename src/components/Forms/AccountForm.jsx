@@ -3,6 +3,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // عنوان الـ API الخاص بك
+
 const AccountForm = ({ account }) => {
   const [formData, setFormData] = useState(account || {
     email: '',
@@ -11,9 +13,9 @@ const AccountForm = ({ account }) => {
     quantity: '',
     searchCount: '',
     status: 'in progress',
-    employee: '', // Change 'employee' to 'user'
-    employeeName: '', // Display employee's name
-    type: '' // New field for account type
+    employee: '',
+    employeeName: '',
+    type: ''
   });
   const [users, setUsers] = useState([]);
   const [userError, setUserError] = useState('');
@@ -22,7 +24,7 @@ const AccountForm = ({ account }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/users');
+        const { data } = await axios.get(`${API_URL}/users`);
         // Filter users to only include employees
         const employees = data.filter(user => user.role === 'employee');
         setUsers(employees);
@@ -35,11 +37,10 @@ const AccountForm = ({ account }) => {
   }, []);
 
   useEffect(() => {
-    // If there is an account prop, set the form data
     if (account) {
       setFormData({
         ...account,
-        employeeName: account.employeeName || '' // Ensure employeeName is set
+        employeeName: account.employeeName || ''
       });
     }
   }, [account]);
@@ -55,14 +56,14 @@ const AccountForm = ({ account }) => {
       const selectedUser = users.find(user => user._id === formData.employee);
       const updatedFormData = {
         ...formData,
-        employeeName: selectedUser ? selectedUser.name : ''  // Set employeeName here
+        employeeName: selectedUser ? selectedUser.name : ''
       };
 
       if (account) {
-        await axios.put(`/api/accounts/${account._id}`, updatedFormData);
+        await axios.put(`${API_URL}/accounts/${account._id}`, updatedFormData);
         toast.success('Account updated successfully!');
       } else {
-        await axios.post('/api/accounts', updatedFormData);
+        await axios.post(`${API_URL}/accounts`, updatedFormData);
         toast.success('Account created successfully!');
       }
       navigate('/dashboard');
