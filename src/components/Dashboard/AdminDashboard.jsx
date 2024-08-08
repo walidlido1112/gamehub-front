@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import { Link } from 'react-router-dom'; 
