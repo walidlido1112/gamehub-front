@@ -1,7 +1,7 @@
 // src/services/userService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/users';
+const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
 export const fetchUsers = async () => {
   try {
