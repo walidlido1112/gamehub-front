@@ -1,16 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { FaListAlt, FaUsers, FaBox, FaSearch } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
-const AccountTotals = ({ accounts, employees }) => {
+const AccountTotals = () => {
+  const [accounts, setAccounts] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [psPrice, setPsPrice] = useState(0);
   const [pcPrice, setPcPrice] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [accountsResponse, employeesResponse] = await Promise.all([
+          axios.get('/api/accounts'),
+          axios.get('/api/employees')
+        ]);
+        setAccounts(accountsResponse.data);
+        setEmployees(employeesResponse.data);
+      } catch (error) {
+        console.error('Failed to fetch data', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const psAccounts = accounts.filter(account => account.type === 'ps');
   const pcAccounts = accounts.filter(account => account.type === 'pc');
@@ -216,111 +236,111 @@ const AccountTotals = ({ accounts, employees }) => {
       </div>
 
       <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Account Details">
-  <div className="p-6 bg-gray-100 rounded-lg shadow-lg max-w-3xl mx-auto">
-    <h2 className="text-2xl font-extrabold mb-4 text-gray-900 flex items-center space-x-2">
-      <FontAwesomeIcon icon={faInfoCircle} className="text-indigo-600" />
-      <span>
-        {selectedDetail?.type === 'completedAccounts' && 'Completed Accounts'}
-        {selectedDetail?.type === 'totalPsQuantity' && 'Total PS Quantity'}
-        {selectedDetail?.type === 'totalPcQuantity' && 'Total PC Quantity'}
-        {selectedDetail?.type === 'totalEmployees' && 'Total Employees'}
-        {selectedDetail?.type === 'inProgressCount' && 'In Progress Count'}
-        {selectedDetail?.type === 'totalSearches' && 'Total Searches'}
-      </span>
-    </h2>
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-sm">
-        <thead className="bg-gray-200 text-gray-700">
-          <tr>
-            {selectedDetail?.type === 'completedAccounts' && (
-              <>
-                <th className="p-3 border-b text-center">Email</th>
-                <th className="p-3 border-b text-center">Employee</th>
-              </>
-            )}
-            {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
-              <>
-                <th className="p-3 border-b text-center">Email</th>
-                <th className="p-3 border-b text-center">Quantity</th>
-                <th className="p-3 border-b text-center">Price</th>
-              </>
-            ) : null}
-            {selectedDetail?.type === 'totalEmployees' && (
-              <>
-                <th className="p-3 border-b text-center">Name</th>
-              </>
-            )}
-            {selectedDetail?.type === 'inProgressCount' && (
-              <>
-                <th className="p-3 border-b text-center">Email</th>
-                <th className="p-3 border-b text-center">Employee</th>
-              </>
-            )}
-            {selectedDetail?.type === 'totalSearches' && (
-              <>
-                <th className="p-3 border-b text-center">Email</th>
-                <th className="p-3 border-b text-center">Search Count</th>
-              </>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {selectedDetail?.data.length ? (
-            selectedDetail.data.map((item, index) => (
-              <tr key={index} className={`transition-transform duration-300 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:scale-105`}>
-                {selectedDetail?.type === 'completedAccounts' && (
-                  <>
-                    <td className="p-3 border-b text-center">{item.email}</td>
-                    <td className="p-3 border-b text-center">{item.employee}</td>
-                  </>
+        <div className="p-6 bg-gray-100 rounded-lg shadow-lg max-w-3xl mx-auto">
+          <h2 className="text-2xl font-extrabold mb-4 text-gray-900 flex items-center space-x-2">
+            <FontAwesomeIcon icon={faInfoCircle} className="text-indigo-600" />
+            <span>
+              {selectedDetail?.type === 'completedAccounts' && 'Completed Accounts'}
+              {selectedDetail?.type === 'totalPsQuantity' && 'Total PS Quantity'}
+              {selectedDetail?.type === 'totalPcQuantity' && 'Total PC Quantity'}
+              {selectedDetail?.type === 'totalEmployees' && 'Total Employees'}
+              {selectedDetail?.type === 'inProgressCount' && 'In Progress Count'}
+              {selectedDetail?.type === 'totalSearches' && 'Total Searches'}
+            </span>
+          </h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-sm">
+              <thead className="bg-gray-200 text-gray-700">
+                <tr>
+                  {selectedDetail?.type === 'completedAccounts' && (
+                    <>
+                      <th className="p-3 border-b text-center">Email</th>
+                      <th className="p-3 border-b text-center">Employee</th>
+                    </>
+                  )}
+                  {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
+                    <>
+                      <th className="p-3 border-b text-center">Email</th>
+                      <th className="p-3 border-b text-center">Quantity</th>
+                      <th className="p-3 border-b text-center">Price</th>
+                    </>
+                  ) : null}
+                  {selectedDetail?.type === 'totalEmployees' && (
+                    <>
+                      <th className="p-3 border-b text-center">Name</th>
+                    </>
+                  )}
+                  {selectedDetail?.type === 'inProgressCount' && (
+                    <>
+                      <th className="p-3 border-b text-center">Email</th>
+                      <th className="p-3 border-b text-center">Employee</th>
+                    </>
+                  )}
+                  {selectedDetail?.type === 'totalSearches' && (
+                    <>
+                      <th className="p-3 border-b text-center">Email</th>
+                      <th className="p-3 border-b text-center">Search Count</th>
+                    </>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {selectedDetail?.data.length ? (
+                  selectedDetail.data.map((item, index) => (
+                    <tr key={index} className={`transition-transform duration-300 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:scale-105`}>
+                      {selectedDetail?.type === 'completedAccounts' && (
+                        <>
+                          <td className="p-3 border-b text-center">{item.email}</td>
+                          <td className="p-3 border-b text-center">{item.employee}</td>
+                        </>
+                      )}
+                      {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
+                        <>
+                          <td className="p-3 border-b text-center">{item.email}</td>
+                          <td className="p-3 border-b text-center">{item.quantity}</td>
+                          <td className="p-3 border-b text-center">{item.price}</td>
+                        </>
+                      ) : null}
+                      {selectedDetail?.type === 'totalEmployees' && (
+                        <>
+                          <td className="p-3 border-b text-center">{item.name}</td>
+                        </>
+                      )}
+                      {selectedDetail?.type === 'inProgressCount' && (
+                        <>
+                          <td className="p-3 border-b text-center">{item.email}</td>
+                          <td className="p-3 border-b text-center">{item.employee}</td>
+                        </>
+                      )}
+                      {selectedDetail?.type === 'totalSearches' && (
+                        <>
+                          <td className="p-3 border-b text-center">{item.email}</td>
+                          <td className="p-3 border-b text-center">{item.searchCount}</td>
+                        </>
+                      )}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="100%" className="p-3 text-center text-gray-500">No data available</td>
+                  </tr>
                 )}
-                {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
-                  <>
-                    <td className="p-3 border-b text-center">{item.email}</td>
-                    <td className="p-3 border-b text-center">{item.quantity}</td>
-                    <td className="p-3 border-b text-center">{item.price}</td>
-                  </>
-                ) : null}
-                {selectedDetail?.type === 'totalEmployees' && (
-                  <>
-                    <td className="p-3 border-b text-center">{item.name}</td>
-                  </>
-                )}
-                {selectedDetail?.type === 'inProgressCount' && (
-                  <>
-                    <td className="p-3 border-b text-center">{item.email}</td>
-                    <td className="p-3 border-b text-center">{item.employee}</td>
-                  </>
-                )}
-                {selectedDetail?.type === 'totalSearches' && (
-                  <>
-                    <td className="p-3 border-b text-center">{item.email}</td>
-                    <td className="p-3 border-b text-center">{item.searchCount}</td>
-                  </>
-                )}
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="100%" className="p-3 text-center text-gray-500">No data available</td>
-            </tr>
+              </tbody>
+            </table>
+          </div>
+          {selectedDetail?.type !== 'completedAccounts' && (
+            <div className="mt-4 text-right font-semibold text-gray-800">
+              Total Price: {selectedDetail?.totalPrice?.toFixed(2)}
+            </div>
           )}
-        </tbody>
-      </table>
-    </div>
-    {selectedDetail?.type !== 'completedAccounts' && (
-      <div className="mt-4 text-right font-semibold text-gray-800">
-        Total Price: {selectedDetail?.totalPrice?.toFixed(2)}
-      </div>
-    )}
-    <button
-      onClick={closeModal}
-      className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-    >
-      Close
-    </button>
-  </div>
-</Modal>
+          <button
+            onClick={closeModal}
+            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };
