@@ -9,12 +9,12 @@ const Navbar = () => {
 
   return (
     <nav className="navbar">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="logo">
-          <img src={logo} alt="GameHub Store" />
+      <div className="container mx-auto flex justify-between items-center px-4 py-2">
+        <div className="logo flex items-center">
+          <img src={logo} alt="GameHub Store" className="w-12 h-12 mr-2" />
           <Link to="/" className="nav-link text-lg font-bold">GameHub Store</Link>
         </div>
-        <div className="links">
+        <div className="links flex items-center space-x-4">
           {user ? (
             <>
               <Link to="/dashboard" className="nav-link">Dashboard</Link>
