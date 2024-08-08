@@ -8,6 +8,8 @@ import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import './AccountsPage.css';
 
+const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
@@ -19,7 +21,7 @@ const AccountsPage = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const { data } = await axios.get('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/accounts');
+        const { data } = await axios.get(`${API_BASE_URL}/accounts`);
         if (Array.isArray(data)) {
           setAccounts(data);
         } else {
@@ -33,7 +35,7 @@ const AccountsPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/users');
+        const { data } = await axios.get(`${API_BASE_URL}/users`);
         // Assuming data is an array of users
         if (Array.isArray(data)) {
           // تصفية المستخدمين الذين لديهم دور EMPLOYEEROLE
