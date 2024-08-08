@@ -6,8 +6,8 @@ import { toast } from 'react-toastify';
 import UserTable from '../Tables/UserTable';
 import EmployeeTable from '../Tables/EmployeeTable';
 import AccountTable from '../Tables/AccountTable';
-import { Link } from 'react-router-dom'; // استيراد Link
-import './AdminDashboard.css'; // استيراد ملف CSS
+import { Link } from 'react-router-dom'; 
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
   const toggleEmployees = () => setShowEmployees(!showEmployees);
   const toggleAccounts = () => setShowAccounts(!showAccounts);
 
-  const apiUrl = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // عنوان Heroku
+  const apiUrl = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
   const fetchUsers = async () => {
     try {
@@ -63,11 +63,11 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="admin-dashboard">
-      <Sidebar className="sidebar" />
-      <div className="main-content">
-        <Navbar />
-        <div className="p-6 min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      <Navbar />
+      <div className="flex flex-1">
+        <Sidebar />
+        <main className="flex-1 p-6 bg-white shadow-md rounded-lg ml-64">
           <h1 className="text-4xl font-bold mb-8 text-gray-800">Admin Control</h1>
 
           <div className="mb-6">
@@ -81,43 +81,37 @@ const AdminDashboard = () => {
           {accountError && <p className="text-red-500 mb-4">{accountError}</p>}
 
           <div className="space-y-6">
-            <div className="card">
-              <div className="card-header">
-                <h2>Users</h2>
-                <button onClick={toggleUsers} className="toggle-button">
-                  {showUsers ? '▲' : '▼'}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-semibold text-gray-700">Users</h2>
+                <button onClick={toggleUsers} className="text-blue-600 hover:text-blue-800 focus:outline-none">
+                  {showUsers ? 'Hide ▲' : 'Show ▼'}
                 </button>
               </div>
-              <div className={showUsers ? 'visible-content' : 'hidden-content'}>
-                <UserTable users={users} />
-              </div>
+              {showUsers && <UserTable users={users} />}
             </div>
 
-            <div className="card">
-              <div className="card-header">
-                <h2>Employee</h2>
-                <button onClick={toggleEmployees} className="toggle-button">
-                  {showEmployees ? '▲' : '▼'}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-semibold text-gray-700">Employee</h2>
+                <button onClick={toggleEmployees} className="text-blue-600 hover:text-blue-800 focus:outline-none">
+                  {showEmployees ? 'Hide ▲' : 'Show ▼'}
                 </button>
               </div>
-              <div className={showEmployees ? 'visible-content' : 'hidden-content'}>
-                <EmployeeTable employees={employees} />
-              </div>
+              {showEmployees && <EmployeeTable employees={employees} />}
             </div>
 
-            <div className="card">
-              <div className="card-header">
-                <h2>Accounts</h2>
-                <button onClick={toggleAccounts} className="toggle-button">
-                  {showAccounts ? '▲' : '▼'}
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              <div className="flex justify-between items-center">
+                <h2 className="text-2xl font-semibold text-gray-700">Accounts</h2>
+                <button onClick={toggleAccounts} className="text-blue-600 hover:text-blue-800 focus:outline-none">
+                  {showAccounts ? 'Hide ▲' : 'Show ▼'}
                 </button>
               </div>
-              <div className={showAccounts ? 'visible-content' : 'hidden-content'}>
-                <AccountTable accounts={accounts} setAccounts={setAccounts} />
-              </div>
+              {showAccounts && <AccountTable accounts={accounts} setAccounts={setAccounts} />}
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );
