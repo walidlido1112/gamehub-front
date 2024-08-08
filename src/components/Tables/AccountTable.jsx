@@ -244,57 +244,55 @@ const AccountTable = () => {
           </tr>
         </thead>
         <tbody>
-          {accounts.map((account, index) => (
-            <tr key={account._id} className="hover:bg-gray-100">
-              <td className="border border-gray-300 p-4">
-                <input
-                  type="checkbox"
-                  checked={selectedAccounts.includes(account._id)}
-                  onChange={(e) => handleCheckboxChange(e, account._id)}
-                  className="form-checkbox"
-                />
-              </td>
-              <td className="border border-gray-300 p-4">{index + 1 + (currentPage - 1) * accountsPerPage}</td>
-              <td className="border border-gray-300 p-4">{account.email}</td>
-              <td className="border border-gray-300 p-4">
-                <input
-                  type={showPassword[account._id] ? 'text' : 'password'}
-                  value={account.password}
-                  readOnly
-                  className="border border-gray-300 p-2 rounded-md"
-                />
-                <button
-                  onClick={() => setShowPassword((prev) => ({ ...prev, [account._id]: !prev[account._id] }))}
-                  className="ml-2 text-blue-500"
-                >
-                  <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
-                </button>
-              </td>
-              <td className="border border-gray-300 p-4">{account.code}</td>
-              <td className="border border-gray-300 p-4">{account.quantity}</td>
-              <td className="border border-gray-300 p-4">{account.searchCount}</td>
-              <td className="border border-gray-300 p-4">{account.employee?.name || 'N/A'}</td>
-              <td className="border border-gray-300 p-4">{account.type}</td>
-              <td className={`border border-gray-300 p-4 ${getStatusColor(account.status)}`}>
-                {account.status}
-              </td>
-              <td className="border border-gray-300 p-4">
-                <button
-                  onClick={() => setEditingAccount(account._id)}
-                  className="text-blue-500 hover:underline mr-2"
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(account._id)}
-                  className="text-red-500 hover:underline"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+  {accounts.map((account, index) => (
+    <tr key={account._id} className={getStatusColor(account.status)}>
+      <td className="border border-gray-300 p-2">
+        <input
+          type="checkbox"
+          checked={selectedAccounts.includes(account._id)}
+          onChange={(e) => handleCheckboxChange(e, account._id)}
+          className="form-checkbox"
+        />
+      </td>
+      <td className="border border-gray-300 p-2 font-bold">{index + 1}</td>
+      <td className="border border-gray-300 p-2 font-bold">{account.email}</td>
+      <td className="border border-gray-300 p-2">
+        {showPassword[account._id] ? account.password : '••••••••'}
+        <button
+          onClick={() => setShowPassword((prev) => ({
+            ...prev,
+            [account._id]: !prev[account._id]
+          }))}
+          className="ml-2 text-blue-500"
+        >
+          <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
+        </button>
+      </td>
+      <td className="border border-gray-300 p-2">{account.code}</td>
+      <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
+      <td className="border border-gray-300 p-2">{account.searchCount}</td>
+      <td className="border border-gray-300 p-2 font-bold">
+        {account.employee || 'N/A'}
+      </td>
+      <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
+      <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
+      <td className="border border-gray-300 p-2 flex space-x-2">
+        <button
+          onClick={() => setEditingAccount(account._id)}
+          className="text-blue-500 hover:text-blue-700"
+        >
+          <FontAwesomeIcon icon={faEdit} />
+        </button>
+        <button
+          onClick={() => handleDeleteClick(account._id)}
+          className="text-red-500 hover:text-red-700"
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
       </table>
 
       <div className="mt-4 flex justify-between items-center">
