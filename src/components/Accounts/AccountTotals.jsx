@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FaListAlt, FaUsers, FaBox, FaSearch } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
-const AccountTotals = ({ accounts = [], employees = [] }) => {
+const AccountTotals = ({ accounts, employees }) => {
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [psPrice, setPsPrice] = useState(0);
   const [pcPrice, setPcPrice] = useState(0);
-
-  // Ensure accounts and employees are arrays
-  if (!Array.isArray(accounts) || !Array.isArray(employees)) {
-    console.error('Accounts or Employees data is not an array');
-    return <div>Error: Data is not in the expected format.</div>;
-  }
 
   const psAccounts = accounts.filter(account => account.type === 'ps');
   const pcAccounts = accounts.filter(account => account.type === 'pc');
@@ -23,9 +19,10 @@ const AccountTotals = ({ accounts = [], employees = [] }) => {
   const totalPsQuantity = psAccounts.reduce((acc, account) => acc + account.quantity, 0);
   const totalPcQuantity = pcAccounts.reduce((acc, account) => acc + account.quantity, 0);
 
-  const filteredEmployees = employees.filter(employee => employee.role === 'employee');
-  const totalEmployees = filteredEmployees.length;
+  const employeeRole = 'employee'; // Ensure this matches your system's role value
+  const filteredEmployees = employees.filter(employee => employee.role === employeeRole);
 
+  const totalEmployees = filteredEmployees.length;
   const inProgressCount = accounts.filter(account => account.status === 'in progress').length;
   const completedCount = completedAccounts.length;
   const totalSearches = accounts.reduce((acc, account) => acc + account.searchCount, 0);
@@ -218,79 +215,112 @@ const AccountTotals = ({ accounts = [], employees = [] }) => {
         </div>
       </div>
 
-      {selectedDetail && (
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          contentLabel="Detail Modal"
-          className="Modal"
-          overlayClassName="Overlay"
-        >
-          <h2 className="text-xl font-bold mb-4">
-            {selectedDetail.type === 'completedAccounts' ? 'Completed Accounts' : 'Details'}
-          </h2>
-          <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-md">
-            <thead>
-              <tr className="bg-gray-100 border-b">
-                {selectedDetail.type === 'completedAccounts' && (
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Account Details">
+  <div className="p-6 bg-gray-100 rounded-lg shadow-lg max-w-3xl mx-auto">
+    <h2 className="text-2xl font-extrabold mb-4 text-gray-900 flex items-center space-x-2">
+      <FontAwesomeIcon icon={faInfoCircle} className="text-indigo-600" />
+      <span>
+        {selectedDetail?.type === 'completedAccounts' && 'Completed Accounts'}
+        {selectedDetail?.type === 'totalPsQuantity' && 'Total PS Quantity'}
+        {selectedDetail?.type === 'totalPcQuantity' && 'Total PC Quantity'}
+        {selectedDetail?.type === 'totalEmployees' && 'Total Employees'}
+        {selectedDetail?.type === 'inProgressCount' && 'In Progress Count'}
+        {selectedDetail?.type === 'totalSearches' && 'Total Searches'}
+      </span>
+    </h2>
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-sm">
+        <thead className="bg-gray-200 text-gray-700">
+          <tr>
+            {selectedDetail?.type === 'completedAccounts' && (
+              <>
+                <th className="p-3 border-b text-center">Email</th>
+                <th className="p-3 border-b text-center">Employee</th>
+              </>
+            )}
+            {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
+              <>
+                <th className="p-3 border-b text-center">Email</th>
+                <th className="p-3 border-b text-center">Quantity</th>
+                <th className="p-3 border-b text-center">Price</th>
+              </>
+            ) : null}
+            {selectedDetail?.type === 'totalEmployees' && (
+              <>
+                <th className="p-3 border-b text-center">Name</th>
+              </>
+            )}
+            {selectedDetail?.type === 'inProgressCount' && (
+              <>
+                <th className="p-3 border-b text-center">Email</th>
+                <th className="p-3 border-b text-center">Employee</th>
+              </>
+            )}
+            {selectedDetail?.type === 'totalSearches' && (
+              <>
+                <th className="p-3 border-b text-center">Email</th>
+                <th className="p-3 border-b text-center">Search Count</th>
+              </>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {selectedDetail?.data.length ? (
+            selectedDetail.data.map((item, index) => (
+              <tr key={index} className={`transition-transform duration-300 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:scale-105`}>
+                {selectedDetail?.type === 'completedAccounts' && (
                   <>
-                    <th className="px-4 py-2 text-left">Email</th>
-                    <th className="px-4 py-2 text-left">Employee Name</th>
+                    <td className="p-3 border-b text-center">{item.email}</td>
+                    <td className="p-3 border-b text-center">{item.employee}</td>
                   </>
                 )}
-                {selectedDetail.type === 'totalPsQuantity' || selectedDetail.type === 'totalPcQuantity' ? (
+                {selectedDetail?.type === 'totalPsQuantity' || selectedDetail?.type === 'totalPcQuantity' ? (
                   <>
-                    <th className="px-4 py-2 text-left">Email</th>
-                    <th className="px-4 py-2 text-left">Quantity</th>
-                    <th className="px-4 py-2 text-left">Price</th>
+                    <td className="p-3 border-b text-center">{item.email}</td>
+                    <td className="p-3 border-b text-center">{item.quantity}</td>
+                    <td className="p-3 border-b text-center">{item.price}</td>
                   </>
-                ) : (
+                ) : null}
+                {selectedDetail?.type === 'totalEmployees' && (
                   <>
-                    <th className="px-4 py-2 text-left">Email</th>
-                    <th className="px-4 py-2 text-left">Search Count</th>
+                    <td className="p-3 border-b text-center">{item.name}</td>
+                  </>
+                )}
+                {selectedDetail?.type === 'inProgressCount' && (
+                  <>
+                    <td className="p-3 border-b text-center">{item.email}</td>
+                    <td className="p-3 border-b text-center">{item.employee}</td>
+                  </>
+                )}
+                {selectedDetail?.type === 'totalSearches' && (
+                  <>
+                    <td className="p-3 border-b text-center">{item.email}</td>
+                    <td className="p-3 border-b text-center">{item.searchCount}</td>
                   </>
                 )}
               </tr>
-            </thead>
-            <tbody>
-              {selectedDetail.data.map((item, index) => (
-                <tr key={index} className="border-b">
-                  {selectedDetail.type === 'completedAccounts' && (
-                    <>
-                      <td className="px-4 py-2">{item.email}</td>
-                      <td className="px-4 py-2">{item.employee}</td>
-                    </>
-                  )}
-                  {selectedDetail.type === 'totalPsQuantity' || selectedDetail.type === 'totalPcQuantity' ? (
-                    <>
-                      <td className="px-4 py-2">{item.email}</td>
-                      <td className="px-4 py-2">{item.quantity}</td>
-                      <td className="px-4 py-2">{item.price}</td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="px-4 py-2">{item.email}</td>
-                      <td className="px-4 py-2">{item.searchCount}</td>
-                    </>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-            {selectedDetail.type !== 'completedAccounts' && (
-              <tfoot>
-                <tr>
-                  <td className="px-4 py-2 font-bold" colSpan={selectedDetail.type === 'totalSearches' ? 2 : 3}>
-                    Total Price: {selectedDetail.totalPrice.toFixed(2)}
-                  </td>
-                </tr>
-              </tfoot>
-            )}
-          </table>
-          <button onClick={closeModal} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-            Close
-          </button>
-        </Modal>
-      )}
+            ))
+          ) : (
+            <tr>
+              <td colSpan="100%" className="p-3 text-center text-gray-500">No data available</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+    {selectedDetail?.type !== 'completedAccounts' && (
+      <div className="mt-4 text-right font-semibold text-gray-800">
+        Total Price: {selectedDetail?.totalPrice?.toFixed(2)}
+      </div>
+    )}
+    <button
+      onClick={closeModal}
+      className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+    >
+      Close
+    </button>
+  </div>
+</Modal>
     </div>
   );
 };
