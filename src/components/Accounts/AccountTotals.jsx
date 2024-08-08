@@ -6,12 +6,14 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
-const AccountTotals = ({ accounts, employees }) => {
-  // Verify that `accounts` and `employees` are arrays
-  if (!Array.isArray(accounts) || !Array.isArray(employees)) {
-    console.error('Accounts or Employees data is not an array:', { accounts, employees });
+const AccountTotals = ({ data }) => {
+  // Verify that `data` is an object and contains `accounts` and `employees` arrays
+  if (!data || !Array.isArray(data.accounts) || !Array.isArray(data.employees)) {
+    console.error('Data is not in the expected format:', data);
     return <div>No data available</div>;
   }
+
+  const { accounts, employees } = data;
 
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
