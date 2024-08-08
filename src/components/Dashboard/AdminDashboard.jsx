@@ -24,11 +24,9 @@ const AdminDashboard = () => {
   const toggleEmployees = () => setShowEmployees(!showEmployees);
   const toggleAccounts = () => setShowAccounts(!showAccounts);
 
-  const apiUrl = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // عنوان Heroku
-
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/users`);
+      const response = await axios.get('http://localhost:5000/api/users');
       setUsers(response.data);
     } catch (error) {
       toast.error('فشل في جلب المستخدمين');
@@ -38,7 +36,7 @@ const AdminDashboard = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/employees`);
+      const response = await axios.get('http://localhost:5000/api/employees');
       setEmployees(response.data);
     } catch (error) {
       toast.error('فشل في جلب الموظفين');
@@ -48,7 +46,7 @@ const AdminDashboard = () => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/accounts`);
+      const response = await axios.get('http://localhost:5000/api/accounts');
       setAccounts(response.data);
     } catch (error) {
       toast.error('فشل في جلب الأكوانتات');
