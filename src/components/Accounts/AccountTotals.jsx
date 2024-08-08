@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FaListAlt, FaUsers, FaBox, FaSearch } from 'react-icons/fa';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
-const AccountTotals = ({ accounts, employees }) => {
+const AccountTotals = ({ accounts = [], employees = [] }) => {
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [psPrice, setPsPrice] = useState(0);
   const [pcPrice, setPcPrice] = useState(0);
+
+  // Ensure accounts and employees are arrays
+  if (!Array.isArray(accounts) || !Array.isArray(employees)) {
+    console.error('Accounts or Employees data is not an array');
+    return <div>Error: Data is not in the expected format.</div>;
+  }
 
   const psAccounts = accounts.filter(account => account.type === 'ps');
   const pcAccounts = accounts.filter(account => account.type === 'pc');
