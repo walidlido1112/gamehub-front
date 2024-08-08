@@ -272,7 +272,7 @@ const AccountTable = () => {
       <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
       <td className="border border-gray-300 p-2">{account.searchCount}</td>
       <td className="border border-gray-300 p-2 font-bold">
-        {account.employee || 'N/A'}
+        {account.employeeName || 'N/A'}
       </td>
       <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
       <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
