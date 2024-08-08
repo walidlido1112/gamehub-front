@@ -7,6 +7,13 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
 const AccountTotals = ({ accounts = [], employees = [] }) => {
+  console.log('Accounts data:', accounts); // أضف هذه الطباعة
+  console.log('Employees data:', employees); // أضف هذه الطباعة
+  const accountData = Array.isArray(accounts) ? accounts : (accounts.data || []);
+  const employeeData = Array.isArray(employees) ? employees : (employees.data || []);
+  
+  console.log('Accounts data:', accountData);
+  console.log('Employees data:', employeeData);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [psPrice, setPsPrice] = useState(0);
