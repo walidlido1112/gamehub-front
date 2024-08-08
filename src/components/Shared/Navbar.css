@@ -1,39 +1,17 @@
-/* Navbar.css */
 .navbar {
-  background-color: #fff;
-  border-bottom: 1px solid #e2e8f0;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  z-index: 1000; /* Ensure it stays above other content */
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
+  background-color: #1f2937; /* Dark gray background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .nav-link {
-  text-decoration: none;
-  color: #333;
-  padding: 0.5rem 1rem;
+  color: #ffffff;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #007bff;
+  color: #d1d5db; /* Light gray on hover */
 }
 
-@media (max-width: 768px) {
-  .links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .logo {
-    flex-direction: column;
-    align-items: center;
-  }
+.logo img {
+  height: 40px; /* Adjust logo size */
 }
