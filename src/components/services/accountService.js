@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+const API_URL = 'http://localhost:5000/api/accounts';
 
 /**
  * جلب جميع الحسابات من الخادم.
