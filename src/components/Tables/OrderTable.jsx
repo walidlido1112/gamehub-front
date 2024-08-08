@@ -17,10 +17,12 @@ const OrderTable = () => {
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
 
+  const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+
   // Fetch orders from the server
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/orders');
+      const { data } = await axios.get(`${API_BASE_URL}/orders`);
       setOrders(data);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
@@ -30,7 +32,7 @@ const OrderTable = () => {
   // Fetch users from the server
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/users');
+      const { data } = await axios.get(`${API_BASE_URL}/users`);
       setUsers(data);
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -80,7 +82,7 @@ const OrderTable = () => {
   const handleUpdateOrder = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:5000/api/orders/${editingOrder}`, formData);
+      const response = await axios.put(`${API_BASE_URL}/orders/${editingOrder}`, formData);
       const updatedOrder = response.data;
       setOrders((prevOrders) =>
         prevOrders.map((order) => (order._id === updatedOrder._id ? updatedOrder : order))
@@ -96,7 +98,7 @@ const OrderTable = () => {
     const confirmed = window.confirm('Are you sure you want to delete this order?');
     if (confirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/orders/${orderId}`);
+        await axios.delete(`${API_BASE_URL}/orders/${orderId}`);
         setOrders((prevOrders) =>
           prevOrders.filter((order) => order._id !== orderId)
         );
@@ -129,7 +131,7 @@ const OrderTable = () => {
     if (confirmed) {
       try {
         await Promise.all(selectedOrders.map((orderId) =>
-          axios.delete(`http://localhost:5000/api/orders/${orderId}`)
+          axios.delete(`${API_BASE_URL}/orders/${orderId}`)
         ));
         fetchOrders(); // Fetch orders again after deletion
         setSelectedOrders([]);

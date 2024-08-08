@@ -8,6 +8,8 @@ import './OrdersPage.css'; // Import the CSS file
 import OrderTotals from '../Orders/OrderTotals'; // Ensure the path is correct
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa'; // Added icons for toggling
 
+const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // Update this with your API URL
+
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -18,7 +20,7 @@ const OrdersPage = () => {
   // Fetch orders from the server
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get('/api/orders');
+      const { data } = await axios.get(`${API_URL}/orders`);
       setOrders(data);
     } catch (error) {
       setError('Failed to fetch orders');
@@ -37,10 +39,10 @@ const OrdersPage = () => {
   const handleUpdateOrder = async (updatedOrder) => {
     try {
       if (selectedOrder) {
-        await axios.put(`/api/orders/${updatedOrder._id}`, updatedOrder);
+        await axios.put(`${API_URL}/orders/${updatedOrder._id}`, updatedOrder);
         setOrders(orders.map(order => order._id === updatedOrder._id ? updatedOrder : order));
       } else {
-        const { data } = await axios.post('/api/orders', updatedOrder);
+        const { data } = await axios.post(`${API_URL}/orders`, updatedOrder);
         setOrders([...orders, data]);
       }
       setSelectedOrder(null);
@@ -51,7 +53,7 @@ const OrdersPage = () => {
 
   const handleDeleteOrder = async (orderId) => {
     try {
-      await axios.delete(`/api/orders/${orderId}`);
+      await axios.delete(`${API_URL}/orders/${orderId}`);
       setOrders(orders.filter(order => order._id !== orderId));
     } catch (error) {
       console.error('Failed to delete order', error);

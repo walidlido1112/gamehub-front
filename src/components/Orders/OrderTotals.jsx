@@ -1,11 +1,10 @@
-// OrderTotals.js
 import React from 'react';
 import { FaListAlt, FaBox, FaDollarSign } from 'react-icons/fa';
 
 const OrderTotals = ({ orders }) => {
   // Calculate total quantity, total price, and order count
-  const totalQuantity = orders.reduce((acc, order) => acc + order.quantityRequested, 0);
-  const totalPrice = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+  const totalQuantity = orders.reduce((acc, order) => acc + (order.quantityRequested || 0), 0);
+  const totalPrice = orders.reduce((acc, order) => acc + (order.totalPrice || 0), 0);
   const orderCount = orders.length;
 
   return (
@@ -36,7 +35,7 @@ const OrderTotals = ({ orders }) => {
           </div>
           <div className="flex items-center">
             <FaDollarSign className="text-red-500 mr-2" />
-            <span className="text-gray-900 font-semibold">{(totalPrice / 1000).toFixed(2)}</span>
+            <span className="text-gray-900 font-semibold">{(totalPrice / 100).toFixed(2)}</span>
           </div>
         </div>
       </div>
