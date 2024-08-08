@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { FaListAlt, FaUsers, FaBox, FaSearch } from 'react-icons/fa';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
 
@@ -130,12 +128,12 @@ const AccountTotals = ({ accountsData, employees }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-md shadow-lg mb-4">
+    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
       <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center">
-        <FaListAlt className="text-blue-500 mr-2" />
+        <FaListAlt className="text-blue-500 mr-3" />
         Account Totals
       </h3>
-      <div className="mb-4 flex space-x-4">
+      <div className="mb-4 flex gap-4">
         <div className="flex-1">
           <label className="block text-gray-700 font-medium mb-2">PS Price:</label>
           <input
@@ -155,63 +153,63 @@ const AccountTotals = ({ accountsData, employees }) => {
           />
         </div>
       </div>
-      <div className="flex flex-wrap space-x-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div 
-          className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
+          className="bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
           onClick={() => handleDetailClick('completedAccounts')}
         >
           <div className="flex items-center">
-            <FaListAlt className="text-green-500 mr-3" />
+            <FaListAlt className="text-green-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">Completed Accounts:</span>
           </div>
           <span className="text-gray-900 font-semibold">{completedAccounts.length}</span>
         </div>
         <div 
-          className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
+          className="bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
           onClick={() => handleDetailClick('totalPsQuantity')}
         >
           <div className="flex items-center">
-            <FaBox className="text-red-500 mr-3" />
+            <FaBox className="text-red-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">Total PS Quantity:</span>
           </div>
           <span className="text-gray-900 font-semibold">{totalPsQuantity}</span>
         </div>
         <div 
-          className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
+          className="bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
           onClick={() => handleDetailClick('totalPcQuantity')}
         >
           <div className="flex items-center">
-            <FaBox className="text-purple-500 mr-3" />
+            <FaBox className="text-purple-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">Total PC Quantity:</span>
           </div>
           <span className="text-gray-900 font-semibold">{totalPcQuantity}</span>
         </div>
         <div 
-          className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
+          className="bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
           onClick={() => handleDetailClick('totalEmployees')}
         >
           <div className="flex items-center">
-            <FaUsers className="text-teal-500 mr-3" />
+            <FaUsers className="text-teal-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">Total Employees:</span>
           </div>
           <span className="text-gray-900 font-semibold">{totalEmployees}</span>
         </div>
         <div 
-          className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
+          className="bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
           onClick={() => handleDetailClick('inProgressCount')}
         >
           <div className="flex items-center">
-            <FaListAlt className="text-yellow-500 mr-3" />
+            <FaListAlt className="text-yellow-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">In Progress Accounts:</span>
           </div>
           <span className="text-gray-900 font-semibold">{inProgressCount}</span>
         </div>
         <div 
-          className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
+          className="bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
           onClick={() => handleDetailClick('totalSearches')}
         >
           <div className="flex items-center">
-            <FaSearch className="text-indigo-500 mr-3" />
+            <FaSearch className="text-indigo-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">Total Searches:</span>
           </div>
           <span className="text-gray-900 font-semibold">{totalSearches}</span>
@@ -221,7 +219,7 @@ const AccountTotals = ({ accountsData, employees }) => {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        className="fixed inset-0 bg-white p-6 mx-auto max-w-lg rounded-md shadow-lg"
+        className="fixed inset-0 bg-white p-6 mx-auto max-w-lg rounded-lg shadow-lg"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
         <h2 className="text-xl font-bold mb-4 text-gray-800">Detail View</h2>
@@ -232,25 +230,25 @@ const AccountTotals = ({ accountsData, employees }) => {
               {selectedDetail.type === 'totalPsQuantity' || selectedDetail.type === 'totalPcQuantity' ? (
                 <div>
                   {selectedDetail.data.map((item, index) => (
-                    <div key={index} className="flex justify-between mb-2">
+                    <div key={index} className="flex justify-between mb-2 text-gray-700">
                       <span>{item.email}</span>
                       <span>{item.quantity}</span>
-                      <span>{item.price}</span>
+                      <span>${item.price}</span>
                     </div>
                   ))}
                   <div className="mt-4 font-bold">Total Price: ${selectedDetail.totalPrice.toFixed(2)}</div>
                 </div>
               ) : (
-                <ul>
+                <ul className="list-disc list-inside">
                   {selectedDetail.data.map((item, index) => (
-                    <li key={index} className="mb-2">
+                    <li key={index} className="mb-2 text-gray-700">
                       {selectedDetail.type === 'completedAccounts' ? (
                         <div>
                           <span className="font-medium">{item.email}</span> - <span>{item.employee}</span>
                         </div>
                       ) : (
                         <div>
-                          <span className="font-medium">{item.email}</span> - <span>{item.quantity}</span> - <span>{item.price}</span>
+                          <span className="font-medium">{item.email}</span> - <span>{item.quantity}</span> - <span>${item.price}</span>
                         </div>
                       )}
                     </li>

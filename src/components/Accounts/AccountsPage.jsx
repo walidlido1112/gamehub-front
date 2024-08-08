@@ -59,7 +59,7 @@ const AccountsPage = () => {
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 bg-white shadow-md rounded-lg ml-64">
           <div className="mb-6">
             <AccountTotals accounts={accounts} employees={employees} />
           </div>

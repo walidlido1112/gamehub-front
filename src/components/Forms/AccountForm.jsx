@@ -25,7 +25,6 @@ const AccountForm = ({ account }) => {
     const fetchUsers = async () => {
       try {
         const { data } = await axios.get(`${API_URL}/users`);
-        // Filter users to only include employees
         const employees = data.filter(user => user.role === 'employee');
         setUsers(employees);
       } catch (error) {
@@ -74,11 +73,11 @@ const AccountForm = ({ account }) => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="max-w-md w-full bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">
+      <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           {account ? 'Update Account' : 'Create Account'}
         </h2>
-        {userError && <p className="text-red-500 text-center">{userError}</p>}
+        {userError && <p className="text-red-500 text-center mb-4">{userError}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -90,7 +89,7 @@ const AccountForm = ({ account }) => {
               onChange={handleChange}
               placeholder="Email"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
           </div>
 
@@ -104,7 +103,7 @@ const AccountForm = ({ account }) => {
               onChange={handleChange}
               placeholder="Password"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
           </div>
 
@@ -118,7 +117,7 @@ const AccountForm = ({ account }) => {
               onChange={handleChange}
               placeholder="Code"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
           </div>
 
@@ -132,7 +131,7 @@ const AccountForm = ({ account }) => {
               onChange={handleChange}
               placeholder="Quantity"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
           </div>
 
@@ -146,7 +145,7 @@ const AccountForm = ({ account }) => {
               onChange={handleChange}
               placeholder="Search Count"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
           </div>
 
@@ -157,7 +156,7 @@ const AccountForm = ({ account }) => {
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             >
               <option value="in progress">In Progress</option>
               <option value="in testing">In Testing</option>
@@ -173,7 +172,7 @@ const AccountForm = ({ account }) => {
               name="employee"
               value={formData.employee}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             >
               <option value="">Select an employee</option>
               {users.map((user) => (
@@ -191,7 +190,7 @@ const AccountForm = ({ account }) => {
               name="type"
               value={formData.type}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             >
               <option value="">Select Account Type</option>
               <option value="ps">PS</option>
@@ -201,7 +200,7 @@ const AccountForm = ({ account }) => {
 
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
             {account ? 'Update Account' : 'Create Account'}
           </button>
