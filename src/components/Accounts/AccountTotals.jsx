@@ -12,6 +12,7 @@ const AccountTotals = ({ accounts = [], employees = [] }) => {
   const [psPrice, setPsPrice] = useState(0);
   const [pcPrice, setPcPrice] = useState(0);
 
+  // Ensure accounts and employees are arrays
   if (!Array.isArray(accounts)) {
     console.error("Accounts data is not an array:", accounts);
     return <div>Error: Accounts data is not in the expected format.</div>;
@@ -35,7 +36,7 @@ const AccountTotals = ({ accounts = [], employees = [] }) => {
   const totalEmployees = filteredEmployees.length;
   const inProgressCount = accounts.filter(account => account.status === 'in progress').length;
   const completedCount = completedAccounts.length;
-  const totalSearches = accounts.reduce((acc, account) => acc + account.searchCount, 0);
+  const totalSearches = accounts.reduce((acc, account) => acc + (account.searchCount || 0), 0);
 
   const handleDetailClick = (detailType) => {
     let detailData = [];
@@ -119,7 +120,7 @@ const AccountTotals = ({ accounts = [], employees = [] }) => {
         detailData = accounts
           .map(account => ({
             email: account.email,
-            searchCount: account.searchCount
+            searchCount: account.searchCount || 0
           }))
           .sort((a, b) => b.searchCount - a.searchCount);
         break;
@@ -171,7 +172,7 @@ const AccountTotals = ({ accounts = [], employees = [] }) => {
             <FaListAlt className="text-green-500 mr-3" />
             <span className="font-medium text-gray-700">Completed Accounts:</span>
           </div>
-          <span className="text-gray-900 font-semibold">{completedAccounts.length}</span>
+          <span className="text-gray-900 font-semibold">{completedCount}</span>
         </div>
         <div 
           className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between cursor-pointer hover:bg-gray-200 transition-colors"
