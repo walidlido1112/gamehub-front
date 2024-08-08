@@ -1,17 +1,15 @@
+// src/components/Login/Login.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; // تأكد من صحة المسار
+import { useAuth } from '../../context/AuthContext';
+import { apiUrl } from '../../config'; // استيراد apiUrl
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
-  const { setUser } = useAuth(); // تأكد من وجود دالة setUser في AuthContext
+  const { setUser } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,26 +18,24 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form data:', formData); // تسجيل بيانات النموذج
     try {
-      const response = await axios.post('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/auth/login', formData);
+      const response = await axios.post(`${apiUrl}/auth/login`, formData);
       const { token, user } = response.data;
 
-      localStorage.setItem('token', token); // تخزين التوكن في التخزين المحلي
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // تحديث التوكن في إعدادات axios
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      setUser(user); // حفظ بيانات المستخدم في السياق
+      setUser(user);
 
-      // التوجيه بناءً على الدور
       if (user.role === 'admin') {
-        navigate('/dashboard'); // الانتقال إلى لوحة التحكم
+        navigate('/dashboard');
       } else if (user.role === 'employee') {
-        navigate('/employee-dashboard'); // الانتقال إلى لوحة تحكم الموظف
+        navigate('/employee-dashboard');
       } else {
         toast.error('Access denied');
       }
     } catch (error) {
-      console.error('Login error:', error); // تسجيل الخطأ بشكل أعمق
+      console.error('Login error:', error);
       toast.error(error.response?.data?.message || 'Login failed');
     }
   };
