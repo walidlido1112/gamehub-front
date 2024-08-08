@@ -12,17 +12,17 @@ const OrderForm = ({ order }) => {
     status: 'shipping',
     orderPrice: '',
     totalPrice: '',
-    user: '' // Use 'user' to match the backend schema
+    user: ''
   });
 
   const [users, setUsers] = useState([]);
-  const [employeeName, setEmployeeName] = useState(''); // State to hold employee name
+  const [employeeName, setEmployeeName] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get('/api/users');
+        const { data } = await axios.get('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/users');
         setUsers(data);
       } catch (error) {
         toast.error('Failed to fetch users.');
@@ -35,7 +35,7 @@ const OrderForm = ({ order }) => {
   useEffect(() => {
     if (formData.user) {
       const selectedUser = users.find(user => user._id === formData.user);
-      setEmployeeName(selectedUser ? selectedUser.name : ''); // Set employee name
+      setEmployeeName(selectedUser ? selectedUser.name : '');
     } else {
       setEmployeeName('');
     }
@@ -47,7 +47,7 @@ const OrderForm = ({ order }) => {
       const newData = { ...prevData, [name]: value };
 
       if (name === 'orderPrice' || name === 'quantityRequested') {
-        newData.totalPrice = newData.orderPrice * newData.quantityRequested;
+        newData.totalPrice = (newData.orderPrice || 0) * (newData.quantityRequested || 0);
       }
 
       return newData;
@@ -58,10 +58,10 @@ const OrderForm = ({ order }) => {
     e.preventDefault();
     try {
       if (order) {
-        await axios.put(`/api/orders/${order._id}`, formData);
+        await axios.put(`https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/orders/${order._id}`, formData);
         toast.success('Order updated successfully!');
       } else {
-        await axios.post('/api/orders', formData);
+        await axios.post('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/orders', formData);
         toast.success('Order created successfully!');
       }
       navigate('/dashboard');
