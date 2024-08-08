@@ -21,7 +21,7 @@ const AccountTable = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [accountsPerPage] = useState(15);
+  const [accountsPerPage] = useState(30);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedType, setSelectedType] = useState('');
