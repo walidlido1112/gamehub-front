@@ -19,9 +19,9 @@ const AccountsPage = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/accounts');
-        if (Array.isArray(data.accounts)) {
-          setAccounts(data.accounts);
+        const { data } = await axios.get('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/accounts');
+        if (Array.isArray(data)) {
+          setAccounts(data);
         } else {
           console.error('Accounts data is not an array:', data);
         }
@@ -33,7 +33,7 @@ const AccountsPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/users');
+        const { data } = await axios.get('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/users');
         // Assuming data is an array of users
         if (Array.isArray(data)) {
           // تصفية المستخدمين الذين لديهم دور EMPLOYEEROLE
