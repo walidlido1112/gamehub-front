@@ -27,7 +27,7 @@ const AccountTable = () => {
   const [selectedType, setSelectedType] = useState('');
   const [showPassword, setShowPassword] = useState({});
 
-  const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // تحديث هنا
+  const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
   const fetchAccounts = async (page = 1) => {
     try {
@@ -244,55 +244,55 @@ const AccountTable = () => {
           </tr>
         </thead>
         <tbody>
-  {accounts.map((account, index) => (
-    <tr key={account._id} className={getStatusColor(account.status)}>
-      <td className="border border-gray-300 p-2">
-        <input
-          type="checkbox"
-          checked={selectedAccounts.includes(account._id)}
-          onChange={(e) => handleCheckboxChange(e, account._id)}
-          className="form-checkbox"
-        />
-      </td>
-      <td className="border border-gray-300 p-2 font-bold">{index + 1}</td>
-      <td className="border border-gray-300 p-2 font-bold">{account.email}</td>
-      <td className="border border-gray-300 p-2">
-        {showPassword[account._id] ? account.password : '••••••••'}
-        <button
-          onClick={() => setShowPassword((prev) => ({
-            ...prev,
-            [account._id]: !prev[account._id]
-          }))}
-          className="ml-2 text-blue-500"
-        >
-          <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
-        </button>
-      </td>
-      <td className="border border-gray-300 p-2">{account.code}</td>
-      <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
-      <td className="border border-gray-300 p-2">{account.searchCount}</td>
-      <td className="border border-gray-300 p-2 font-bold">
-        {account.employeeName || 'N/A'}
-      </td>
-      <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
-      <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
-      <td className="border border-gray-300 p-2 flex space-x-2">
-        <button
-          onClick={() => setEditingAccount(account._id)}
-          className="text-blue-500 hover:text-blue-700"
-        >
-          <FontAwesomeIcon icon={faEdit} />
-        </button>
-        <button
-          onClick={() => handleDeleteClick(account._id)}
-          className="text-red-500 hover:text-red-700"
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </button>
-      </td>
-    </tr>
-  ))}
-</tbody>
+          {accounts.map((account, index) => (
+            <tr key={account._id} className={getStatusColor(account.status)}>
+              <td className="border border-gray-300 p-2">
+                <input
+                  type="checkbox"
+                  checked={selectedAccounts.includes(account._id)}
+                  onChange={(e) => handleCheckboxChange(e, account._id)}
+                  className="form-checkbox"
+                />
+              </td>
+              <td className="border border-gray-300 p-2 font-bold">{index + 1}</td>
+              <td className="border border-gray-300 p-2 font-bold">{account.email}</td>
+              <td className="border border-gray-300 p-2">
+                {showPassword[account._id] ? account.password : '••••••••'}
+                <button
+                  onClick={() => setShowPassword((prev) => ({
+                    ...prev,
+                    [account._id]: !prev[account._id]
+                  }))}
+                  className="ml-2 text-blue-500"
+                >
+                  <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
+                </button>
+              </td>
+              <td className="border border-gray-300 p-2">{account.code}</td>
+              <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
+              <td className="border border-gray-300 p-2">{account.searchCount}</td>
+              <td className="border border-gray-300 p-2 font-bold">
+                {account.employeeName || 'N/A'}
+              </td>
+              <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
+              <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
+              <td className="border border-gray-300 p-2 flex space-x-2">
+                <button
+                  onClick={() => setEditingAccount(account._id)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  <FontAwesomeIcon icon={faEdit} />
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(account._id)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
 
       <div className="mt-4 flex justify-between items-center">
@@ -303,7 +303,7 @@ const AccountTable = () => {
         >
           Previous
         </button>
-        <span>Page {currentPage} of {totalPages}</span>
+        <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
@@ -314,103 +314,117 @@ const AccountTable = () => {
       </div>
 
       {editingAccount && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-md shadow-lg w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Edit Account</h3>
-            <form onSubmit={handleUpdateAccount}>
-              <div className="mb-4">
-                <label className="block text-gray-700">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Code</label>
-                <input
-                  type="text"
-                  name="code"
-                  value={formData.code}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Quantity</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={formData.quantity}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Search Count</label>
-                <input
-                  type="number"
-                  name="searchCount"
-                  value={formData.searchCount}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Employee</label>
-                <select
-                  name="employee"
-                  value={formData.employee}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                >
-                  <option value="">Select Employee</option>
-                  {users.map((user) => (
-                    <option key={user._id} value={user._id}>
-                      {user.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Type</label>
-                <select
-                  name="type"
-                  value={formData.type}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                >
-                  <option value="">Select Type</option>
-                  <option value="ps">PS</option>
-                  <option value="pc">PC</option>
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Status</label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleFormChange}
-                  className="border border-gray-300 p-2 rounded-md w-full"
-                >
-                  <option value="in progress">In Progress</option>
-                  <option value="in testing">In Testing</option>
-                  <option value="completed">Completed</option>
-                  <option value="on hold">On Hold</option>
-                </select>
-              </div>
+        <div className="mt-6 bg-white p-6 border border-gray-300 rounded-md shadow-md">
+          <h3 className="text-xl font-semibold mb-4">Edit Account</h3>
+          <form onSubmit={handleUpdateAccount}>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-gray-700">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="code" className="block text-gray-700">Code</label>
+              <input
+                type="text"
+                id="code"
+                name="code"
+                value={formData.code}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="quantity" className="block text-gray-700">Quantity</label>
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="status" className="block text-gray-700">Status</label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              >
+                <option value="in progress">In Progress</option>
+                <option value="in testing">In Testing</option>
+                <option value="completed">Completed</option>
+                <option value="on hold">On Hold</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="employee" className="block text-gray-700">Employee</label>
+              <select
+                id="employee"
+                name="employee"
+                value={formData.employee}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              >
+                <option value="">Select Employee</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="searchCount" className="block text-gray-700">Search Count</label>
+              <input
+                type="number"
+                id="searchCount"
+                name="searchCount"
+                value={formData.searchCount}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block text-gray-700">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="type" className="block text-gray-700">Type</label>
+              <select
+                id="type"
+                name="type"
+                value={formData.type}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              >
+                <option value="ps">PS</option>
+                <option value="pc">PC</option>
+              </select>
+            </div>
+            <div className="flex justify-end">
               <button
                 type="submit"
                 className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -420,12 +434,12 @@ const AccountTable = () => {
               <button
                 type="button"
                 onClick={() => setEditingAccount(null)}
-                className="ml-2 bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                className="ml-4 bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
               >
                 Cancel
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
       )}
     </div>
@@ -433,4 +447,3 @@ const AccountTable = () => {
 };
 
 export default AccountTable;
-
