@@ -12,8 +12,8 @@ const AccountTotals = ({ accountsData, employees }) => {
   const [psPrice, setPsPrice] = useState(0);
   const [pcPrice, setPcPrice] = useState(0);
 
-  // Extract accounts array from the accountsData object
-  const accounts = accountsData.accounts || []; 
+  // Ensure accountsData is defined and contains accounts
+  const accounts = accountsData && accountsData.accounts ? accountsData.accounts : []; 
 
   const psAccounts = accounts.filter(account => account.type === 'ps');
   const pcAccounts = accounts.filter(account => account.type === 'pc');
@@ -23,7 +23,7 @@ const AccountTotals = ({ accountsData, employees }) => {
   const totalPcQuantity = pcAccounts.reduce((acc, account) => acc + account.quantity, 0);
 
   const employeeRole = 'employee'; // Ensure this matches your system's role value
-  const filteredEmployees = employees.filter(employee => employee.role === employeeRole);
+  const filteredEmployees = employees ? employees.filter(employee => employee.role === employeeRole) : [];
 
   const totalEmployees = filteredEmployees.length;
   const inProgressCount = accounts.filter(account => account.status === 'in progress').length;
