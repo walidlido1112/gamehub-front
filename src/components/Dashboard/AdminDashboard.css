@@ -1,0 +1,50 @@
+/* AdminDashboard.css */
+.admin-dashboard {
+  display: flex;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #1e3a8a; /* لون أزرق داكن */
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  background-color: #f3f4f6; /* لون رمادي فاتح */
+  padding: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.hidden-content {
+  display: none;
+}
+
+.visible-content {
+  display: block;
+}

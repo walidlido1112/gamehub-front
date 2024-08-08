@@ -1,0 +1,26 @@
+/* Sidebar.css */
+.sidebar {
+  background-color: #1e3a8a; /* لون أزرق داكن */
+  width: 240px;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sidebar .sidebar-link {
+  display: block;
+  padding: 10px 15px;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .sidebar-link:hover {
+  background-color: #3b82f6; /* لون أزرق فاتح */
+}
