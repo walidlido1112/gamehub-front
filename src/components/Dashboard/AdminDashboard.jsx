@@ -4,26 +4,21 @@ import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import { toast } from 'react-toastify';
 import UserTable from '../Tables/UserTable';
-import EmployeeTable from '../Tables/EmployeeTable';
+import OrderTotals from '../Orders/OrderTotals'; // استيراد OrderTotals
+import AccountTotals from '../Accounts/AccountTotals'; // استيراد AccountTotals
 import { Link } from 'react-router-dom'; // استيراد Link
 import './AdminDashboard.css'; // استيراد ملف CSS
-import AccountTotals from '../Accounts/AccountTotals';
-import OrderTotals from '../Orders/OrderTotals';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [accounts, setAccounts] = useState([]);
   const [userError, setUserError] = useState('');
-  const [employeeError, setEmployeeError] = useState('');
-  const [accountError, setAccountError] = useState('');
   const [showUsers, setShowUsers] = useState(true);
-  const [showEmployees, setShowEmployees] = useState(true);
-  const [showAccounts, setShowAccounts] = useState(true);
+  const [showOrderTotals, setShowOrderTotals] = useState(true);
+  const [showAccountTotals, setShowAccountTotals] = useState(true);
 
   const toggleUsers = () => setShowUsers(!showUsers);
-  const toggleEmployees = () => setShowEmployees(!showEmployees);
-  const toggleAccounts = () => setShowAccounts(!showAccounts);
+  const toggleOrderTotals = () => setShowOrderTotals(!showOrderTotals);
+  const toggleAccountTotals = () => setShowAccountTotals(!showAccountTotals);
 
   const fetchUsers = async () => {
     try {
@@ -35,30 +30,8 @@ const AdminDashboard = () => {
     }
   };
 
-  const fetchEmployees = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/employees');
-      setEmployees(response.data);
-    } catch (error) {
-      toast.error('فشل في جلب الموظفين');
-      setEmployeeError('فشل في جلب الموظفين');
-    }
-  };
-
-  const fetchAccounts = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/accounts');
-      setAccounts(response.data);
-    } catch (error) {
-      toast.error('فشل في جلب الأكوانتات');
-      setAccountError('فشل في جلب الأكوانتات');
-    }
-  };
-
   useEffect(() => {
     fetchUsers();
-    fetchEmployees();
-    fetchAccounts();
   }, []);
 
   return (
@@ -76,8 +49,6 @@ const AdminDashboard = () => {
           </div>
 
           {userError && <p className="text-red-500 mb-4">{userError}</p>}
-          {employeeError && <p className="text-red-500 mb-4">{employeeError}</p>}
-          {accountError && <p className="text-red-500 mb-4">{accountError}</p>}
 
           <div className="space-y-6">
             <div className="card">
@@ -94,24 +65,25 @@ const AdminDashboard = () => {
 
             <div className="card">
               <div className="card-header">
-                <h2>Employee</h2>
-                <button onClick={toggleEmployees} className="toggle-button">
-                  {showEmployees ? '▲' : '▼'}
+                <h2>Order Totals</h2>
+                <button onClick={toggleOrderTotals} className="toggle-button">
+                  {showOrderTotals ? '▲' : '▼'}
                 </button>
               </div>
-              <div className={showEmployees ? 'visible-content' : 'hidden-content'}>
-              {showAccountTotals && <AccountTotals />}
+              <div className={showOrderTotals ? 'visible-content' : 'hidden-content'}>
+                <OrderTotals />
               </div>
             </div>
 
             <div className="card">
               <div className="card-header">
-                <h2>Accounts</h2>
-                <button onClick={toggleAccounts} className="toggle-button">
-                  {showAccounts ? '▲' : '▼'}
+                <h2>Account Totals</h2>
+                <button onClick={toggleAccountTotals} className="toggle-button">
+                  {showAccountTotals ? '▲' : '▼'}
                 </button>
               </div>
-              <div className={showAccounts ? 'visible-content' : 'hidden-content'}>
+              <div className={showAccountTotals ? 'visible-content' : 'hidden-content'}>
+                <AccountTotals />
               </div>
             </div>
           </div>
