@@ -5,9 +5,10 @@ import Sidebar from '../Shared/Sidebar';
 import { toast } from 'react-toastify';
 import UserTable from '../Tables/UserTable';
 import EmployeeTable from '../Tables/EmployeeTable';
-import AccountTable from '../Tables/AccountTable';
 import { Link } from 'react-router-dom'; // استيراد Link
 import './AdminDashboard.css'; // استيراد ملف CSS
+import AccountTotals from '../Accounts/AccountTotals';
+import OrderTotals from '../Orders/OrderTotals';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -99,7 +100,7 @@ const AdminDashboard = () => {
                 </button>
               </div>
               <div className={showEmployees ? 'visible-content' : 'hidden-content'}>
-                <EmployeeTable employees={employees} />
+              {showAccountTotals && <AccountTotals />}
               </div>
             </div>
 
@@ -111,7 +112,6 @@ const AdminDashboard = () => {
                 </button>
               </div>
               <div className={showAccounts ? 'visible-content' : 'hidden-content'}>
-                <AccountTable accounts={accounts} setAccounts={setAccounts} />
               </div>
             </div>
           </div>
