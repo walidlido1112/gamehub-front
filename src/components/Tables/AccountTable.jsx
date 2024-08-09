@@ -181,18 +181,18 @@ const AccountTable = () => {
     <div className="container mx-auto p-6 bg-gray-50">
       <h2 className="text-3xl font-bold mb-6 text-gray-900">Account Management</h2>
 
-      <div className="mb-4 flex items-center space-x-4">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:space-x-4">
         <input
           type="text"
           placeholder="Search..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="border border-gray-300 p-2 rounded-md w-full md:w-1/3"
+          className="border border-gray-300 p-2 rounded-md w-full sm:w-1/3 mb-4 sm:mb-0"
         />
         <select
           value={selectedEmployee}
           onChange={handleEmployeeChange}
-          className="border border-gray-300 p-2 rounded-md"
+          className="border border-gray-300 p-2 rounded-md mb-4 sm:mb-0"
         >
           <option value="">All Employees</option>
           {users.map((user) => (
@@ -204,7 +204,7 @@ const AccountTable = () => {
         <select
           value={selectedType}
           onChange={handleTypeChange}
-          className="border border-gray-300 p-2 rounded-md"
+          className="border border-gray-300 p-2 rounded-md mb-4 sm:mb-0"
         >
           <option value="">All Types</option>
           <option value="ps">PS</option>
@@ -220,90 +220,92 @@ const AccountTable = () => {
         </button>
       </div>
 
-      <table className="w-full border-collapse border border-gray-300 bg-white shadow-md rounded-md">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="border border-gray-300 p-4 text-left font-bold">
-              <input
-                type="checkbox"
-                checked={selectAll}
-                onChange={handleSelectAllChange}
-                className="form-checkbox"
-              />
-            </th>
-            <th className="border border-gray-300 p-4 text-left font-bold">#</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Email</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Password</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Code</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Quantity</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Search Count</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Employee</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Type</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Status</th>
-            <th className="border border-gray-300 p-4 text-left font-bold">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {accounts.map((account, index) => (
-            <tr key={account._id} className={getStatusColor(account.status)}>
-              <td className="border border-gray-300 p-2">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border border-gray-300 bg-white shadow-md rounded-md">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="border border-gray-300 p-4 text-left font-bold">
                 <input
                   type="checkbox"
-                  checked={selectedAccounts.includes(account._id)}
-                  onChange={(e) => handleCheckboxChange(e, account._id)}
+                  checked={selectAll}
+                  onChange={handleSelectAllChange}
                   className="form-checkbox"
                 />
-              </td>
-              <td className="border border-gray-300 p-2 font-bold">{index + 1}</td>
-              <td className="border border-gray-300 p-2 font-bold">{account.email}</td>
-              <td className="border border-gray-300 p-2">
-                {showPassword[account._id] ? account.password : '••••••••'}
-                <button
-                  onClick={() => setShowPassword((prev) => ({
-                    ...prev,
-                    [account._id]: !prev[account._id]
-                  }))}
-                  className="ml-2 text-blue-500"
-                >
-                  <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
-                </button>
-              </td>
-              <td className="border border-gray-300 p-2">{account.code}</td>
-              <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
-              <td className="border border-gray-300 p-2">{account.searchCount}</td>
-              <td className="border border-gray-300 p-2 font-bold">
-                {account.employeeName || 'N/A'}
-              </td>
-              <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
-              <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
-              <td className="border border-gray-300 p-2 flex space-x-2">
-                <button
-                  onClick={() => setEditingAccount(account._id)}
-                  className="text-blue-500 hover:text-blue-700"
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(account._id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-              </td>
+              </th>
+              <th className="border border-gray-300 p-4 text-left font-bold">#</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Email</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Password</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Code</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Quantity</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Search Count</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Employee</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Type</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Status</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {accounts.map((account, index) => (
+              <tr key={account._id} className={getStatusColor(account.status)}>
+                <td className="border border-gray-300 p-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedAccounts.includes(account._id)}
+                    onChange={(e) => handleCheckboxChange(e, account._id)}
+                    className="form-checkbox"
+                  />
+                </td>
+                <td className="border border-gray-300 p-2 font-bold">{index + 1}</td>
+                <td className="border border-gray-300 p-2 font-bold">{account.email}</td>
+                <td className="border border-gray-300 p-2">
+                  {showPassword[account._id] ? account.password : '••••••••'}
+                  <button
+                    onClick={() => setShowPassword((prev) => ({
+                      ...prev,
+                      [account._id]: !prev[account._id]
+                    }))}
+                    className="ml-2 text-blue-500"
+                  >
+                    <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
+                  </button>
+                </td>
+                <td className="border border-gray-300 p-2">{account.code}</td>
+                <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
+                <td className="border border-gray-300 p-2">{account.searchCount}</td>
+                <td className="border border-gray-300 p-2 font-bold">
+                  {account.employeeName || 'N/A'}
+                </td>
+                <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
+                <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
+                <td className="border border-gray-300 p-2 flex space-x-2">
+                  <button
+                    onClick={() => setEditingAccount(account._id)}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(account._id)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      <div className="mt-4 flex justify-between items-center">
+      <div className="mt-4 flex flex-col sm:flex-row sm:justify-between items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mb-4 sm:mb-0"
         >
           Previous
         </button>
-        <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
+        <span className="text-gray-700 mb-4 sm:mb-0">Page {currentPage} of {totalPages}</span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
