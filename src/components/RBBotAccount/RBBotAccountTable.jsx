@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
 import RBBotAccountForm from './RBBotAccountForm'; // Ensure this path is correct
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
@@ -17,6 +18,7 @@ const RBBotAccountTable = () => {
   const [deviceSearchQuery, setDeviceSearchQuery] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate(); // Initialize the navigate function
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -62,6 +64,7 @@ const RBBotAccountTable = () => {
       const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
       setAccounts(data);
       setIsModalOpen(false);
+      navigate('/rbbotaccounts'); // Redirect to RBBotAccountsPage
     } catch (error) {
       console.error('Failed to save account:', error);
     }

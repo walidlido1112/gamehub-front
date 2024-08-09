@@ -31,7 +31,6 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(`Field ${name} changed to ${value}`); // Debugging
     setFormData(prevData => ({
       ...prevData,
       [name]: value
@@ -42,22 +41,22 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     e.preventDefault();
     try {
       if (initialData._id) {
-        // تحديث حساب موجود
+        // Update existing account
         await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
       } else {
-        // إنشاء حساب جديد
+        // Create new account
         await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
-      onSubmit(); // تأكد من أن هذه الدالة تعمل بشكل صحيح
-      window.location.reload();
+      onSubmit(); // Call the onSubmit prop function if provided
+      navigate('/rbbotaccounts'); // Redirect to RBBotAccountsPage
     } catch (error) {
-      toast.error('Operation failed.');
+      toast.error('Operation failed. Please try again.');
       console.error('Failed to save account:', error);
     }
   };
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
