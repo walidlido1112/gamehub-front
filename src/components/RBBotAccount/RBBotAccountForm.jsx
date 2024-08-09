@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
-
-// Configure the modal
-Modal.setAppElement('#root');
 
 const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -30,7 +26,6 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     sony: false
   });
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location
 
   useEffect(() => {
     if (initialData) {
@@ -246,7 +241,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="proxy" className="block text-sm font-medium text-gray-700">Proxy</label>
             <input
               type="text"
-              id="proxy" // Ensure this ID is unique across the page
+              id="proxy"
               name="proxy"
               value={formData.proxy}
               onChange={handleChange}
@@ -255,14 +250,12 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             />
           </div>
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              {initialData._id ? 'Update' : 'Create'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white p-3 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            {initialData._id ? 'Update Account' : 'Create Account'}
+          </button>
         </form>
       </div>
     </div>

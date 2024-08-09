@@ -9,59 +9,50 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const toggleMobileMenu = () => setMobileMenuOpen(prev => !prev);
 
   return (
-    <nav className="navbar fixed top-0 left-0 w-full bg-gray-800 text-white shadow-lg z-50">
-      <div className="container mx-auto flex justify-between items-center p-4">
-        <div className="logo flex items-center">
-          <Link to="/" className="text-xl font-bold ml-3 hover:text-gray-400">
-            <FontAwesomeIcon icon={faHome} className="mr-2" />
-            GameHub Store
-          </Link>
-        </div>
-        <div className="md:hidden">
-          <button onClick={toggleMobileMenu} className="text-xl hover:text-gray-400 focus:outline-none">
-            <FontAwesomeIcon icon={faBars} />
-          </button>
-        </div>
-        <div className={`links flex-col md:flex-row md:flex items-center space-x-0 md:space-x-4 ${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex`}>
+    <nav className="navbar">
+      <div className="container">
+        <Link to="/" className="logo">
+          <FontAwesomeIcon icon={faHome} className="icon" />
+          GameHub Store
+        </Link>
+        <button onClick={toggleMobileMenu} className="menu-toggle">
+          <FontAwesomeIcon icon={faBars} />
+        </button>
+        <div className={`links ${isMobileMenuOpen ? 'open' : ''}`}>
           {user ? (
             <>
-              <Link to="/dashboard" className="flex items-center text-lg hover:text-gray-400">
-                <FontAwesomeIcon icon={faTachometerAlt} className="mr-2" />
+              <Link to="/dashboard" className="nav-link">
+                <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
                 Dashboard
               </Link>
               {user.role === 'admin' && (
                 <>
-                  <Link to="/accounts" className="flex items-center text-lg hover:text-gray-400">
-                    <FontAwesomeIcon icon={faUser} className="mr-2" />
+                  <Link to="/accounts" className="nav-link">
+                    <FontAwesomeIcon icon={faUser} className="icon" />
                     Accounts
                   </Link>
-                  <Link to="/orders" className="flex items-center text-lg hover:text-gray-400">
-                    <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                  <Link to="/orders" className="nav-link">
+                    <FontAwesomeIcon icon={faShoppingCart} className="icon" />
                     Orders
                   </Link>
                 </>
               )}
-              <button
-                onClick={logout}
-                className="flex items-center text-lg bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 mt-2 md:mt-0"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
+              <button onClick={logout} className="nav-link logout">
+                <FontAwesomeIcon icon={faSignOutAlt} className="icon" />
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="flex items-center text-lg hover:text-gray-400 mt-2 md:mt-0">
-                <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
+              <Link to="/login" className="nav-link">
+                <FontAwesomeIcon icon={faSignInAlt} className="icon" />
                 Login
               </Link>
-              <Link to="/register" className="flex items-center text-lg hover:text-gray-400 mt-2 md:mt-0">
-                <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
+              <Link to="/register" className="nav-link">
+                <FontAwesomeIcon icon={faUserPlus} className="icon" />
                 Register
               </Link>
             </>
