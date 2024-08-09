@@ -66,7 +66,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
         toast.success('Account created successfully!');
       }
       onSubmit();
-      navigate('/rbbotaccounts');
+      navigate('/frontend/src/components/RBBotAccount/RBBotAccountsPage.jsx');
     } catch (error) {
       toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
