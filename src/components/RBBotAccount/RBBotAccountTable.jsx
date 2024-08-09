@@ -176,7 +176,10 @@ const RBBotAccountTable = () => {
           className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
           overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative"
+            aria-hidden={isModalOpen ? 'false' : 'true'} // Ensure modal content is not hidden
+          >
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"

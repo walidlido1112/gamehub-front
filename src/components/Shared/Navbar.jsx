@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faTachometerAlt, faUser, faShoppingCart, faSignOutAlt, faSignInAlt, faUserPlus, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faTachometerAlt, faUser, faShoppingCart, faSignOutAlt, faSignInAlt, faUserPlus, faBars, faTools, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -30,25 +30,37 @@ const Navbar = () => {
         <div className={`links md:flex ${isMobileMenuOpen ? 'flex' : 'hidden'} flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4`}>
           {user ? (
             <>
-              <Link to="/dashboard" className="nav-link flex items-center text-base md:text-lg hover:text-gray-400">
+              <Link to="/dashboard" className="nav-link flex items-center hover:text-gray-400">
                 <FontAwesomeIcon icon={faTachometerAlt} className="mr-2" />
                 Dashboard
               </Link>
               {user.role === 'admin' && (
                 <>
-                  <Link to="/accounts" className="nav-link flex items-center text-base md:text-lg hover:text-gray-400">
+                  <Link to="/accounts" className="nav-link flex items-center hover:text-gray-400">
                     <FontAwesomeIcon icon={faUser} className="mr-2" />
                     Accounts
                   </Link>
-                  <Link to="/orders" className="nav-link flex items-center text-base md:text-lg hover:text-gray-400">
+                  <Link to="/orders" className="nav-link flex items-center hover:text-gray-400">
                     <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
                     Orders
+                  </Link>
+                  <Link to="/tools" className="nav-link flex items-center hover:text-gray-400">
+                    <FontAwesomeIcon icon={faTools} className="mr-2" />
+                    Tools
+                  </Link>
+                  <Link to="/report-account" className="nav-link flex items-center hover:text-gray-400">
+                    <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
+                    Report Account
+                  </Link>
+                  <Link to="/rbbotaccounts" className="nav-link flex items-center hover:text-gray-400">
+                    <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
+                    RBBot Accounts
                   </Link>
                 </>
               )}
               <button
                 onClick={logout}
-                className="nav-link flex items-center text-base md:text-lg bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300"
+                className="nav-link flex items-center bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300"
               >
                 <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                 Logout
@@ -56,11 +68,11 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="nav-link flex items-center text-base md:text-lg hover:text-gray-400">
+              <Link to="/login" className="nav-link flex items-center hover:text-gray-400">
                 <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
                 Login
               </Link>
-              <Link to="/register" className="nav-link flex items-center text-base md:text-lg hover:text-gray-400">
+              <Link to="/register" className="nav-link flex items-center hover:text-gray-400">
                 <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
                 Register
               </Link>

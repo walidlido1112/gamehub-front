@@ -16,7 +16,7 @@
 }
 
 .logo img {
-  height: 40px; /* Adjust logo size */
+  height: 30px; /* Adjust logo size */
 }
 
 .links {
@@ -29,7 +29,8 @@
 .nav-link {
   color: #ffffff;
   transition: color 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem; /* Reduced padding */
+  font-size: 0.875rem; /* Smaller font size */
 }
 
 .nav-link:hover {
@@ -47,11 +48,12 @@
 }
 
 .navbar .links a {
-  margin-top: 10px;
+  margin-top: 0.5rem; /* Reduced margin */
 }
 
 .navbar .links .text-lg {
   padding: 0.5rem 1rem;
+  font-size: 0.875rem; /* Smaller font size */
 }
 
 /* تحسين الشريط العلوي للأجهزة المحمولة */
@@ -81,7 +83,7 @@
   }
 
   .navbar .links.flex-col a {
-    padding: 10px;
+    padding: 0.75rem 1rem;
     width: 100%;
   }
 
