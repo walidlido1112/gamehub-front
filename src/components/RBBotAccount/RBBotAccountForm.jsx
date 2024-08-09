@@ -50,14 +50,14 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
         await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
-      onSubmit(); // إخطار المكون الأب أو تنفيذ إجراءات أخرى
+      onSubmit(); // تأكد من أن هذه الدالة تعمل بشكل صحيح
       navigate(0); // إعادة تحميل الصفحة الحالية
     } catch (error) {
       toast.error('Operation failed.');
       console.error('Failed to save account:', error);
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
