@@ -41,7 +41,7 @@ const RBBotAccountTable = () => {
     setDeviceSearchQuery(e.target.value);
   };
 
-  const handleRowClick = (account) => {
+  const handleEmailClick = (account) => {
     setSelectedAccount(account);
     setIsModalOpen(true);
   };
@@ -139,15 +139,15 @@ const RBBotAccountTable = () => {
                 className="cursor-pointer"
               />
             </th>
+            <th className="border border-gray-300 px-4 py-2">#</th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
           </tr>
         </thead>
         <tbody>
-          {filteredAccounts.map((account) => (
+          {filteredAccounts.map((account, index) => (
             <tr
               key={account._id}
               className="hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleRowClick(account)}
             >
               <td className="border border-gray-300 px-4 py-2">
                 <input
@@ -157,7 +157,13 @@ const RBBotAccountTable = () => {
                   className="cursor-pointer"
                 />
               </td>
-              <td className="border border-gray-300 px-4 py-2">{account.email}</td>
+              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
+              <td
+                className="border border-gray-300 px-4 py-2 text-blue-600 hover:underline"
+                onClick={() => handleEmailClick(account)}
+              >
+                {account.email}
+              </td>
             </tr>
           ))}
         </tbody>
