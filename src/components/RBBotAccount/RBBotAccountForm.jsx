@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const RBBotAccountForm = () => {
+const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
     email: '',
-    passwordType: '', // Changed from `password` to `passwordType`
-    gmailPassword: '',
-    eaPassword: '',
-    sonyPassword: '',
+    passwordGmail: '',
+    passwordEA: '',
+    passwordSony: '',
     codes: '',
     googleAuthEA: '',
     googleAuthSony: '',
@@ -14,15 +14,41 @@ const RBBotAccountForm = () => {
     proxy: ''
   });
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        email: initialData.email || '',
+        passwordGmail: initialData.passwordGmail || '',
+        passwordEA: initialData.passwordEA || '',
+        passwordSony: initialData.passwordSony || '',
+        codes: initialData.codes || '',
+        googleAuthEA: initialData.googleAuthEA || '',
+        googleAuthSony: initialData.googleAuthSony || '',
+        deviceNumber: initialData.deviceNumber || '',
+        proxy: initialData.proxy || ''
+      });
+    }
+  }, [initialData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission, e.g., send data to API
-    console.log('Form submitted:', formData);
+    try {
+      if (initialData._id) {
+        // Update existing account
+        await axios.put(`${process.env.REACT_APP_API_URL}/rb-bot-accounts/${initialData._id}`, formData);
+      } else {
+        // Create new account
+        await axios.post(`${process.env.REACT_APP_API_URL}/rb-bot-accounts`, formData);
+      }
+      onSubmit(); // Pass form data to parent component or API
+    } catch (error) {
+      console.error('Failed to save account:', error);
+    }
   };
 
   return (
@@ -40,60 +66,38 @@ const RBBotAccountForm = () => {
         />
       </div>
       <div>
-        <label htmlFor="passwordType" className="block">Password Type:</label>
-        <select
-          id="passwordType"
-          name="passwordType"
-          value={formData.passwordType}
+        <label htmlFor="passwordGmail" className="block">Gmail Password:</label>
+        <input
+          type="text"
+          id="passwordGmail"
+          name="passwordGmail"
+          value={formData.passwordGmail}
           onChange={handleChange}
           className="border p-2 w-full"
-          required
-        >
-          <option value="">Select Password Type</option>
-          <option value="gmail">Gmail</option>
-          <option value="ea">EA</option>
-          <option value="sony">Sony</option>
-        </select>
+        />
       </div>
-      {formData.passwordType === 'gmail' && (
-        <div>
-          <label htmlFor="gmailPassword" className="block">Gmail Password:</label>
-          <input
-            type="password"
-            id="gmailPassword"
-            name="gmailPassword"
-            value={formData.gmailPassword}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-      )}
-      {formData.passwordType === 'ea' && (
-        <div>
-          <label htmlFor="eaPassword" className="block">EA Password:</label>
-          <input
-            type="password"
-            id="eaPassword"
-            name="eaPassword"
-            value={formData.eaPassword}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-      )}
-      {formData.passwordType === 'sony' && (
-        <div>
-          <label htmlFor="sonyPassword" className="block">Sony Password:</label>
-          <input
-            type="password"
-            id="sonyPassword"
-            name="sonyPassword"
-            value={formData.sonyPassword}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
-      )}
+      <div>
+        <label htmlFor="passwordEA" className="block">EA Password:</label>
+        <input
+          type="text"
+          id="passwordEA"
+          name="passwordEA"
+          value={formData.passwordEA}
+          onChange={handleChange}
+          className="border p-2 w-full"
+        />
+      </div>
+      <div>
+        <label htmlFor="passwordSony" className="block">Sony Password:</label>
+        <input
+          type="text"
+          id="passwordSony"
+          name="passwordSony"
+          value={formData.passwordSony}
+          onChange={handleChange}
+          className="border p-2 w-full"
+        />
+      </div>
       <div>
         <label htmlFor="codes" className="block">Codes:</label>
         <input
