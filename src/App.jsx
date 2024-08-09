@@ -62,7 +62,7 @@ const App = () => {
               }
             />
             <Route
-              path="/rbbot-accounts"
+              path="/rbbotaccounts"
               element={
                 <ProtectedRoute role="admin">
                   <RBBotAccounts />
