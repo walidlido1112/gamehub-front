@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // استخدم هذا السطر
+const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
 const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -55,7 +55,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
         toast.success('Account created successfully!');
       }
       onSubmit(); // إخطار المكون الأب أو تنفيذ إجراءات أخرى
-      navigate('/dashboard'); // إعادة التوجيه بعد الإرسال
+      navigate(0); // إعادة تحميل الصفحة الحالية
     } catch (error) {
       toast.error('Operation failed.');
       console.error('Failed to save account:', error);
