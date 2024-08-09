@@ -46,12 +46,6 @@ const Navbar = () => {
                   </Link>
                 </>
               )}
-              {user.role === 'employee' && (
-                <Link to="/employee-dashboard" className="flex items-center text-lg hover:text-gray-400">
-                  <FontAwesomeIcon icon={faTachometerAlt} className="mr-2" />
-                  Employee Dashboard
-                </Link>
-              )}
               <button
                 onClick={logout}
                 className="flex items-center text-lg bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 mt-2 md:mt-0"

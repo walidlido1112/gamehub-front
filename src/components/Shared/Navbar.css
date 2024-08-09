@@ -1,6 +1,29 @@
+/* Navbar.css */
 .navbar {
   background-color: #1f2937; /* Dark gray background */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 1rem; /* Adjust padding for better spacing */
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  flex: 1; /* Allow logo to take up space */
+}
+
+.logo img {
+  height: 40px; /* Adjust logo size */
+}
+
+.links {
+  flex: 2; /* Allow links to take up more space */
+  display: flex;
+  justify-content: flex-end; /* Align links to the right */
+  align-items: center;
 }
 
 .nav-link {
@@ -12,6 +35,58 @@
   color: #d1d5db; /* Light gray on hover */
 }
 
-.logo img {
-  height: 40px; /* Adjust logo size */
+.navbar .links.flex {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navbar .links.md\\:flex-row {
+  flex-direction: row;
+  align-items: center;
+}
+
+.navbar .links a {
+  margin-top: 10px;
+}
+
+.navbar .links .text-lg {
+  padding: 0.5rem 1rem;
+}
+
+/* تحسين الشريط العلوي للأجهزة المحمولة */
+@media (max-width: 768px) {
+  .navbar .container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar .logo {
+    margin-bottom: 1rem;
+  }
+
+  .navbar .links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar .links a {
+    width: 100%;
+    text-align: left;
+  }
+
+  .navbar .links.flex-col {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .navbar .links.flex-col a {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .navbar .links .text-lg {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    text-align: left;
+  }
 }
