@@ -22,23 +22,16 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
 
   useEffect(() => {
     if (initialData) {
-      setFormData({
-        email: initialData.email || '',
-        passwordType: initialData.passwordType || '',
-        gmailPassword: initialData.gmailPassword || '',
-        eaPassword: initialData.eaPassword || '',
-        sonyPassword: initialData.sonyPassword || '',
-        codes: initialData.codes || '',
-        googleAuthEA: initialData.googleAuthEA || '',
-        googleAuthSony: initialData.googleAuthSony || '',
-        deviceNumber: initialData.deviceNumber || '',
-        proxy: initialData.proxy || ''
-      });
+      setFormData(prevData => ({
+        ...prevData,
+        ...initialData
+      }));
     }
   }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Field ${name} changed to ${value}`); // Debugging
     setFormData(prevData => ({
       ...prevData,
       [name]: value
@@ -117,6 +110,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               />
             </div>
           )}
+
           {formData.passwordType === 'ea' && (
             <div>
               <label htmlFor="eaPassword" className="block text-sm font-medium text-gray-700">EA Password</label>
@@ -131,6 +125,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               />
             </div>
           )}
+
           {formData.passwordType === 'sony' && (
             <div>
               <label htmlFor="sonyPassword" className="block text-sm font-medium text-gray-700">Sony Password</label>
