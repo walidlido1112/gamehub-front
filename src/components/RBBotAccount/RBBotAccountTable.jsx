@@ -28,7 +28,8 @@ const RBBotAccountTable = () => {
   };
 
   const filteredAccounts = accounts.filter((account) =>
-    account.email.includes(searchQuery) || account.deviceNumber.includes(searchQuery)
+    account.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    account.deviceNumber.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleFormSubmit = async (formData) => {
@@ -48,23 +49,28 @@ const RBBotAccountTable = () => {
   };
 
   return (
-    <div>
+    <div className="p-6 bg-white shadow-md rounded-lg">
       <input
         type="text"
         placeholder="Search by email or device number"
         value={searchQuery}
         onChange={handleSearchChange}
+        className="mb-4 p-2 border border-gray-300 rounded-md w-full"
       />
-      <table>
+      <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr>
-            <th>Email</th>
+            <th className="border-b border-gray-300 p-2 text-left">Email</th>
           </tr>
         </thead>
         <tbody>
           {filteredAccounts.map((account) => (
-            <tr key={account._id} onClick={() => handleRowClick(account)}>
-              <td>{account.email}</td>
+            <tr
+              key={account._id}
+              onClick={() => handleRowClick(account)}
+              className="cursor-pointer hover:bg-gray-100"
+            >
+              <td className="border-b border-gray-300 p-2">{account.email}</td>
             </tr>
           ))}
         </tbody>
