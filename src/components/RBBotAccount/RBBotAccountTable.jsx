@@ -68,9 +68,10 @@ const RBBotAccountTable = () => {
       navigate('/rbbotaccounts'); // Redirect to RBBotAccountsPage
     } catch (error) {
       console.error('Failed to save account:', error);
+      
     }
   };
-
+  
   const handleDeleteSelected = async () => {
     try {
       await Promise.all(selectedAccounts.map(accountId =>
