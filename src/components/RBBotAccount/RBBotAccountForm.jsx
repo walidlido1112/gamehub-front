@@ -51,7 +51,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
         toast.success('Account created successfully!');
       }
       onSubmit(); // تأكد من أن هذه الدالة تعمل بشكل صحيح
-      window.location.reload();
+      navigate(dashboard); // إعادة تحميل الصفحة الحالية
     } catch (error) {
       toast.error('Operation failed.');
       console.error('Failed to save account:', error);
