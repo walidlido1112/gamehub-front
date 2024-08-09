@@ -18,6 +18,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     deviceNumber: '',
     proxy: ''
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,22 +41,23 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    console.log({ name, value }); // Debugging line
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (initialData._id) {
-        // تحديث حساب موجود
+        // Update existing account
         await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
       } else {
-        // إنشاء حساب جديد
+        // Create new account
         await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
-      onSubmit(); // إخطار المكون الأب أو تنفيذ إجراءات أخرى
-      navigate(0); // إعادة تحميل الصفحة الحالية
+      onSubmit(); // Notify parent component or perform other actions
+      navigate(0); // Reload the current page
     } catch (error) {
       toast.error('Operation failed.');
       console.error('Failed to save account:', error);
@@ -69,6 +71,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
           {initialData._id ? 'Update RBBot Account' : 'Create RBBot Account'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email Field */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <input
@@ -83,6 +86,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             />
           </div>
 
+          {/* Password Type Field */}
           <div>
             <label htmlFor="passwordType" className="block text-sm font-medium text-gray-700">Password Type</label>
             <select
@@ -100,6 +104,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             </select>
           </div>
 
+          {/* Conditional Fields for Password Type */}
           {formData.passwordType === 'gmail' && (
             <div>
               <label htmlFor="gmailPassword" className="block text-sm font-medium text-gray-700">Gmail Password</label>
@@ -143,6 +148,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             </div>
           )}
 
+          {/* Other Fields */}
           <div>
             <label htmlFor="codes" className="block text-sm font-medium text-gray-700">Codes</label>
             <input
