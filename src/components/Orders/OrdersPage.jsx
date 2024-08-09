@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import OrderForm from '../Forms/OrderForm'; // Ensure the path is correct
-import OrderTable from '../Tables/OrderTable'; // Ensure the path is correct
+import OrderForm from '../Forms/OrderForm';
+import OrderTable from '../Tables/OrderTable';
 import Navbar from '../Shared/Navbar';
-import Sidebar from '../Shared/Sidebar'; // Adjust the path as needed
-import './OrdersPage.css'; // Import the CSS file
-import OrderTotals from '../Orders/OrderTotals'; // Ensure the path is correct
-import { FaChevronUp, FaChevronDown } from 'react-icons/fa'; // Added icons for toggling
+import Sidebar from '../Shared/Sidebar';
+import './OrdersPage.css';
+import OrderTotals from '../Orders/OrderTotals';
+import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
 
-const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // Update this with your API URL
+const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -17,7 +17,6 @@ const OrdersPage = () => {
   const [showForm, setShowForm] = useState(true);
   const [showTable, setShowTable] = useState(true);
 
-  // Fetch orders from the server
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(`${API_URL}/orders`);
@@ -28,12 +27,10 @@ const OrdersPage = () => {
     }
   };
 
-  // Fetch orders initially and then every 5 seconds
   useEffect(() => {
     fetchOrders();
-    const intervalId = setInterval(fetchOrders, 5000); // Poll every 5 seconds
-
-    return () => clearInterval(intervalId); // Clear interval on component unmount
+    const intervalId = setInterval(fetchOrders, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleUpdateOrder = async (updatedOrder) => {
@@ -65,15 +62,13 @@ const OrdersPage = () => {
 
   return (
     <div className="orders-page">
-      <Sidebar className="sidebar" />
+      <Sidebar />
       <div className="main-content">
         <Navbar />
         <OrderTotals orders={orders} />
-
-        <div className="p-6 min-h-screen">
+        <div className="content p-6">
           <h1 className="header">Orders</h1>
           {error && <p className="error-message">{error}</p>}
-
           <div className="card">
             <div className="card-header">
               <h2>Order Form</h2>
@@ -89,7 +84,6 @@ const OrdersPage = () => {
               />
             </div>
           </div>
-
           <div className="card mt-6">
             <div className="card-header">
               <h2>Orders List</h2>

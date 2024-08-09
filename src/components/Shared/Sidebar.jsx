@@ -23,7 +23,7 @@ const Sidebar = ({ isMobileMenuOpen }) => {
           <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
           Orders
         </Link>
-        <Link to="/assign-role" className="sidebar-link">
+        <Link to="/tools" className="sidebar-link">
           <FontAwesomeIcon icon={faTools} className="mr-2" />
           Tools
         </Link>
