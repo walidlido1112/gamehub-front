@@ -7,11 +7,10 @@ import OrdersPage from './components/Orders/OrdersPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
-import AssignRolePage from '../src/pages/AssignRolePage'; // استيراد الصفحة الجديدة
+import AssignRolePage from './pages/AssignRolePage'; // Adjusted path
 import ProtectedRoute from './routes/ProtectedRoute';
-import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage'; // Import your new component
+import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage'; // Adjusted path
 import { ToastContainer } from 'react-toastify';
-// استيراد css
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
@@ -63,7 +62,7 @@ const App = () => {
               }
             />
             <Route
-              path="/rbbot-accounts"
+              path="/rbbotaccounts"
               element={
                 <ProtectedRoute role="admin">
                   <RBBotAccounts />
