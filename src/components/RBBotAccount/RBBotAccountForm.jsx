@@ -1,15 +1,10 @@
 import React, { useState, useEffect, memo } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
-
-// Configure the modal
-Modal.setAppElement('#root');
 
 const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -29,8 +24,6 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
     ea: false,
     sony: false
   });
-  const navigate = useNavigate();
-  const location = useLocation(); // Get current location
 
   useEffect(() => {
     if (initialData && initialData._id) {
@@ -72,8 +65,11 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
         await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
-      onSubmit();
-      navigate('/frontend/src/components/RBBotAccount/RBBotAccountsPage'); // Redirect to Dashboard
+
+      if (onSubmit) {
+        onSubmit(); // Call onSubmit if provided
+      }
+
     } catch (error) {
       toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
@@ -255,12 +251,14 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            {initialData._id ? 'Update Account' : 'Create Account'}
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              {initialData._id ? 'Update Account' : 'Create Account'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

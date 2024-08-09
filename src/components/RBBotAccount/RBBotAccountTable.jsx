@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
-import RBBotAccountForm from './RBBotAccountForm'; // Ensure this path is correct
+import { faTrash, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import RBBotAccountForm from './RBBotAccountForm'; // تأكد من أن المسار صحيح
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
-// Configure the modal
+// ضبط الـ Modal
 Modal.setAppElement('#root');
 
 const RBBotAccountTable = () => {
@@ -18,7 +20,8 @@ const RBBotAccountTable = () => {
   const [deviceSearchQuery, setDeviceSearchQuery] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize the navigate function
+  const [showPasswords, setShowPasswords] = useState(false); // لعرض وإخفاء كلمات المرور
+  const navigate = useNavigate(); // لتفعيل وظيفة navigate
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -64,9 +67,10 @@ const RBBotAccountTable = () => {
       const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
       setAccounts(data);
       setIsModalOpen(false);
-      navigate('/rbbotaccounts'); // Redirect to RBBotAccountsPage
+      navigate('/rbbotaccounts'); // إعادة التوجيه إلى صفحة RBBotAccountsPage
     } catch (error) {
-      console.error('Failed to save account:', error);
+      toast.error("Failed to save account."); // عرض إشعار خطأ
+      console.error("Failed to save account:", error); // تسجيل الخطأ في الـ console
     }
   };
 
@@ -79,6 +83,7 @@ const RBBotAccountTable = () => {
       const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
       setAccounts(data);
     } catch (error) {
+      toast.error("Failed to delete accounts."); // عرض إشعار خطأ
       console.error('Failed to delete accounts:', error);
     }
   };
@@ -91,8 +96,17 @@ const RBBotAccountTable = () => {
     );
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPasswords(prev => !prev);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedAccount(null);
+  };
+
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50">
       <div className="mb-6 flex items-center space-x-4">
         <input
           type="text"
@@ -119,7 +133,7 @@ const RBBotAccountTable = () => {
       </div>
       <table className="w-full border-collapse border border-gray-300">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="bg-gray-200">
             <th className="border border-gray-300 px-4 py-2">
               <input
                 type="checkbox"
@@ -160,22 +174,30 @@ const RBBotAccountTable = () => {
       {selectedAccount && (
         <Modal
           isOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
+          onRequestClose={closeModal}
           contentLabel="Account Details"
-          className="absolute inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
-          overlayClassName="fixed inset-0"
+          className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
+          overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
         >
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={closeModal}
               className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
             >
               <FontAwesomeIcon icon={faTimes} />
             </button>
-            <h2 className="text-2xl font-bold mb-4">Account Details</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Details</h2>
+            <button
+              onClick={togglePasswordVisibility}
+              className="mb-4 text-blue-600 hover:underline"
+            >
+              <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
+              <span className="ml-2">{showPasswords ? 'Hide Passwords' : 'Show Passwords'}</span>
+            </button>
             <RBBotAccountForm
               initialData={selectedAccount}
               onSubmit={handleFormSubmit}
+              showPasswords={showPasswords} // تمرير حالة العرض للنموذج
             />
           </div>
         </Modal>

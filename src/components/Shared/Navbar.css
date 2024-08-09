@@ -29,6 +29,7 @@
 .nav-link {
   color: #ffffff;
   transition: color 0.3s ease;
+  padding: 0.5rem 1rem;
 }
 
 .nav-link:hover {
@@ -40,7 +41,7 @@
   align-items: flex-start;
 }
 
-.navbar .links.md\\:flex-row {
+.navbar .links.md\:flex-row {
   flex-direction: row;
   align-items: center;
 }
