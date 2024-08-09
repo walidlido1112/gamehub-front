@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
@@ -30,6 +30,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     sony: false
   });
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
 
   useEffect(() => {
     if (initialData) {
@@ -66,7 +67,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
         toast.success('Account created successfully!');
       }
       onSubmit();
-      navigate('/frontend/src/components/RBBotAccount/RBBotAccountsPage.jsx');
+      navigate(location.pathname); // Navigate to the same page
     } catch (error) {
       toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
@@ -117,7 +118,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               <div className="relative">
                 <input
                   type={showPassword.gmail ? 'text' : 'password'}
-                  id={`gmailPassword-${formData.email}`}
+                  id="gmailPassword"
                   name="gmailPassword"
                   value={formData.gmailPassword}
                   onChange={handleChange}
@@ -141,7 +142,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               <div className="relative">
                 <input
                   type={showPassword.ea ? 'text' : 'password'}
-                  id={`eaPassword-${formData.email}`}
+                  id="eaPassword"
                   name="eaPassword"
                   value={formData.eaPassword}
                   onChange={handleChange}
@@ -165,7 +166,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               <div className="relative">
                 <input
                   type={showPassword.sony ? 'text' : 'password'}
-                  id={`sonyPassword-${formData.email}`}
+                  id="sonyPassword"
                   name="sonyPassword"
                   value={formData.sonyPassword}
                   onChange={handleChange}
@@ -187,7 +188,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="codes" className="block text-sm font-medium text-gray-700">Codes</label>
             <input
               type="text"
-              id={`codes-${formData.email}`}
+              id="codes"
               name="codes"
               value={formData.codes}
               onChange={handleChange}
@@ -200,7 +201,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="googleAuthEA" className="block text-sm font-medium text-gray-700">Google Auth EA</label>
             <input
               type="text"
-              id={`googleAuthEA-${formData.email}`}
+              id="googleAuthEA"
               name="googleAuthEA"
               value={formData.googleAuthEA}
               onChange={handleChange}
@@ -213,7 +214,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="googleAuthSony" className="block text-sm font-medium text-gray-700">Google Auth Sony</label>
             <input
               type="text"
-              id={`googleAuthSony-${formData.email}`}
+              id="googleAuthSony"
               name="googleAuthSony"
               value={formData.googleAuthSony}
               onChange={handleChange}
@@ -226,7 +227,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="deviceNumber" className="block text-sm font-medium text-gray-700">Device Number</label>
             <input
               type="text"
-              id={`deviceNumber-${formData.email}`}
+              id="deviceNumber"
               name="deviceNumber"
               value={formData.deviceNumber}
               onChange={handleChange}
@@ -239,7 +240,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="proxy" className="block text-sm font-medium text-gray-700">Proxy</label>
             <input
               type="text"
-              id={`proxy-${formData.email}`}
+              id="proxy"
               name="proxy"
               value={formData.proxy}
               onChange={handleChange}
