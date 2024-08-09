@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import logo from '../../assets/logo.png'; // ضبط المسار بناءً على هيكل مشروعك
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faTachometerAlt, faUser, faShoppingCart, faSignOutAlt, faSignInAlt, faUserPlus, faBars } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
@@ -18,7 +17,6 @@ const Navbar = () => {
     <nav className="navbar fixed top-0 left-0 w-full bg-gray-800 text-white shadow-lg z-50">
       <div className="container mx-auto flex justify-between items-center p-4">
         <div className="logo flex items-center">
-          <img src={logo} alt="GameHub Store" className="h-10 w-auto" />
           <Link to="/" className="text-xl font-bold ml-3 hover:text-gray-400">
             <FontAwesomeIcon icon={faHome} className="mr-2" />
             GameHub Store
