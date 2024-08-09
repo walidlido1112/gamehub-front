@@ -9,7 +9,7 @@ import Register from './components/Auth/Register';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import AssignRolePage from '../src/pages/AssignRolePage'; // استيراد الصفحة الجديدة
 import ProtectedRoute from './routes/ProtectedRoute';
-import RBBotAccounts from './components/Accounts/RBBotAccounts'; // Import your new component
+import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage'; // Import your new component
 
 const App = () => {
   return (
