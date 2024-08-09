@@ -7,9 +7,9 @@ import OrdersPage from './components/Orders/OrdersPage';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
-import AssignRolePage from './pages/AssignRolePage'; // Ensure correct import
+import AssignRolePage from './pages/AssignRolePage'; // Adjusted path
 import ProtectedRoute from './routes/ProtectedRoute';
-import RBBotAccountsPage from './components/RBBotAccount/RBBotAccountsPage';
+import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage'; // Adjusted path
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -62,10 +62,10 @@ const App = () => {
               }
             />
             <Route
-              path="/RBBotAccount"
+              path="/rbbotaccounts"
               element={
                 <ProtectedRoute role="admin">
-                  <RBBotAccountsPage />
+                  <RBBotAccounts />
                 </ProtectedRoute>
               }
             />
