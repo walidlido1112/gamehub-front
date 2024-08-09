@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import logo from '../../assets/logo.png'; // ضبط المسار بناءً على هيكل مشروعك
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faTachometerAlt, faUser, faShoppingCart, faSignOutAlt, faSignInAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faTachometerAlt, faUser, faShoppingCart, faSignOutAlt, faSignInAlt, faUserPlus, faBars } from '@fortawesome/free-solid-svg-icons';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!isMobileMenuOpen);
+  };
 
   return (
     <nav className="navbar fixed top-0 left-0 w-full bg-gray-800 text-white shadow-lg z-50">
@@ -19,7 +24,12 @@ const Navbar = () => {
             GameHub Store
           </Link>
         </div>
-        <div className="links flex items-center space-x-4">
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu} className="text-xl hover:text-gray-400 focus:outline-none">
+            <FontAwesomeIcon icon={faBars} />
+          </button>
+        </div>
+        <div className={`links flex-col md:flex-row md:flex items-center space-x-0 md:space-x-4 ${isMobileMenuOpen ? 'flex' : 'hidden'} md:flex`}>
           {user ? (
             <>
               <Link to="/dashboard" className="flex items-center text-lg hover:text-gray-400">
@@ -46,7 +56,7 @@ const Navbar = () => {
               )}
               <button
                 onClick={logout}
-                className="flex items-center text-lg bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300"
+                className="flex items-center text-lg bg-red-600 px-4 py-2 rounded-md hover:bg-red-700 transition duration-300 mt-2 md:mt-0"
               >
                 <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
                 Logout
@@ -54,11 +64,11 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" className="flex items-center text-lg hover:text-gray-400">
+              <Link to="/login" className="flex items-center text-lg hover:text-gray-400 mt-2 md:mt-0">
                 <FontAwesomeIcon icon={faSignInAlt} className="mr-2" />
                 Login
               </Link>
-              <Link to="/register" className="flex items-center text-lg hover:text-gray-400">
+              <Link to="/register" className="flex items-center text-lg hover:text-gray-400 mt-2 md:mt-0">
                 <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
                 Register
               </Link>
