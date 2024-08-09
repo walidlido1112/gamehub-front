@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+
+// Configure the modal
+Modal.setAppElement('#root');
 
 const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -19,7 +24,12 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     deviceNumber: '',
     proxy: ''
   });
-  const [showPasswords, setShowPasswords] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    gmail: false,
+    ea: false,
+    sony: false
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (initialData) {
@@ -38,139 +48,226 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     }));
   };
 
+  const handlePasswordToggle = (type) => {
+    setShowPassword(prevState => ({
+      ...prevState,
+      [type]: !prevState[type]
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (initialData._id) {
         // Update existing account
         await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
+        toast.success('Account updated successfully!');
       } else {
         // Create new account
         await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
+        toast.success('Account created successfully!');
       }
-      onSubmit(); // Callback to refresh data or handle post-submit actions
-      toast.success('Account saved successfully!');
+      onSubmit();
+      navigate('/rbbotaccounts');
     } catch (error) {
-      toast.error('Failed to save account. Please try again.');
+      toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg">
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1">Password Type</label>
-        <select
-          name="passwordType"
-          value={formData.passwordType}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-          required
-        >
-          <option value="">Select Password Type</option>
-          <option value="gmail">Gmail</option>
-          <option value="ea">EA</option>
-          <option value="sony">Sony</option>
-        </select>
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="password">Password</label>
-        {formData.passwordType && (
-          <div className="relative">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+          {initialData._id ? 'Update RBBot Account' : 'Create RBBot Account'}
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <input
-              type={showPasswords ? 'text' : 'password'}
-              id={`${formData.passwordType}Password`}
-              name={`${formData.passwordType}Password`}
-              value={formData[`${formData.passwordType}Password`]}
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              placeholder={`${formData.passwordType.charAt(0).toUpperCase() + formData.passwordType.slice(1)} Password`}
+              placeholder="Email"
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
-            <span
-              onClick={() => setShowPasswords(!showPasswords)}
-              className="absolute inset-y-0 right-2 flex items-center cursor-pointer"
-            >
-              <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
-            </span>
           </div>
-        )}
+
+          <div>
+            <label htmlFor="passwordType" className="block text-sm font-medium text-gray-700">Password Type</label>
+            <select
+              id="passwordType"
+              name="passwordType"
+              value={formData.passwordType}
+              onChange={handleChange}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              required
+            >
+              <option value="">Select Password Type</option>
+              <option value="gmail">Gmail</option>
+              <option value="ea">EA</option>
+              <option value="sony">Sony</option>
+            </select>
+          </div>
+
+          {formData.passwordType === 'gmail' && (
+            <div>
+              <label htmlFor="gmailPassword" className="block text-sm font-medium text-gray-700">Gmail Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword.gmail ? 'text' : 'password'}
+                  id="gmailPassword"
+                  name="gmailPassword"
+                  value={formData.gmailPassword}
+                  onChange={handleChange}
+                  placeholder="Gmail Password"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => handlePasswordToggle('gmail')}
+                  className="absolute inset-y-0 right-0 flex items-center px-3"
+                >
+                  <FontAwesomeIcon icon={showPassword.gmail ? faEyeSlash : faEye} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {formData.passwordType === 'ea' && (
+            <div>
+              <label htmlFor="eaPassword" className="block text-sm font-medium text-gray-700">EA Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword.ea ? 'text' : 'password'}
+                  id="eaPassword"
+                  name="eaPassword"
+                  value={formData.eaPassword}
+                  onChange={handleChange}
+                  placeholder="EA Password"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => handlePasswordToggle('ea')}
+                  className="absolute inset-y-0 right-0 flex items-center px-3"
+                >
+                  <FontAwesomeIcon icon={showPassword.ea ? faEyeSlash : faEye} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {formData.passwordType === 'sony' && (
+            <div>
+              <label htmlFor="sonyPassword" className="block text-sm font-medium text-gray-700">Sony Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword.sony ? 'text' : 'password'}
+                  id="sonyPassword"
+                  name="sonyPassword"
+                  value={formData.sonyPassword}
+                  onChange={handleChange}
+                  placeholder="Sony Password"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                />
+                <button
+                  type="button"
+                  onClick={() => handlePasswordToggle('sony')}
+                  className="absolute inset-y-0 right-0 flex items-center px-3"
+                >
+                  <FontAwesomeIcon icon={showPassword.sony ? faEyeSlash : faEye} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div>
+            <label htmlFor="codes" className="block text-sm font-medium text-gray-700">Codes</label>
+            <input
+              type="text"
+              id="codes"
+              name="codes"
+              value={formData.codes}
+              onChange={handleChange}
+              placeholder="Codes"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="googleAuthEA" className="block text-sm font-medium text-gray-700">Google Auth EA</label>
+            <input
+              type="text"
+              id="googleAuthEA"
+              name="googleAuthEA"
+              value={formData.googleAuthEA}
+              onChange={handleChange}
+              placeholder="Google Auth EA"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="googleAuthSony" className="block text-sm font-medium text-gray-700">Google Auth Sony</label>
+            <input
+              type="text"
+              id="googleAuthSony"
+              name="googleAuthSony"
+              value={formData.googleAuthSony}
+              onChange={handleChange}
+              placeholder="Google Auth Sony"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="deviceNumber" className="block text-sm font-medium text-gray-700">Device Number</label>
+            <input
+              type="text"
+              id="deviceNumber"
+              name="deviceNumber"
+              value={formData.deviceNumber}
+              onChange={handleChange}
+              placeholder="Device Number"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="proxy" className="block text-sm font-medium text-gray-700">Proxy</label>
+            <input
+              type="text"
+              id="proxy"
+              name="proxy"
+              value={formData.proxy}
+              onChange={handleChange}
+              placeholder="Proxy"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate('/rbbotaccounts')}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              {initialData._id ? 'Update Account' : 'Create Account'}
+            </button>
+          </div>
+        </form>
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="codes">Codes</label>
-        <input
-          type="text"
-          id="codes"
-          name="codes"
-          value={formData.codes}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="googleAuthEA">Google Auth EA</label>
-        <input
-          type="text"
-          id="googleAuthEA"
-          name="googleAuthEA"
-          value={formData.googleAuthEA}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="googleAuthSony">Google Auth Sony</label>
-        <input
-          type="text"
-          id="googleAuthSony"
-          name="googleAuthSony"
-          value={formData.googleAuthSony}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="deviceNumber">Device Number</label>
-        <input
-          type="text"
-          id="deviceNumber"
-          name="deviceNumber"
-          value={formData.deviceNumber}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 mb-1" htmlFor="proxy">Proxy</label>
-        <input
-          type="text"
-          id="proxy"
-          name="proxy"
-          value={formData.proxy}
-          onChange={handleChange}
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          {initialData._id ? 'Update Account' : 'Create Account'}
-        </button>
-      </div>
-    </form>
+    </div>
   );
 };
 
