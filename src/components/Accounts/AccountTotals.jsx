@@ -38,81 +38,81 @@ const AccountTotals = ({ accountsData, employees }) => {
           .map(account => {
             const price = (account.quantity * psPrice / 1000).toFixed(2);
             totalPrice += parseFloat(price);
-            return {
-              email: account.email,
-              quantity: account.quantity,
-              price: price
-            };
+            return [
+              account.email,
+              account.quantity,
+              price
+            ];
           })
-          .sort((a, b) => b.quantity - a.quantity);
+          .sort((a, b) => b[1] - a[1]); // Sort by quantity
         break;
       case 'pcAccounts':
         detailData = pcAccounts
           .map(account => {
             const price = (account.quantity * pcPrice / 1000).toFixed(2);
             totalPrice += parseFloat(price);
-            return {
-              email: account.email,
-              quantity: account.quantity,
-              price: price
-            };
+            return [
+              account.email,
+              account.quantity,
+              price
+            ];
           })
-          .sort((a, b) => b.quantity - a.quantity);
+          .sort((a, b) => b[1] - a[1]); // Sort by quantity
         break;
       case 'completedAccounts':
         detailData = completedAccounts
-          .map(account => ({
-            email: account.email,
-            employee: account.employeeName || 'N/A'
-          }));
+          .map(account => [
+            account.email,
+            account.employeeName || 'N/A'
+          ]);
         break;
       case 'totalPsQuantity':
         detailData = psAccounts
           .map(account => {
             const price = (account.quantity * psPrice / 1000).toFixed(2);
             totalPrice += parseFloat(price);
-            return {
-              email: account.email,
-              quantity: account.quantity,
-              price: price
-            };
+            return [
+              account.email,
+              account.quantity,
+              price
+            ];
           })
-          .sort((a, b) => b.quantity - a.quantity);
+          .sort((a, b) => b[1] - a[1]); // Sort by quantity
         break;
       case 'totalPcQuantity':
         detailData = pcAccounts
           .map(account => {
             const price = (account.quantity * pcPrice / 1000).toFixed(2);
             totalPrice += parseFloat(price);
-            return {
-              email: account.email,
-              quantity: account.quantity,
-              price: price
-            };
+            return [
+              account.email,
+              account.quantity,
+              price
+            ];
           })
-          .sort((a, b) => b.quantity - a.quantity);
+          .sort((a, b) => b[1] - a[1]); // Sort by quantity
         break;
       case 'totalEmployees':
         detailData = filteredEmployees
-          .map(employee => ({
-            name: employee.name
-          }));
+          .map(employee => [
+            employee.name
+          ]);
         break;
       case 'inProgressCount':
         detailData = accounts
           .filter(account => account.status === 'in progress')
-          .map(account => ({
-            email: account.email,
-            employee: account.employeeName || 'N/A'
-          }));
+          .map(account => [
+            account.email,
+            account.employeeName || 'N/A'
+          ]);
         break;
       case 'totalSearches':
         detailData = accounts
-          .map(account => ({
-            email: account.email,
-            searchCount: account.searchCount
-          }))
-          .sort((a, b) => b.searchCount - a.searchCount);
+          .map(account => [
+            account.email,
+            account.searchCount
+          ])
+          .sort((a, b) => b[1] - a[1]); // Sort by search count
         break;
       default:
         detailData = [];
@@ -231,9 +231,9 @@ const AccountTotals = ({ accountsData, employees }) => {
                 <div>
                   {selectedDetail.data.map((item, index) => (
                     <div key={index} className="flex justify-between mb-2 text-gray-700">
-                      <span>{item.email}</span>
-                      <span>{item.quantity}</span>
-                      <span>${item.price}</span>
+                      <span>{item[0]}</span>
+                      <span>{item[1]}</span>
+                      <span>${item[2]}</span>
                     </div>
                   ))}
                   <div className="mt-4 font-bold">Total Price: ${selectedDetail.totalPrice.toFixed(2)}</div>
@@ -244,11 +244,11 @@ const AccountTotals = ({ accountsData, employees }) => {
                     <li key={index} className="mb-2 text-gray-700">
                       {selectedDetail.type === 'completedAccounts' ? (
                         <div>
-                          <span className="font-medium">{item.email}</span> - <span>{item.employee}</span>
+                          <span className="font-medium">{item[0]}</span> - <span>{item[1]}</span>
                         </div>
                       ) : (
                         <div>
-                          <span className="font-medium">{item.email}</span> - <span>{item.quantity}</span> - <span>${item.price}</span>
+                          <span className="font-medium">{item[0]}</span> - <span>{item[1]}</span> - <span>${item[2]}</span>
                         </div>
                       )}
                     </li>
