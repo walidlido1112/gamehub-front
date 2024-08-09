@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../Shared/Navbar'; // استيراد الـ Navbar
 import Sidebar from '../Shared/Sidebar'; // استيراد الـ Sidebar
-import RBBotAccountTable from './RBBotAccountTable';
+import RBBotAccountTable from './RBBotAccountTable'; // استيراد جدول RBBotAccount
 import RBBotAccountForm from './RBBotAccountForm'; // استيراد نموذج RBBotAccount
 
 const RBBotAccountsPage = () => {
