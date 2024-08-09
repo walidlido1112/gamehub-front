@@ -6,7 +6,7 @@ import RBBotAccountForm from './RBBotAccountForm'; // استيراد نموذج 
 
 const RBBotAccountsPage = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen">
       {/* Sidebar */}
       <Sidebar className="w-64" />
 
@@ -14,7 +14,7 @@ const RBBotAccountsPage = () => {
         {/* Navbar */}
         <Navbar />
 
-        <main className="p-6 flex-1 overflow-y-auto">
+        <main className="p-6 flex-1 overflow-y-auto bg-gray-100">
           <div className="container mx-auto">
             <h1 className="text-3xl font-bold mb-6 text-center text-gray-900">RBBot Accounts</h1>
 

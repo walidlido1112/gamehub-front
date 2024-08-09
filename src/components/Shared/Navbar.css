@@ -1,53 +1,33 @@
+/* Navbar.css */
 .navbar {
   background-color: #1f2937; /* Dark gray background */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 0.5rem 1rem; /* Adjust padding for better spacing */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 50;
 }
 
-.container {
+.navbar .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .logo {
-  color: #ffffff;
-  font-size: 1.25rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
+  flex: 1; /* Allow logo to take up space */
 }
 
-.logo .icon {
-  margin-right: 0.5rem;
-}
-
-.menu-toggle {
-  display: none;
-  font-size: 1.5rem;
-  color: #ffffff;
-  background: none;
-  border: none;
+.logo img {
+  height: 40px; /* Adjust logo size */
 }
 
 .links {
+  flex: 2; /* Allow links to take up more space */
   display: flex;
+  justify-content: flex-end; /* Align links to the right */
   align-items: center;
-  gap: 1rem;
 }
 
 .nav-link {
   color: #ffffff;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
   transition: color 0.3s ease;
 }
 
@@ -55,42 +35,58 @@
   color: #d1d5db; /* Light gray on hover */
 }
 
-.logout {
-  background-color: #ef4444;
+.navbar .links.flex {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.navbar .links.md\\:flex-row {
+  flex-direction: row;
+  align-items: center;
+}
+
+.navbar .links a {
+  margin-top: 10px;
+}
+
+.navbar .links .text-lg {
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  transition: background-color 0.3s ease;
 }
 
-.logout:hover {
-  background-color: #dc2626; /* Darker red on hover */
-}
-
-/* Mobile view */
+/* تحسين الشريط العلوي للأجهزة المحمولة */
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
+  .navbar .container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .links {
-    display: flex;
+  .navbar .logo {
+    margin-bottom: 1rem;
+  }
+
+  .navbar .links {
     flex-direction: column;
     width: 100%;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #1f2937;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
   }
 
-  .links.open {
-    transform: translateY(0);
-  }
-
-  .links .nav-link {
+  .navbar .links a {
     width: 100%;
     text-align: left;
-    padding: 1rem;
+  }
+
+  .navbar .links.flex-col {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .navbar .links.flex-col a {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .navbar .links .text-lg {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    text-align: left;
   }
 }
