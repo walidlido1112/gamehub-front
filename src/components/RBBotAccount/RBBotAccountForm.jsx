@@ -73,7 +73,7 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
         toast.success('Account created successfully!');
       }
       onSubmit();
-      navigate('/dashboard'); // Redirect to Dashboard
+      navigate('/frontend/src/components/RBBotAccount/RBBotAccountsPage'); // Redirect to Dashboard
     } catch (error) {
       toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
