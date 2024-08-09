@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 const RBBotAccountForm = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
+    passwordType: '', // Changed from `password` to `passwordType`
+    gmailPassword: '',
+    eaPassword: '',
+    sonyPassword: '',
     codes: '',
     googleAuthEA: '',
     googleAuthSony: '',
@@ -37,11 +40,11 @@ const RBBotAccountForm = () => {
         />
       </div>
       <div>
-        <label htmlFor="password" className="block">Password:</label>
+        <label htmlFor="passwordType" className="block">Password Type:</label>
         <select
-          id="password"
-          name="password"
-          value={formData.password}
+          id="passwordType"
+          name="passwordType"
+          value={formData.passwordType}
           onChange={handleChange}
           className="border p-2 w-full"
           required
@@ -52,6 +55,45 @@ const RBBotAccountForm = () => {
           <option value="sony">Sony</option>
         </select>
       </div>
+      {formData.passwordType === 'gmail' && (
+        <div>
+          <label htmlFor="gmailPassword" className="block">Gmail Password:</label>
+          <input
+            type="password"
+            id="gmailPassword"
+            name="gmailPassword"
+            value={formData.gmailPassword}
+            onChange={handleChange}
+            className="border p-2 w-full"
+          />
+        </div>
+      )}
+      {formData.passwordType === 'ea' && (
+        <div>
+          <label htmlFor="eaPassword" className="block">EA Password:</label>
+          <input
+            type="password"
+            id="eaPassword"
+            name="eaPassword"
+            value={formData.eaPassword}
+            onChange={handleChange}
+            className="border p-2 w-full"
+          />
+        </div>
+      )}
+      {formData.passwordType === 'sony' && (
+        <div>
+          <label htmlFor="sonyPassword" className="block">Sony Password:</label>
+          <input
+            type="password"
+            id="sonyPassword"
+            name="sonyPassword"
+            value={formData.sonyPassword}
+            onChange={handleChange}
+            className="border p-2 w-full"
+          />
+        </div>
+      )}
       <div>
         <label htmlFor="codes" className="block">Codes:</label>
         <input
