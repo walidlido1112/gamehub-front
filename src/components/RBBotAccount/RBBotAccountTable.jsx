@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import RBBotAccountForm from './RBBotAccountForm'; // Ensure this path is correct
 import { useNavigate } from 'react-router-dom';
 
@@ -18,6 +18,7 @@ const RBBotAccountTable = () => {
   const [deviceSearchQuery, setDeviceSearchQuery] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false); // To toggle password visibility
   const navigate = useNavigate(); // Initialize the navigate function
 
   useEffect(() => {
@@ -91,8 +92,12 @@ const RBBotAccountTable = () => {
     );
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPasswords(prev => !prev);
+  };
+
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50">
       <div className="mb-6 flex items-center space-x-4">
         <input
           type="text"
@@ -119,7 +124,7 @@ const RBBotAccountTable = () => {
       </div>
       <table className="w-full border-collapse border border-gray-300">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="bg-gray-200">
             <th className="border border-gray-300 px-4 py-2">
               <input
                 type="checkbox"
@@ -162,8 +167,8 @@ const RBBotAccountTable = () => {
           isOpen={isModalOpen}
           onRequestClose={() => setIsModalOpen(false)}
           contentLabel="Account Details"
-          className="absolute inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
-          overlayClassName="fixed inset-0"
+          className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
+          overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
         >
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
             <button
@@ -172,10 +177,18 @@ const RBBotAccountTable = () => {
             >
               <FontAwesomeIcon icon={faTimes} />
             </button>
-            <h2 className="text-2xl font-bold mb-4">Account Details</h2>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Details</h2>
+            <button
+              onClick={togglePasswordVisibility}
+              className="mb-4 text-blue-600 hover:underline"
+            >
+              <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
+              <span className="ml-2">{showPasswords ? 'Hide Passwords' : 'Show Passwords'}</span>
+            </button>
             <RBBotAccountForm
               initialData={selectedAccount}
               onSubmit={handleFormSubmit}
+              showPasswords={showPasswords} // Pass the state to the form
             />
           </div>
         </Modal>
