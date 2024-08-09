@@ -8,9 +8,9 @@ const Sidebar = ({ isMobileMenuOpen }) => {
   return (
     <aside className={`sidebar shadow-lg fixed h-full bg-gray-800 text-white transition-transform transform ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
       <div className="sidebar-header p-4">
-        <h2 className="text-2xl font-bold">GameHub Store</h2>
+        <h2 className="text-xl font-bold">GameHub Store</h2>
       </div>
-      <nav className="space-y-6 p-4">
+      <nav className="space-y-4 p-4">
         <Link to="/dashboard" className="sidebar-link">
           <FontAwesomeIcon icon={faTachometerAlt} className="mr-2" />
           Dashboard
@@ -32,10 +32,9 @@ const Sidebar = ({ isMobileMenuOpen }) => {
           Report Account
         </Link>
         <Link to="/rbbotaccounts" className="sidebar-link">
-  <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
-  RBBot Accounts
-</Link>
-
+          <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
+          RBBot Accounts
+        </Link>
       </nav>
     </aside>
   );
