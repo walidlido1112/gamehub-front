@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
@@ -59,11 +59,9 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     e.preventDefault();
     try {
       if (initialData._id) {
-        // Update existing account
         await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
       } else {
-        // Create new account
         await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
@@ -119,7 +117,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               <div className="relative">
                 <input
                   type={showPassword.gmail ? 'text' : 'password'}
-                  id="gmailPassword"
+                  id={`gmailPassword-${formData.email}`}
                   name="gmailPassword"
                   value={formData.gmailPassword}
                   onChange={handleChange}
@@ -143,7 +141,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               <div className="relative">
                 <input
                   type={showPassword.ea ? 'text' : 'password'}
-                  id="eaPassword"
+                  id={`eaPassword-${formData.email}`}
                   name="eaPassword"
                   value={formData.eaPassword}
                   onChange={handleChange}
@@ -167,7 +165,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               <div className="relative">
                 <input
                   type={showPassword.sony ? 'text' : 'password'}
-                  id="sonyPassword"
+                  id={`sonyPassword-${formData.email}`}
                   name="sonyPassword"
                   value={formData.sonyPassword}
                   onChange={handleChange}
@@ -189,7 +187,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="codes" className="block text-sm font-medium text-gray-700">Codes</label>
             <input
               type="text"
-              id="codes"
+              id={`codes-${formData.email}`}
               name="codes"
               value={formData.codes}
               onChange={handleChange}
@@ -202,7 +200,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="googleAuthEA" className="block text-sm font-medium text-gray-700">Google Auth EA</label>
             <input
               type="text"
-              id="googleAuthEA"
+              id={`googleAuthEA-${formData.email}`}
               name="googleAuthEA"
               value={formData.googleAuthEA}
               onChange={handleChange}
@@ -215,7 +213,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="googleAuthSony" className="block text-sm font-medium text-gray-700">Google Auth Sony</label>
             <input
               type="text"
-              id="googleAuthSony"
+              id={`googleAuthSony-${formData.email}`}
               name="googleAuthSony"
               value={formData.googleAuthSony}
               onChange={handleChange}
@@ -228,7 +226,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="deviceNumber" className="block text-sm font-medium text-gray-700">Device Number</label>
             <input
               type="text"
-              id="deviceNumber"
+              id={`deviceNumber-${formData.email}`}
               name="deviceNumber"
               value={formData.deviceNumber}
               onChange={handleChange}
@@ -241,7 +239,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="proxy" className="block text-sm font-medium text-gray-700">Proxy</label>
             <input
               type="text"
-              id="proxy"
+              id={`proxy-${formData.email}`}
               name="proxy"
               value={formData.proxy}
               onChange={handleChange}
@@ -250,19 +248,12 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             />
           </div>
 
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={() => navigate('/rbbotaccounts')}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-            >
-              Cancel
-            </button>
+          <div className="flex justify-center mt-6">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {initialData._id ? 'Update Account' : 'Create Account'}
+              {initialData._id ? 'Update' : 'Create'} Account
             </button>
           </div>
         </form>
