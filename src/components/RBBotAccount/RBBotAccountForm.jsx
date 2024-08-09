@@ -3,8 +3,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // عنوان الـ API الخاص بك
-
+const apiUrl = `${process.env.REACT_APP_API_URL}/rbbotaccounts`;
+console.log('API URL:', apiUrl); // Check the output here
 
 const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
