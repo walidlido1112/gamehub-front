@@ -46,6 +46,11 @@ const RBBotAccountTable = () => {
     setIsModalOpen(true);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedAccount(null);
+  };
+
   const filteredAccounts = accounts.filter((account) =>
     (account.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
      account.deviceNumber.toLowerCase().includes(searchQuery.toLowerCase())) &&
@@ -64,11 +69,10 @@ const RBBotAccountTable = () => {
       setDeviceSearchQuery('');
       const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
       setAccounts(data);
-      setIsModalOpen(false);
+      closeModal(); // Close the modal after saving
       navigate('/rbbotaccounts'); // Redirect to RBBotAccountsPage
     } catch (error) {
       console.error('Failed to save account:', error);
-      
     }
   };
   
@@ -148,7 +152,6 @@ const RBBotAccountTable = () => {
             <tr
               key={account._id}
               className="hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleRowClick(account)}
             >
               <td className="border border-gray-300 px-4 py-2">
                 <input
@@ -158,7 +161,9 @@ const RBBotAccountTable = () => {
                   className="cursor-pointer"
                 />
               </td>
-              <td className="border border-gray-300 px-4 py-2">{account.email}</td>
+              <td className="border border-gray-300 px-4 py-2" onClick={() => handleRowClick(account)}>
+                {account.email}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -166,14 +171,14 @@ const RBBotAccountTable = () => {
       {selectedAccount && (
         <Modal
           isOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
+          onRequestClose={closeModal}
           contentLabel="Account Details"
           className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
           overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
         >
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={closeModal}
               className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
             >
               <FontAwesomeIcon icon={faTimes} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +11,7 @@ const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 // Configure the modal
 Modal.setAppElement('#root');
 
-const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
+const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
     email: '',
     passwordType: '',
@@ -33,7 +33,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const location = useLocation(); // Get current location
 
   useEffect(() => {
-    if (initialData) {
+    if (initialData && initialData._id) {
       setFormData(prevData => ({
         ...prevData,
         ...initialData
@@ -64,7 +64,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
         toast.error('Email already exists.');
         return;
       }
-      
+
       if (initialData._id) {
         await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
@@ -246,7 +246,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="proxy" className="block text-sm font-medium text-gray-700">Proxy</label>
             <input
               type="text"
-              id="proxy" // Ensure this ID is unique across the page
+              id="proxy"
               name="proxy"
               value={formData.proxy}
               onChange={handleChange}
@@ -255,18 +255,16 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             />
           </div>
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            >
-              {initialData._id ? 'Update' : 'Create'}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            {initialData._id ? 'Update Account' : 'Create Account'}
+          </button>
         </form>
       </div>
     </div>
   );
-};
+});
 
 export default RBBotAccountForm;
