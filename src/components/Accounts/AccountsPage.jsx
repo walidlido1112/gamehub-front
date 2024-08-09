@@ -36,9 +36,7 @@ const AccountsPage = () => {
     const fetchUsers = async () => {
       try {
         const { data } = await axios.get(`${API_BASE_URL}/users`);
-        // Assuming data is an array of users
         if (Array.isArray(data)) {
-          // تصفية المستخدمين الذين لديهم دور EMPLOYEEROLE
           const filteredEmployees = data.filter(user => user.role === 'EMPLOYEEROLE');
           setEmployees(filteredEmployees);
         } else {
@@ -59,7 +57,7 @@ const AccountsPage = () => {
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 p-6 bg-white shadow-md rounded-lg">
+        <main className="flex-1 p-6 bg-white shadow-md rounded-lg ml-64"> {/* Adjust margin-left to account for Sidebar */}
           <div className="mb-6">
             <AccountTotals accounts={accounts} employees={employees} />
           </div>
