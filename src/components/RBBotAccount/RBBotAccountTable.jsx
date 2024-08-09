@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faTimes } from '@fortawesome/free-solid-svg-icons';
+import RBBotAccountForm from './RBBotAccountForm'; // Ensure this path is correct
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
@@ -79,18 +80,16 @@ const RBBotAccountTable = () => {
   };
 
   const handleCheckboxChange = (accountId) => {
-    setSelectedAccounts(prevSelected => {
-      if (prevSelected.includes(accountId)) {
-        return prevSelected.filter(id => id !== accountId);
-      } else {
-        return [...prevSelected, accountId];
-      }
-    });
+    setSelectedAccounts(prevSelected => 
+      prevSelected.includes(accountId)
+        ? prevSelected.filter(id => id !== accountId)
+        : [...prevSelected, accountId]
+    );
   };
 
   return (
     <div className="p-4">
-      <div className="mb-4">
+      <div className="mb-4 flex items-center">
         <input
           type="text"
           placeholder="Search by email"
@@ -108,7 +107,7 @@ const RBBotAccountTable = () => {
         <button
           onClick={handleDeleteSelected}
           disabled={selectedAccounts.length === 0}
-          className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+          className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 flex items-center"
         >
           <FontAwesomeIcon icon={faTrash} />
           <span className="ml-2">Delete Selected</span>
@@ -128,6 +127,7 @@ const RBBotAccountTable = () => {
                     setSelectedAccounts(accounts.map(account => account._id));
                   }
                 }}
+                className="cursor-pointer"
               />
             </th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
@@ -145,6 +145,7 @@ const RBBotAccountTable = () => {
                   type="checkbox"
                   checked={selectedAccounts.includes(account._id)}
                   onChange={() => handleCheckboxChange(account._id)}
+                  className="cursor-pointer"
                 />
               </td>
               <td className="border border-gray-300 px-4 py-2">{account.email}</td>
@@ -157,18 +158,18 @@ const RBBotAccountTable = () => {
           isOpen={isModalOpen}
           onRequestClose={() => setIsModalOpen(false)}
           contentLabel="Account Details"
-          className="modal"
-          overlayClassName="overlay"
+          className="absolute inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
+          overlayClassName="fixed inset-0"
         >
-          <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">Account Details</h2>
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+            <h2 className="text-2xl font-bold mb-4">Account Details</h2>
             <RBBotAccountForm
               initialData={selectedAccount}
               onSubmit={handleFormSubmit}
             />
             <button
               onClick={() => setIsModalOpen(false)}
-              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 flex items-center"
             >
               <FontAwesomeIcon icon={faTimes} />
               <span className="ml-2">Close</span>
