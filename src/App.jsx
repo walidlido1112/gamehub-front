@@ -10,64 +10,70 @@ import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import AssignRolePage from '../src/pages/AssignRolePage'; // استيراد الصفحة الجديدة
 import ProtectedRoute from './routes/ProtectedRoute';
 import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage'; // Import your new component
+import { ToastContainer } from 'react-toastify';
+// استيراد css
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute role="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/accounts"
-            element={
-              <ProtectedRoute role="admin">
-                <AccountsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute role="admin">
-                <OrdersPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/employee-dashboard"
-            element={
-              <ProtectedRoute role="employee">
-                <EmployeeDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/assign-role"
-            element={
-              <ProtectedRoute role="admin">
-                <AssignRolePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/rbbotaccounts"
-            element={
-              <ProtectedRoute role="admin"> {/* Protect based on role */}
-                <RBBotAccounts />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/" element={<Login />} /> {/* Default route */}
-        </Routes>
+        <div>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute role="admin">
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/accounts"
+              element={
+                <ProtectedRoute role="admin">
+                  <AccountsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute role="admin">
+                  <OrdersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/employee-dashboard"
+              element={
+                <ProtectedRoute role="employee">
+                  <EmployeeDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/assign-role"
+              element={
+                <ProtectedRoute role="admin">
+                  <AssignRolePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rbbotaccounts"
+              element={
+                <ProtectedRoute role="admin">
+                  <RBBotAccounts />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/" element={<Login />} /> {/* Default route */}
+          </Routes>
+          <ToastContainer />
+        </div>
       </Router>
     </AuthProvider>
   );

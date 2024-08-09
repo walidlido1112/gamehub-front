@@ -20,7 +20,7 @@
     "react-icons": "^5.2.1",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.0.0",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "^3.0.1",
     "react-toastify": "^10.0.5",
     "react-tooltip": "^5.28.0",
     "serialize-javascript": "^6.0.2",
@@ -38,7 +38,5 @@
     "postcss": "^8.0.0",
     "vite": "^5.0.0"
   },
-  "license": "MIT"  
-
-
+  "license": "MIT"
 }
