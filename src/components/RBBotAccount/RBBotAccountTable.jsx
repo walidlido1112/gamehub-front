@@ -41,7 +41,7 @@ const RBBotAccountTable = () => {
     setDeviceSearchQuery(e.target.value);
   };
 
-  const handleEmailClick = (account) => {
+  const handleRowClick = (account) => {
     setSelectedAccount(account);
     setIsModalOpen(true);
   };
@@ -139,15 +139,15 @@ const RBBotAccountTable = () => {
                 className="cursor-pointer"
               />
             </th>
-            <th className="border border-gray-300 px-4 py-2">#</th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
           </tr>
         </thead>
         <tbody>
-          {filteredAccounts.map((account, index) => (
+          {filteredAccounts.map((account) => (
             <tr
               key={account._id}
               className="hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleRowClick(account)}
             >
               <td className="border border-gray-300 px-4 py-2">
                 <input
@@ -157,13 +157,7 @@ const RBBotAccountTable = () => {
                   className="cursor-pointer"
                 />
               </td>
-              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td
-                className="border border-gray-300 px-4 py-2 text-blue-600 hover:underline"
-                onClick={() => handleEmailClick(account)}
-              >
-                {account.email}
-              </td>
+              <td className="border border-gray-300 px-4 py-2">{account.email}</td>
             </tr>
           ))}
         </tbody>
@@ -176,10 +170,7 @@ const RBBotAccountTable = () => {
           className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
           overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
         >
-          <div
-            className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative"
-            aria-hidden={isModalOpen ? 'false' : 'true'} // Ensure modal content is not hidden
-          >
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
