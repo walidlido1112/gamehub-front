@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const RBBotAccountForm = () => {
+const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
     email: '',
-    passwordType: '', // Changed from `password` to `passwordType`
+    passwordType: '',
     gmailPassword: '',
     eaPassword: '',
     sonyPassword: '',
@@ -15,6 +15,23 @@ const RBBotAccountForm = () => {
     proxy: ''
   });
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        email: initialData.email || '',
+        passwordType: initialData.passwordType || '',
+        gmailPassword: initialData.gmailPassword || '',
+        eaPassword: initialData.eaPassword || '',
+        sonyPassword: initialData.sonyPassword || '',
+        codes: initialData.codes || '',
+        googleAuthEA: initialData.googleAuthEA || '',
+        googleAuthSony: initialData.googleAuthSony || '',
+        deviceNumber: initialData.deviceNumber || '',
+        proxy: initialData.proxy || ''
+      });
+    }
+  }, [initialData]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -23,22 +40,22 @@ const RBBotAccountForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = `${process.env.REACT_APP_API_URL}/rb-bot-accounts`;
-      if (formData._id) {
+      const apiUrl = `${process.env.REACT_APP_API_URL}/rbbotaccounts`; // Adjusted endpoint
+      if (initialData._id) {
         // Update existing account
-        await axios.put(`${url}/${formData._id}`, formData);
+        await axios.put(`${apiUrl}/${initialData._id}`, formData);
       } else {
         // Create new account
-        await axios.post(url, formData);
+        await axios.post(apiUrl, formData);
       }
-      console.log('Form submitted:', formData);
+      onSubmit(); // Pass form data to parent component or API
     } catch (error) {
       console.error('Failed to save account:', error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md mx-auto bg-white shadow-lg rounded-lg">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="email" className="block">Email:</label>
         <input
@@ -47,7 +64,7 @@ const RBBotAccountForm = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
           required
         />
       </div>
@@ -58,7 +75,7 @@ const RBBotAccountForm = () => {
           name="passwordType"
           value={formData.passwordType}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
           required
         >
           <option value="">Select Password Type</option>
@@ -76,7 +93,7 @@ const RBBotAccountForm = () => {
             name="gmailPassword"
             value={formData.gmailPassword}
             onChange={handleChange}
-            className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border p-2 w-full"
           />
         </div>
       )}
@@ -89,7 +106,7 @@ const RBBotAccountForm = () => {
             name="eaPassword"
             value={formData.eaPassword}
             onChange={handleChange}
-            className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border p-2 w-full"
           />
         </div>
       )}
@@ -102,7 +119,7 @@ const RBBotAccountForm = () => {
             name="sonyPassword"
             value={formData.sonyPassword}
             onChange={handleChange}
-            className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border p-2 w-full"
           />
         </div>
       )}
@@ -114,7 +131,7 @@ const RBBotAccountForm = () => {
           name="codes"
           value={formData.codes}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
         />
       </div>
       <div>
@@ -125,7 +142,7 @@ const RBBotAccountForm = () => {
           name="googleAuthEA"
           value={formData.googleAuthEA}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
         />
       </div>
       <div>
@@ -136,7 +153,7 @@ const RBBotAccountForm = () => {
           name="googleAuthSony"
           value={formData.googleAuthSony}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
         />
       </div>
       <div>
@@ -147,7 +164,7 @@ const RBBotAccountForm = () => {
           name="deviceNumber"
           value={formData.deviceNumber}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
         />
       </div>
       <div>
@@ -158,10 +175,10 @@ const RBBotAccountForm = () => {
           name="proxy"
           value={formData.proxy}
           onChange={handleChange}
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 w-full"
         />
       </div>
-      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
         Submit
       </button>
     </form>
