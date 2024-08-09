@@ -9,7 +9,7 @@ const RBBotAccountTable = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/rb-bot-accounts`);
+        const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/rbbotaccounts`);
         setAccounts(data);
       } catch (error) {
         console.error('Failed to fetch accounts:', error);
@@ -33,13 +33,13 @@ const RBBotAccountTable = () => {
   const handleFormSubmit = async (formData) => {
     try {
       if (selectedAccount) {
-        await axios.put(`${process.env.REACT_APP_API_URL}/rb-bot-accounts/${selectedAccount._id}`, formData);
+        await axios.put(`${process.env.REACT_APP_API_URL}/rbbotaccounts/${selectedAccount._id}`, formData);
       } else {
-        await axios.post(`${process.env.REACT_APP_API_URL}/rb-bot-accounts`, formData);
+        await axios.post(`${process.env.REACT_APP_API_URL}/rbbotaccounts`, formData);
       }
       setSelectedAccount(null);
       setSearchQuery('');
-      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/rb-bot-accounts`);
+      const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/rbbotaccounts`);
       setAccounts(data);
     } catch (error) {
       console.error('Failed to save account:', error);

@@ -34,13 +34,16 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const apiUrl = `${process.env.REACT_APP_API_URL}/rbbotaccounts`; // Adjusted endpoint
+      const apiUrl = `${process.env.REACT_APP_API_URL}/rbbotaccounts`;
       if (initialData._id) {
         // Update existing account
         await axios.put(`${apiUrl}/${initialData._id}`, formData);
