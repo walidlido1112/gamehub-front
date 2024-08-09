@@ -1,40 +1,97 @@
-/* Sidebar styles */
+/* AdminDashboard.css */
+
+/* هيكل الصفحة الرئيسي */
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column; /* تغيير الاتجاه لتكون عمودية افتراضياً على الشاشات الصغيرة */
+}
+
 .sidebar {
-  width: 250px; /* Default width for desktop */
-  background-color: #2d3748;
-  height: 100%;
+  width: 240px;
+  background-color: #1e3a8a; /* لون أزرق داكن */
+  color: white;
   position: fixed;
   top: 0;
   left: 0;
+  height: 100vh;
+  overflow-y: auto;
   z-index: 1000;
   transition: transform 0.3s ease-in-out;
 }
 
-/* Hide sidebar on small screens by default */
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-  .sidebar.open {
-    transform: translateX(0);
-  }
-}
-
-/* Main content adjustment when sidebar is open */
 .main-content {
-  margin-left: 250px; /* Adjust based on sidebar width */
+  flex: 1;
+  background-color: #f3f4f6; /* لون رمادي فاتح */
+  padding: 20px;
+  margin-left: 240px;
   transition: margin-left 0.3s ease-in-out;
 }
 
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.toggle-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.hidden-content {
+  display: none;
+}
+
+.visible-content {
+  display: block;
+}
+
+/* تحسينات لشاشات الهواتف المحمولة */
 @media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
   .main-content {
     margin-left: 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding: 15px;
+  }
+
+  .card-header h2 {
+    font-size: 20px;
+  }
+
+  .toggle-button {
+    font-size: 20px;
+  }
+
+  .admin-dashboard {
+    flex-direction: column;
   }
 }
 
-/* Toggle button for sidebar */
+/* زر التبديل للشريط الجانبي على الأجهزة المحمولة */
 .sidebar-toggle {
   display: none;
 }
@@ -46,8 +103,8 @@
     top: 1rem;
     left: 1rem;
     z-index: 1100;
-    background-color: #2d3748;
-    color: #fff;
+    background-color: #1e3a8a;
+    color: white;
     border: none;
     padding: 0.5rem;
     border-radius: 5px;
