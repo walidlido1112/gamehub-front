@@ -50,6 +50,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
       console.error('Failed to save account:', error);
     }
   };
+  console.log('API URL:', process.env.REACT_APP_API_URL);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
