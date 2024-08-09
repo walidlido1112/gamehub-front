@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from './Navbar'; // استيراد الـ Navbar
-import Sidebar from './Sidebar'; // استيراد الـ Sidebar
+import Navbar from '../Shared/Navbar'; // استيراد الـ Navbar
+import Sidebar from '../Shared/Sidebar'; // استيراد الـ Sidebar
 import RBBotAccountTable from './RBBotAccountTable';
 import RBBotAccountForm from './RBBotAccountForm'; // استيراد نموذج RBBotAccount
 
