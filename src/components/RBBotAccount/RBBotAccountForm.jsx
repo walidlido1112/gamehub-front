@@ -1,107 +1,115 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-const RBBotAccountForm = ({ onSubmit, initialData = {} }) => {
+const RBBotAccountForm = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: 'gmail',
+    password: '',
     codes: '',
     googleAuthEA: '',
     googleAuthSony: '',
     deviceNumber: '',
-    proxy: '',
-    ...initialData
+    proxy: ''
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    // Handle form submission, e.g., send data to API
+    console.log('Form submitted:', formData);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label>Email:</label>
+        <label htmlFor="email" className="block">Email:</label>
         <input
           type="email"
+          id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
+          className="border p-2 w-full"
           required
         />
       </div>
       <div>
-        <label>Password:</label>
+        <label htmlFor="password" className="block">Password:</label>
         <select
+          id="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
+          className="border p-2 w-full"
           required
         >
+          <option value="">Select Password Type</option>
           <option value="gmail">Gmail</option>
           <option value="ea">EA</option>
           <option value="sony">Sony</option>
         </select>
       </div>
       <div>
-        <label>Codes:</label>
+        <label htmlFor="codes" className="block">Codes:</label>
         <input
           type="text"
+          id="codes"
           name="codes"
           value={formData.codes}
           onChange={handleChange}
-          required
+          className="border p-2 w-full"
         />
       </div>
       <div>
-        <label>Google Auth EA:</label>
+        <label htmlFor="googleAuthEA" className="block">Google Auth EA:</label>
         <input
           type="text"
+          id="googleAuthEA"
           name="googleAuthEA"
           value={formData.googleAuthEA}
           onChange={handleChange}
-          required
+          className="border p-2 w-full"
         />
       </div>
       <div>
-        <label>Google Auth Sony:</label>
+        <label htmlFor="googleAuthSony" className="block">Google Auth Sony:</label>
         <input
           type="text"
+          id="googleAuthSony"
           name="googleAuthSony"
           value={formData.googleAuthSony}
           onChange={handleChange}
-          required
+          className="border p-2 w-full"
         />
       </div>
       <div>
-        <label>Device Number:</label>
+        <label htmlFor="deviceNumber" className="block">Device Number:</label>
         <input
           type="text"
+          id="deviceNumber"
           name="deviceNumber"
           value={formData.deviceNumber}
           onChange={handleChange}
-          required
+          className="border p-2 w-full"
         />
       </div>
       <div>
-        <label>Proxy:</label>
+        <label htmlFor="proxy" className="block">Proxy:</label>
         <input
           type="text"
+          id="proxy"
           name="proxy"
           value={formData.proxy}
           onChange={handleChange}
-          required
+          className="border p-2 w-full"
         />
       </div>
-      <button type="submit">Submit</button>
+      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+        Submit
+      </button>
     </form>
   );
 };
