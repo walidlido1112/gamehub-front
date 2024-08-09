@@ -1,36 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faCode, faMobileAlt, faGlobe, faUser } from '@fortawesome/free-solid-svg-icons';
 
-const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
+const RBBotAccountForm = () => {
   const [formData, setFormData] = useState({
     email: '',
-    passwordGmail: '',
-    passwordEA: '',
-    passwordSony: '',
+    passwordType: '', // Changed from `password` to `passwordType`
+    gmailPassword: '',
+    eaPassword: '',
+    sonyPassword: '',
     codes: '',
     googleAuthEA: '',
     googleAuthSony: '',
     deviceNumber: '',
     proxy: ''
   });
-
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        email: initialData.email || '',
-        passwordGmail: initialData.passwordGmail || '',
-        passwordEA: initialData.passwordEA || '',
-        passwordSony: initialData.passwordSony || '',
-        codes: initialData.codes || '',
-        googleAuthEA: initialData.googleAuthEA || '',
-        googleAuthSony: initialData.googleAuthSony || '',
-        deviceNumber: initialData.deviceNumber || '',
-        proxy: initialData.proxy || ''
-      });
-    }
-  }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,14 +23,15 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (initialData._id) {
+      const url = `${process.env.REACT_APP_API_URL}/rb-bot-accounts`;
+      if (formData._id) {
         // Update existing account
-        await axios.put(`${process.env.REACT_APP_API_URL}/rb-bot-accounts/${initialData._id}`, formData);
+        await axios.put(`${url}/${formData._id}`, formData);
       } else {
         // Create new account
-        await axios.post(`${process.env.REACT_APP_API_URL}/rb-bot-accounts`, formData);
+        await axios.post(url, formData);
       }
-      onSubmit(); // Pass form data to parent component or API
+      console.log('Form submitted:', formData);
     } catch (error) {
       console.error('Failed to save account:', error);
     }
@@ -55,112 +39,125 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md mx-auto bg-white shadow-lg rounded-lg">
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faEnvelope} className="text-gray-500" />
+      <div>
+        <label htmlFor="email" className="block">Email:</label>
         <input
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Email"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
       </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faLock} className="text-gray-500" />
-        <input
-          type="text"
-          id="passwordGmail"
-          name="passwordGmail"
-          value={formData.passwordGmail}
+      <div>
+        <label htmlFor="passwordType" className="block">Password Type:</label>
+        <select
+          id="passwordType"
+          name="passwordType"
+          value={formData.passwordType}
           onChange={handleChange}
-          placeholder="Gmail Password"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          required
+        >
+          <option value="">Select Password Type</option>
+          <option value="gmail">Gmail</option>
+          <option value="ea">EA</option>
+          <option value="sony">Sony</option>
+        </select>
       </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faLock} className="text-gray-500" />
-        <input
-          type="text"
-          id="passwordEA"
-          name="passwordEA"
-          value={formData.passwordEA}
-          onChange={handleChange}
-          placeholder="EA Password"
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faLock} className="text-gray-500" />
-        <input
-          type="text"
-          id="passwordSony"
-          name="passwordSony"
-          value={formData.passwordSony}
-          onChange={handleChange}
-          placeholder="Sony Password"
-          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faCode} className="text-gray-500" />
+      {formData.passwordType === 'gmail' && (
+        <div>
+          <label htmlFor="gmailPassword" className="block">Gmail Password:</label>
+          <input
+            type="password"
+            id="gmailPassword"
+            name="gmailPassword"
+            value={formData.gmailPassword}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
+      {formData.passwordType === 'ea' && (
+        <div>
+          <label htmlFor="eaPassword" className="block">EA Password:</label>
+          <input
+            type="password"
+            id="eaPassword"
+            name="eaPassword"
+            value={formData.eaPassword}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
+      {formData.passwordType === 'sony' && (
+        <div>
+          <label htmlFor="sonyPassword" className="block">Sony Password:</label>
+          <input
+            type="password"
+            id="sonyPassword"
+            name="sonyPassword"
+            value={formData.sonyPassword}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      )}
+      <div>
+        <label htmlFor="codes" className="block">Codes:</label>
         <input
           type="text"
           id="codes"
           name="codes"
           value={formData.codes}
           onChange={handleChange}
-          placeholder="Codes"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faGlobe} className="text-gray-500" />
+      <div>
+        <label htmlFor="googleAuthEA" className="block">Google Auth EA:</label>
         <input
           type="text"
           id="googleAuthEA"
           name="googleAuthEA"
           value={formData.googleAuthEA}
           onChange={handleChange}
-          placeholder="Google Auth EA"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faGlobe} className="text-gray-500" />
+      <div>
+        <label htmlFor="googleAuthSony" className="block">Google Auth Sony:</label>
         <input
           type="text"
           id="googleAuthSony"
           name="googleAuthSony"
           value={formData.googleAuthSony}
           onChange={handleChange}
-          placeholder="Google Auth Sony"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faMobileAlt} className="text-gray-500" />
+      <div>
+        <label htmlFor="deviceNumber" className="block">Device Number:</label>
         <input
           type="text"
           id="deviceNumber"
           name="deviceNumber"
           value={formData.deviceNumber}
           onChange={handleChange}
-          placeholder="Device Number"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div className="flex items-center space-x-2">
-        <FontAwesomeIcon icon={faUser} className="text-gray-500" />
+      <div>
+        <label htmlFor="proxy" className="block">Proxy:</label>
         <input
           type="text"
           id="proxy"
           name="proxy"
           value={formData.proxy}
           onChange={handleChange}
-          placeholder="Proxy"
           className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
