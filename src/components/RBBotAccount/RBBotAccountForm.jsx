@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
@@ -29,8 +29,8 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
     ea: false,
     sony: false
   });
-  const [emailExists, setEmailExists] = useState(false); // To track if email already exists
   const navigate = useNavigate();
+  const location = useLocation(); // Get current location
 
   useEffect(() => {
     if (initialData) {
@@ -40,22 +40,6 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
       }));
     }
   }, [initialData]);
-
-  useEffect(() => {
-    // Check if email exists when the email field changes
-    const checkEmailExists = async () => {
-      if (formData.email) {
-        try {
-          const response = await axios.get(`${API_BASE_URL}/rbbotaccounts/check-email/${formData.email}`);
-          setEmailExists(response.data.exists);
-        } catch (error) {
-          console.error('Failed to check email existence:', error);
-        }
-      }
-    };
-
-    checkEmailExists();
-  }, [formData.email]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -74,13 +58,13 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (emailExists && !initialData._id) {
-      toast.error('Email already exists.');
-      return;
-    }
-
     try {
+      const emailExists = await axios.get(`${API_BASE_URL}/rbbotaccounts/check-email/${formData.email}`);
+      if (emailExists.data.exists && !initialData._id) {
+        toast.error('Email already exists.');
+        return;
+      }
+      
       if (initialData._id) {
         await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
@@ -115,9 +99,6 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
               required
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
-            {emailExists && !initialData._id && (
-              <p className="text-red-500 text-sm mt-1">Email already exists.</p>
-            )}
           </div>
 
           <div>
@@ -265,7 +246,7 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             <label htmlFor="proxy" className="block text-sm font-medium text-gray-700">Proxy</label>
             <input
               type="text"
-              id="proxy"
+              id="proxy" // Ensure this ID is unique across the page
               name="proxy"
               value={formData.proxy}
               onChange={handleChange}
@@ -274,12 +255,12 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
             />
           </div>
 
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             >
-              {initialData._id ? 'Update' : 'Create'} Account
+              {initialData._id ? 'Update' : 'Create'}
             </button>
           </div>
         </form>
@@ -289,4 +270,3 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
 };
 
 export default RBBotAccountForm;
-           
