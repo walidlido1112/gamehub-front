@@ -9,7 +9,7 @@ import Register from './components/Auth/Register';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import AssignRolePage from './pages/AssignRolePage'; // Ensure correct import
 import ProtectedRoute from './routes/ProtectedRoute';
-import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage';
+import RBBotAccountsPage from './components/RBBotAccount/RBBotAccountsPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
