@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Modal from 'react-modal';  // استيراد مكتبة react-modal
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-
-// تعيين العنصر root للـ Modal
-Modal.setAppElement('#root'); 
 
 const AccountTable = () => {
   const [accounts, setAccounts] = useState([]);
@@ -30,7 +26,6 @@ const AccountTable = () => {
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [showPassword, setShowPassword] = useState({});
-  const [modalIsOpen, setModalIsOpen] = useState(false);  // حالة لفتح/إغلاق الـ Modal
 
   const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
@@ -94,7 +89,6 @@ const AccountTable = () => {
       setAccounts((prevAccounts) =>
         prevAccounts.map((acc) => (acc._id === updatedAccount._id ? updatedAccount : acc))
       );
-      setModalIsOpen(false);  // إغلاق النافذة المنبثقة بعد التحديث
       setEditingAccount(null);
     } catch (error) {
       console.error('Failed to update account:', error);
@@ -164,7 +158,6 @@ const AccountTable = () => {
           password: accountToEdit.password || '',
           type: accountToEdit.type || ''
         });
-        setModalIsOpen(true);  // فتح النافذة المنبثقة عند بدء التعديل
       }
     }
   }, [editingAccount, accounts]);
@@ -236,60 +229,66 @@ const AccountTable = () => {
                   type="checkbox"
                   checked={selectAll}
                   onChange={handleSelectAllChange}
+                  className="form-checkbox"
                 />
               </th>
+              <th className="border border-gray-300 p-4 text-left font-bold">#</th>
               <th className="border border-gray-300 p-4 text-left font-bold">Email</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Password</th>
               <th className="border border-gray-300 p-4 text-left font-bold">Code</th>
               <th className="border border-gray-300 p-4 text-left font-bold">Quantity</th>
-              <th className="border border-gray-300 p-4 text-left font-bold">Status</th>
-              <th className="border border-gray-300 p-4 text-left font-bold">Employee</th>
               <th className="border border-gray-300 p-4 text-left font-bold">Search Count</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Employee</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Type</th>
+              <th className="border border-gray-300 p-4 text-left font-bold">Status</th>
               <th className="border border-gray-300 p-4 text-left font-bold">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {accounts.map((account) => (
-              <tr key={account._id} className="hover:bg-gray-100">
-                <td className="border border-gray-300 p-4">
+            {accounts.map((account, index) => (
+              <tr key={account._id} className={getStatusColor(account.status)}>
+                <td className="border border-gray-300 p-2">
                   <input
                     type="checkbox"
                     checked={selectedAccounts.includes(account._id)}
                     onChange={(e) => handleCheckboxChange(e, account._id)}
+                    className="form-checkbox"
                   />
                 </td>
-                <td className="border border-gray-300 p-4">{account.email}</td>
-                <td className="border border-gray-300 p-4">{account.code}</td>
-                <td className="border border-gray-300 p-4">{account.quantity}</td>
-                <td className="border border-gray-300 p-4">
-                  <span className={`inline-block px-2 py-1 rounded-full text-white ${getStatusColor(account.status)}`}>
-                    {account.status}
-                  </span>
-                </td>
-                <td className="border border-gray-300 p-4">
-                  {users.find((user) => user._id === account.employee)?.name || 'N/A'}
-                </td>
-                <td className="border border-gray-300 p-4">{account.searchCount}</td>
-                <td className="border border-gray-300 p-4 flex space-x-2">
+                <td className="border border-gray-300 p-2 font-bold">{index + 1}</td>
+                <td className="border border-gray-300 p-2 font-bold">{account.email}</td>
+                <td className="border border-gray-300 p-2">
+                  {showPassword[account._id] ? account.password : '••••••••'}
                   <button
-                    onClick={() => {
-                      setEditingAccount(account._id);
-                      setShowPassword((prev) => ({ ...prev, [account._id]: false }));
-                    }}
-                    className="text-blue-500 hover:text-blue-600"
+                    onClick={() => setShowPassword((prev) => ({
+                      ...prev,
+                      [account._id]: !prev[account._id]
+                    }))}
+                    className="ml-2 text-blue-500"
+                  >
+                    <FontAwesomeIcon icon={showPassword[account._id] ? faEyeSlash : faEye} />
+                  </button>
+                </td>
+                <td className="border border-gray-300 p-2">{account.code}</td>
+                <td className="border border-gray-300 p-2 font-medium">{account.quantity}</td>
+                <td className="border border-gray-300 p-2">{account.searchCount}</td>
+                <td className="border border-gray-300 p-2 font-bold">
+                  {account.employeeName || 'N/A'}
+                </td>
+                <td className="border border-gray-300 p-2 font-medium">{account.type}</td>
+                <td className="border border-gray-300 p-2 font-medium">{account.status}</td>
+                <td className="border border-gray-300 p-2 flex space-x-2">
+                  <button
+                    onClick={() => setEditingAccount(account._id)}
+                    className="text-blue-500 hover:text-blue-700"
                   >
                     <FontAwesomeIcon icon={faEdit} />
                   </button>
                   <button
                     onClick={() => handleDeleteClick(account._id)}
-                    className="text-red-500 hover:text-red-600"
+                    className="text-red-500 hover:text-red-700"
                   >
                     <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                  <button
-                    onClick={() => setShowPassword((prev) => ({ ...prev, [account._id]: !prev[account._id] }))}
-                    className="text-gray-500 hover:text-gray-600"
-                  >
-                    <FontAwesomeIcon icon={showPassword[account._id] ? faEye : faEyeSlash} />
                   </button>
                 </td>
               </tr>
@@ -298,17 +297,15 @@ const AccountTable = () => {
         </table>
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="mt-4 flex flex-col sm:flex-row sm:justify-between items-center">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mb-4 sm:mb-0"
         >
           Previous
         </button>
-        <span className="text-gray-700">
-          Page {currentPage} of {totalPages}
-        </span>
+        <span className="text-gray-700 mb-4 sm:mb-0">Page {currentPage} of {totalPages}</span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
@@ -318,141 +315,135 @@ const AccountTable = () => {
         </button>
       </div>
 
-      {/* نافذة التعديل */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Edit Account"
-        className="modal"
-        overlayClassName="overlay"
-      >
-        <h2 className="text-2xl font-bold mb-4">Edit Account</h2>
-        <form onSubmit={handleUpdateAccount} className="space-y-4">
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleFormChange}
-              required
-              className="border border-gray-300 p-2 rounded-md w-full"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="code">Code</label>
-            <input
-              type="text"
-              id="code"
-              name="code"
-              value={formData.code}
-              onChange={handleFormChange}
-              required
-              className="border border-gray-300 p-2 rounded-md w-full"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="quantity">Quantity</label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleFormChange}
-              required
-              className="border border-gray-300 p-2 rounded-md w-full"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="status">Status</label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleFormChange}
-              className="border border-gray-300 p-2 rounded-md w-full"
-              required
-            >
-              <option value="in progress">In Progress</option>
-              <option value="in testing">In Testing</option>
-              <option value="completed">Completed</option>
-              <option value="on hold">On Hold</option>
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="employee">Employee</label>
-            <select
-              id="employee"
-              name="employee"
-              value={formData.employee}
-              onChange={handleFormChange}
-              className="border border-gray-300 p-2 rounded-md w-full"
-              required
-            >
-              <option value="">Select Employee</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="searchCount">Search Count</label>
-            <input
-              type="number"
-              id="searchCount"
-              name="searchCount"
-              value={formData.searchCount}
-              onChange={handleFormChange}
-              required
-              className="border border-gray-300 p-2 rounded-md w-full"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleFormChange}
-              required
-              className="border border-gray-300 p-2 rounded-md w-full"
-            />
-          </div>
-          <div>
-            <label className="block font-semibold mb-1" htmlFor="type">Type</label>
-            <select
-              id="type"
-              name="type"
-              value={formData.type}
-              onChange={handleFormChange}
-              className="border border-gray-300 p-2 rounded-md w-full"
-              required
-            >
-              <option value="ps">PS</option>
-              <option value="pc">PC</option>
-            </select>
-          </div>
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={() => setModalIsOpen(false)}
-              className="bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Save Changes
-            </button>
-          </div>
-        </form>
-      </Modal>
+      {editingAccount && (
+        <div className="mt-6 bg-white p-6 border border-gray-300 rounded-md shadow-md">
+          <h3 className="text-xl font-semibold mb-4">Edit Account</h3>
+          <form onSubmit={handleUpdateAccount}>
+            <div className="mb-4">
+              <label htmlFor="email" className="block text-gray-700">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="code" className="block text-gray-700">Code</label>
+              <input
+                type="text"
+                id="code"
+                name="code"
+                value={formData.code}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="quantity" className="block text-gray-700">Quantity</label>
+              <input
+                type="number"
+                id="quantity"
+                name="quantity"
+                value={formData.quantity}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="status" className="block text-gray-700">Status</label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              >
+                <option value="in progress">In Progress</option>
+                <option value="in testing">In Testing</option>
+                <option value="completed">Completed</option>
+                <option value="on hold">On Hold</option>
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="employee" className="block text-gray-700">Employee</label>
+              <select
+                id="employee"
+                name="employee"
+                value={formData.employee}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              >
+                <option value="">Select Employee</option>
+                {users.map((user) => (
+                  <option key={user._id} value={user._id}>
+                    {user.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label htmlFor="searchCount" className="block text-gray-700">Search Count</label>
+              <input
+                type="number"
+                id="searchCount"
+                name="searchCount"
+                value={formData.searchCount}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="block text-gray-700">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="type" className="block text-gray-700">Type</label>
+              <select
+                id="type"
+                name="type"
+                value={formData.type}
+                onChange={handleFormChange}
+                className="border border-gray-300 p-2 rounded-md w-full"
+                required
+              >
+                <option value="ps">PS</option>
+                <option value="pc">PC</option>
+              </select>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Update
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditingAccount(null)}
+                className="ml-4 bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

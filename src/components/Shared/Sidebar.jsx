@@ -31,6 +31,11 @@ const Sidebar = ({ isMobileMenuOpen }) => {
           <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
           Report Account
         </Link>
+        <Link to="/rbbot-accounts" className="sidebar-link">
+  <FontAwesomeIcon icon={faFileAlt} className="mr-2" />
+  RBBot Accounts
+</Link>
+
       </nav>
     </aside>
   );
