@@ -7,4 +7,9 @@ export default defineConfig({
       '/api': 'http://localhost:5000', // تأكد من تطابق المنفذ مع المنفذ الذي يعمل عليه الخادم
     },
   },
+  build: {
+    rollupOptions: {
+      external: ['@fortawesome/fontawesome-svg-core'], // إضافة الحزمة إلى القائمة
+    },
+  },
 });
