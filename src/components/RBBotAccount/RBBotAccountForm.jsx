@@ -3,8 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const apiUrl = `${process.env.REACT_APP_API_URL}/rbbotaccounts`;
-console.log('API URL:', apiUrl); // Check the output here
+const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // استخدم هذا السطر
 
 const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -46,18 +45,17 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const apiUrl = `${API_URL}/rbbotaccounts`;
       if (initialData._id) {
-        // Update existing account
-        await axios.put(`${apiUrl}/${initialData._id}`, formData);
+        // تحديث حساب موجود
+        await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
       } else {
-        // Create new account
-        await axios.post(apiUrl, formData);
+        // إنشاء حساب جديد
+        await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
-      onSubmit(); // Notify parent component or perform further actions
-      navigate('/dashboard'); // Redirect after submission
+      onSubmit(); // إخطار المكون الأب أو تنفيذ إجراءات أخرى
+      navigate('/RBBotAccount'); // إعادة التوجيه بعد الإرسال
     } catch (error) {
       toast.error('Operation failed.');
       console.error('Failed to save account:', error);
