@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import RBBotAccountForm from './RBBotAccountForm'; // تأكد من أن المسار صحيح
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { faTrash, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
-// ضبط الـ Modal
+// Configure the modal
 Modal.setAppElement('#root');
 
 const RBBotAccountTable = () => {
@@ -20,8 +16,6 @@ const RBBotAccountTable = () => {
   const [deviceSearchQuery, setDeviceSearchQuery] = useState('');
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showPasswords, setShowPasswords] = useState(false); // لعرض وإخفاء كلمات المرور
-  const navigate = useNavigate(); // لتفعيل وظيفة navigate
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -49,9 +43,8 @@ const RBBotAccountTable = () => {
   };
 
   const filteredAccounts = accounts.filter((account) =>
-    (account.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-     account.deviceNumber.toLowerCase().includes(searchQuery.toLowerCase())) &&
-    account.deviceNumber.toLowerCase().includes(deviceSearchQuery.toLowerCase())
+    (account.email.includes(searchQuery) || account.deviceNumber.includes(searchQuery)) &&
+    (account.deviceNumber.includes(deviceSearchQuery))
   );
 
   const handleFormSubmit = async (formData) => {
@@ -67,10 +60,8 @@ const RBBotAccountTable = () => {
       const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
       setAccounts(data);
       setIsModalOpen(false);
-      navigate('/rbbotaccounts'); // إعادة التوجيه إلى صفحة RBBotAccountsPage
     } catch (error) {
-      toast.error("Failed to save account."); // عرض إشعار خطأ
-      console.error("Failed to save account:", error); // تسجيل الخطأ في الـ console
+      console.error('Failed to save account:', error);
     }
   };
 
@@ -83,49 +74,41 @@ const RBBotAccountTable = () => {
       const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
       setAccounts(data);
     } catch (error) {
-      toast.error("Failed to delete accounts."); // عرض إشعار خطأ
       console.error('Failed to delete accounts:', error);
     }
   };
 
   const handleCheckboxChange = (accountId) => {
-    setSelectedAccounts(prevSelected => 
-      prevSelected.includes(accountId)
-        ? prevSelected.filter(id => id !== accountId)
-        : [...prevSelected, accountId]
-    );
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPasswords(prev => !prev);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedAccount(null);
+    setSelectedAccounts(prevSelected => {
+      if (prevSelected.includes(accountId)) {
+        return prevSelected.filter(id => id !== accountId);
+      } else {
+        return [...prevSelected, accountId];
+      }
+    });
   };
 
   return (
-    <div className="p-6 bg-gray-50">
-      <div className="mb-6 flex items-center space-x-4">
+    <div className="p-4">
+      <div className="mb-4">
         <input
           type="text"
-          placeholder="Search by email or device number"
+          placeholder="Search by email"
           value={searchQuery}
           onChange={handleSearchChange}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded"
         />
         <input
           type="text"
           placeholder="Search by device number"
           value={deviceSearchQuery}
           onChange={handleDeviceSearchChange}
-          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="ml-4 p-2 border border-gray-300 rounded"
         />
         <button
           onClick={handleDeleteSelected}
           disabled={selectedAccounts.length === 0}
-          className="ml-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50 flex items-center"
+          className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
         >
           <FontAwesomeIcon icon={faTrash} />
           <span className="ml-2">Delete Selected</span>
@@ -133,7 +116,7 @@ const RBBotAccountTable = () => {
       </div>
       <table className="w-full border-collapse border border-gray-300">
         <thead>
-          <tr className="bg-gray-200">
+          <tr className="bg-gray-100">
             <th className="border border-gray-300 px-4 py-2">
               <input
                 type="checkbox"
@@ -145,7 +128,6 @@ const RBBotAccountTable = () => {
                     setSelectedAccounts(accounts.map(account => account._id));
                   }
                 }}
-                className="cursor-pointer"
               />
             </th>
             <th className="border border-gray-300 px-4 py-2">Email</th>
@@ -163,7 +145,6 @@ const RBBotAccountTable = () => {
                   type="checkbox"
                   checked={selectedAccounts.includes(account._id)}
                   onChange={() => handleCheckboxChange(account._id)}
-                  className="cursor-pointer"
                 />
               </td>
               <td className="border border-gray-300 px-4 py-2">{account.email}</td>
@@ -174,31 +155,24 @@ const RBBotAccountTable = () => {
       {selectedAccount && (
         <Modal
           isOpen={isModalOpen}
-          onRequestClose={closeModal}
+          onRequestClose={() => setIsModalOpen(false)}
           contentLabel="Account Details"
-          className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
-          overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
+          className="modal"
+          overlayClassName="overlay"
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
-            >
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Details</h2>
-            <button
-              onClick={togglePasswordVisibility}
-              className="mb-4 text-blue-600 hover:underline"
-            >
-              <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
-              <span className="ml-2">{showPasswords ? 'Hide Passwords' : 'Show Passwords'}</span>
-            </button>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Account Details</h2>
             <RBBotAccountForm
               initialData={selectedAccount}
               onSubmit={handleFormSubmit}
-              showPasswords={showPasswords} // تمرير حالة العرض للنموذج
             />
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="mt-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+              <span className="ml-2">Close</span>
+            </button>
           </div>
         </Modal>
       )}
