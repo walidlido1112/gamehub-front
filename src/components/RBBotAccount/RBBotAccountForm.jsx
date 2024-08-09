@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faLock, faCode, faMobileAlt, faGlobe, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -50,111 +52,119 @@ const RBBotAccountForm = ({ initialData = {}, onSubmit }) => {
       console.error('Failed to save account:', error);
     }
   };
-  console.log('API URL:', process.env.REACT_APP_API_URL);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="email" className="block">Email:</label>
+    <form onSubmit={handleSubmit} className="space-y-4 p-4 max-w-md mx-auto bg-white shadow-lg rounded-lg">
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faEnvelope} className="text-gray-500" />
         <input
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Email"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
       </div>
-      <div>
-        <label htmlFor="passwordGmail" className="block">Gmail Password:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faLock} className="text-gray-500" />
         <input
           type="text"
           id="passwordGmail"
           name="passwordGmail"
           value={formData.passwordGmail}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Gmail Password"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="passwordEA" className="block">EA Password:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faLock} className="text-gray-500" />
         <input
           type="text"
           id="passwordEA"
           name="passwordEA"
           value={formData.passwordEA}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="EA Password"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="passwordSony" className="block">Sony Password:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faLock} className="text-gray-500" />
         <input
           type="text"
           id="passwordSony"
           name="passwordSony"
           value={formData.passwordSony}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Sony Password"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="codes" className="block">Codes:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faCode} className="text-gray-500" />
         <input
           type="text"
           id="codes"
           name="codes"
           value={formData.codes}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Codes"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="googleAuthEA" className="block">Google Auth EA:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faGlobe} className="text-gray-500" />
         <input
           type="text"
           id="googleAuthEA"
           name="googleAuthEA"
           value={formData.googleAuthEA}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Google Auth EA"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="googleAuthSony" className="block">Google Auth Sony:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faGlobe} className="text-gray-500" />
         <input
           type="text"
           id="googleAuthSony"
           name="googleAuthSony"
           value={formData.googleAuthSony}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Google Auth Sony"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="deviceNumber" className="block">Device Number:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faMobileAlt} className="text-gray-500" />
         <input
           type="text"
           id="deviceNumber"
           name="deviceNumber"
           value={formData.deviceNumber}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Device Number"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <div>
-        <label htmlFor="proxy" className="block">Proxy:</label>
+      <div className="flex items-center space-x-2">
+        <FontAwesomeIcon icon={faUser} className="text-gray-500" />
         <input
           type="text"
           id="proxy"
           name="proxy"
           value={formData.proxy}
           onChange={handleChange}
-          className="border p-2 w-full"
+          placeholder="Proxy"
+          className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
-      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+      <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
         Submit
       </button>
     </form>
