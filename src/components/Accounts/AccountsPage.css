@@ -1,51 +1,57 @@
+/* src/pages/AccountsPage.css */
 .accounts-page {
-  display: flex;
-  min-height: 100vh;
-}
-
-.main-content {
-  margin-left: 250px; /* Adjust to match sidebar width */
-  width: calc(100% - 250px); /* Adjust width to fill the remaining space */
-  background-color: #f9fafb;
-  color: #111827;
-  padding: 2rem;
-  box-sizing: border-box;
-}
-
-.header {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.card {
-  background-color: #ffffff;
-  border-radius: 0.375rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1rem;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 0.5rem;
-}
-
-.toggle-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.25rem;
-  color: #3b82f6;
-}
-
-.error-message {
-  color: #ef4444;
-  margin-bottom: 1rem;
-}
-
-.content {
-  min-height: calc(100vh - 80px); /* Adjust based on Navbar height */
-}
+    display: flex;
+    min-height: 100vh; /* Ensure it takes full height */
+  }
+  
+  .main-content {
+    margin-left: 0; /* Remove margin to align content with sidebar */
+    width: calc(100% - 250px); /* Adjust width to fill the remaining space */
+    background-color: #f9fafb; /* Light background color for main content */
+    color: #111827; /* Dark text color for better readability */
+    padding: 2rem;
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+  
+  .header {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937; /* Dark text color for headers */
+  }
+  
+  .card {
+    background-color: #ffffff; /* White background for cards */
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow for cards */
+    padding: 1rem;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb; /* Light border for card header */
+    padding-bottom: 0.5rem;
+  }
+  
+  .toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: #3b82f6; /* Blue color for toggle button */
+  }
+  
+  .visible-content {
+    display: block;
+  }
+  
+  .hidden-content {
+    display: none;
+  }
+  
+  .error-message {
+    color: #ef4444; /* Red color for error messages */
+    margin-bottom: 1rem;
+  }
+  
