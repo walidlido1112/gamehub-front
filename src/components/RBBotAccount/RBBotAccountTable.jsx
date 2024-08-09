@@ -44,7 +44,7 @@ const RBBotAccountTable = () => {
   };
 
   const filteredAccounts = accounts.filter((account) =>
-    (account.email.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (account.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
      account.deviceNumber.toLowerCase().includes(searchQuery.toLowerCase())) &&
     account.deviceNumber.toLowerCase().includes(deviceSearchQuery.toLowerCase())
   );
