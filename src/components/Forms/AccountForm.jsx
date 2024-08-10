@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api'; // عنوان الـ API الخاص بك
+import { apiUrl } from '../../config';
 
 const AccountForm = ({ account }) => {
   const [formData, setFormData] = useState(account || {
@@ -24,7 +24,7 @@ const AccountForm = ({ account }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/users`);
+        const { data } = await axios.get(`${apiUrl}/users`);
         const employees = data.filter(user => user.role === 'employee');
         setUsers(employees);
       } catch (error) {
@@ -57,20 +57,30 @@ const AccountForm = ({ account }) => {
         ...formData,
         employeeName: selectedUser ? selectedUser.name : ''
       };
-
+  
+      console.log("Submitting form data: ", updatedFormData);
+  
+      let response;
       if (account) {
-        await axios.put(`${API_URL}/accounts/${account._id}`, updatedFormData);
-        toast.success('Account updated successfully!');
+        response = await axios.put(`${apiUrl}/accounts/${account._id}`, updatedFormData);
       } else {
-        await axios.post(`${API_URL}/accounts`, updatedFormData);
-        toast.success('Account created successfully!');
+        response = await axios.post(`${apiUrl}/accounts`, updatedFormData);
       }
-      navigate('/dashboard');
+  
+      console.log("API response: ", response);
+  
+      if (response.status === 200 || response.status === 201) {
+        toast.success('تمت العملية بنجاح!');
+        // قم بإعادة تحميل الصفحة بدلاً من التنقل إلى صفحة أخرى
+        window.location.reload();
+      } else {
+        toast.error('فشلت العملية.');
+      }
     } catch (error) {
-      toast.error('Operation failed.');
+      console.error('خطأ:', error);
+      toast.error('فشلت العملية.');
     }
   };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-lg w-full bg-white shadow-lg rounded-lg p-8">

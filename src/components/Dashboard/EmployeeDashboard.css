@@ -39,4 +39,16 @@
     width: 100%;
     text-align: left;
   }
-  
+  /* .main-content styles for larger screens */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Apply display: contents with !important to .main-content on small screens */
+@media (max-width: 768px) {
+  .main-content {
+    display: contents !important;
+  }
+}

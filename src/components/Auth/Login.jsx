@@ -4,7 +4,8 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { apiUrl } from '../../config'; // استيراد apiUrl
+
+const API_URL = 'http://localhost:5000/api/auth/login'; // تحديد عنوان URL الصحيح
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -19,7 +20,8 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${apiUrl}/auth/login`, formData);
+      // أرسل الطلب إلى عنوان URL الصحيح
+      const response = await axios.post(API_URL, formData);
       const { token, user } = response.data;
 
       localStorage.setItem('token', token);

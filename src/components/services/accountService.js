@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api/accounts';
+import { apiUrl } from '../../config'; // استيراد apiUrl
 
 /**
  * جلب جميع الحسابات من الخادم.
@@ -9,13 +8,14 @@ const API_URL = 'http://localhost:5000/api/accounts';
  */
 export const fetchAccounts = async () => {
   try {
-    const response = await axios.get(API_URL);
+    // جلب البيانات من الخادم
+    const response = await axios.get(`${apiUrl}/accounts`); // تأكد من إضافة المسار الصحيح
     return response.data;
   } catch (error) {
-    // يمكنك تسجيل الخطأ في وحدة التحكم للمراجعة أو التعامل معه بشكل أفضل
+    // تسجيل الخطأ في وحدة التحكم
     console.error('Error fetching accounts:', error.response?.data || error.message);
     
-    // throwing a new error to be handled by the caller
-    throw new Error('فشل في جلب الأكوانتات: ' + (error.response?.data?.message || error.message));
+    // رمي خطأ جديد مع رسالة مخصصة
+    throw new Error('فشل في جلب الحسابات: ' + (error.response?.data?.message || error.message));
   }
 };

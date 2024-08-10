@@ -7,8 +7,7 @@ import AccountTotals from './AccountTotals';
 import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import './AccountsPage.css';
-
-const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+import { apiUrl } from '../../config';
 
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState([]);
@@ -21,36 +20,42 @@ const AccountsPage = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/accounts`);
-        if (Array.isArray(data)) {
-          setAccounts(data);
+        const { data } = await axios.get(`${apiUrl}/accounts`);
+        if (data && Array.isArray(data.accounts)) {
+          setAccounts(data.accounts);
         } else {
           console.error('Accounts data is not an array:', data);
+          setError('Accounts data format is incorrect.');
         }
       } catch (error) {
-        setError('Failed to fetch accounts');
-        console.error('Failed to fetch accounts', error);
+        setError('Failed to fetch accounts.');
+        console.error('Failed to fetch accounts:', error);
       }
     };
 
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/users`);
+        const { data } = await axios.get(`${apiUrl}/users`);
         if (Array.isArray(data)) {
           const filteredEmployees = data.filter(user => user.role === 'EMPLOYEEROLE');
           setEmployees(filteredEmployees);
         } else {
           console.error('Users data is not an array:', data);
+          setError('Users data format is incorrect.');
         }
       } catch (error) {
-        setError('Failed to fetch users');
-        console.error('Failed to fetch users', error);
+        setError('Failed to fetch users.');
+        console.error('Failed to fetch users:', error);
       }
     };
 
     fetchAccounts();
     fetchUsers();
   }, []);
+
+  const handleAccountSelect = (account) => {
+    setSelectedAccount(account);
+  };
 
   return (
     <div className="accounts-page">
@@ -78,7 +83,7 @@ const AccountsPage = () => {
                 )}
               </button>
             </div>
-            {showForm && <AccountForm />}
+            {showForm && <AccountForm account={selectedAccount} />}
           </div>
           <div className="card mt-6">
             <div className="card-header">
@@ -98,10 +103,10 @@ const AccountsPage = () => {
                 )}
               </button>
             </div>
-            {showTable && <AccountTable accounts={accounts} />}
+            {showTable && <AccountTable accounts={accounts} onAccountSelect={handleAccountSelect} />}
           </div>
           <div className="mt-6">
-            <AccountTotals accounts={accounts} employees={employees} />
+            <AccountTotals accountsData={{ accounts }} employees={employees} />
           </div>
         </div>
       </div>

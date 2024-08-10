@@ -22,7 +22,7 @@ const OrderForm = ({ order }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const { data } = await axios.get('https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/users');
+        const { data } = await axios.get('http://localhost:5000/api/users');
         setUsers(data);
       } catch (error) {
         toast.error('Failed to fetch users.');

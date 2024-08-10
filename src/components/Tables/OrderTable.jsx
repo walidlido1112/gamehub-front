@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { apiUrl } from '../../config';
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
@@ -12,27 +15,25 @@ const OrderTable = () => {
     status: '',
     orderPrice: '',
     totalPrice: '',
-    user: ''
+    user: '',
+    password: '' // Add password field
   });
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [showPassword, setShowPassword] = useState({}); // Track visibility
 
-  const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
-
-  // Fetch orders from the server
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get(`${API_BASE_URL}/orders`);
+      const { data } = await axios.get(`${apiUrl}/orders`);
       setOrders(data);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     }
   };
 
-  // Fetch users from the server
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get(`${API_BASE_URL}/users`);
+      const { data } = await axios.get(`${apiUrl}/users`);
       setUsers(data);
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -44,7 +45,6 @@ const OrderTable = () => {
     fetchUsers();
   }, []);
 
-  // Handle edit button click
   const handleEditClick = (order) => {
     setEditingOrder(order._id);
     setFormData({
@@ -54,11 +54,11 @@ const OrderTable = () => {
       status: order.status,
       orderPrice: order.orderPrice,
       totalPrice: order.totalPrice,
-      user: order.user || ''
+      user: order.user || '',
+      password: order.password || '' // Set password in form data
     });
   };
 
-  // Handle cancel edit
   const handleCancelEdit = () => {
     setEditingOrder(null);
     setFormData({
@@ -68,21 +68,20 @@ const OrderTable = () => {
       status: '',
       orderPrice: '',
       totalPrice: '',
-      user: ''
+      user: '',
+      password: '' // Clear password field
     });
   };
 
-  // Handle form change
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Update order
   const handleUpdateOrder = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`${API_BASE_URL}/orders/${editingOrder}`, formData);
+      const response = await axios.put(`${apiUrl}/orders/${editingOrder}`, formData);
       const updatedOrder = response.data;
       setOrders((prevOrders) =>
         prevOrders.map((order) => (order._id === updatedOrder._id ? updatedOrder : order))
@@ -93,12 +92,11 @@ const OrderTable = () => {
     }
   };
 
-  // Handle delete button click
   const handleDeleteClick = async (orderId) => {
     const confirmed = window.confirm('Are you sure you want to delete this order?');
     if (confirmed) {
       try {
-        await axios.delete(`${API_BASE_URL}/orders/${orderId}`);
+        await axios.delete(`${apiUrl}/orders/${orderId}`);
         setOrders((prevOrders) =>
           prevOrders.filter((order) => order._id !== orderId)
         );
@@ -108,7 +106,6 @@ const OrderTable = () => {
     }
   };
 
-  // Handle checkbox change
   const handleCheckboxChange = (e, orderId) => {
     const { checked } = e.target;
     setSelectedOrders((prevSelected) =>
@@ -118,20 +115,18 @@ const OrderTable = () => {
     );
   };
 
-  // Handle select all change
   const handleSelectAllChange = (e) => {
     const { checked } = e.target;
     setSelectAll(checked);
     setSelectedOrders(checked ? orders.map((order) => order._id) : []);
   };
 
-  // Delete selected orders
   const handleDeleteSelected = async () => {
     const confirmed = window.confirm('Are you sure you want to delete the selected orders?');
     if (confirmed) {
       try {
         await Promise.all(selectedOrders.map((orderId) =>
-          axios.delete(`${API_BASE_URL}/orders/${orderId}`)
+          axios.delete(`${apiUrl}/orders/${orderId}`)
         ));
         fetchOrders(); // Fetch orders again after deletion
         setSelectedOrders([]);
@@ -140,6 +135,10 @@ const OrderTable = () => {
         console.error('Failed to delete selected orders:', error);
       }
     }
+  };
+
+  const togglePasswordVisibility = (orderId) => {
+    setShowPassword((prev) => ({ ...prev, [orderId]: !prev[orderId] }));
   };
 
   return (
@@ -152,6 +151,7 @@ const OrderTable = () => {
           className="bg-red-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
           disabled={selectedOrders.length === 0}
         >
+          <FontAwesomeIcon icon={faTrash} className="mr-2" />
           Delete Selected
         </button>
       </div>
@@ -165,6 +165,7 @@ const OrderTable = () => {
                 checked={selectAll}
                 onChange={handleSelectAllChange}
                 className="mr-2"
+                id="select-all"
               />
               Select All
             </th>
@@ -175,6 +176,7 @@ const OrderTable = () => {
             <th className="border border-gray-300 p-4 text-left">Order Price</th>
             <th className="border border-gray-300 p-4 text-left">Total Price</th>
             <th className="border border-gray-300 p-4 text-left">User</th>
+            <th className="border border-gray-300 p-4 text-left">Password</th> {/* New column */}
             <th className="border border-gray-300 p-4 text-left">Actions</th>
           </tr>
         </thead>
@@ -187,6 +189,7 @@ const OrderTable = () => {
                   checked={selectedOrders.includes(order._id)}
                   onChange={(e) => handleCheckboxChange(e, order._id)}
                   className="mr-2"
+                  id={`checkbox-${order._id}`}
                 />
               </td>
               <td className="border border-gray-300 p-4">
@@ -194,6 +197,7 @@ const OrderTable = () => {
                   <input
                     type="email"
                     name="email"
+                    id="email"
                     value={formData.email}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -207,6 +211,7 @@ const OrderTable = () => {
                   <input
                     type="text"
                     name="code"
+                    id="code"
                     value={formData.code}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -220,6 +225,7 @@ const OrderTable = () => {
                   <input
                     type="number"
                     name="quantityRequested"
+                    id="quantityRequested"
                     value={formData.quantityRequested}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -232,13 +238,14 @@ const OrderTable = () => {
                 {editingOrder === order._id ? (
                   <select
                     name="status"
+                    id="status"
                     value={formData.status}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
                   >
                     <option value="shipped">Shipped</option>
-                    <option value="shipping">Shipping</option>
-                    <option value="paid">Paid</option>
+                    <option value="pending">Pending</option>
+                    <option value="delivered">Delivered</option>
                   </select>
                 ) : (
                   order.status
@@ -249,6 +256,7 @@ const OrderTable = () => {
                   <input
                     type="number"
                     name="orderPrice"
+                    id="orderPrice"
                     value={formData.orderPrice}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -262,6 +270,7 @@ const OrderTable = () => {
                   <input
                     type="number"
                     name="totalPrice"
+                    id="totalPrice"
                     value={formData.totalPrice}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -274,6 +283,7 @@ const OrderTable = () => {
                 {editingOrder === order._id ? (
                   <select
                     name="user"
+                    id="user"
                     value={formData.user}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
@@ -281,45 +291,71 @@ const OrderTable = () => {
                     <option value="">Select User</option>
                     {users.map((user) => (
                       <option key={user._id} value={user._id}>
-                        {user.name}
+                        {user.email}
                       </option>
                     ))}
                   </select>
                 ) : (
-                  order.userName || 'N/A'
+                  order.user
                 )}
               </td>
-              <td className="border border-gray-300 p-4 text-center">
+              <td className="border border-gray-300 p-4">
                 {editingOrder === order._id ? (
-                  <>
+                  <div className="relative">
+                    <input
+                      type={showPassword[order._id] ? 'text' : 'password'}
+                      name="password"
+                      id="password"
+                      value={formData.password}
+                      onChange={handleFormChange}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility(order._id)}
+                      className="absolute right-2 top-2"
+                    >
+                      <FontAwesomeIcon icon={showPassword[order._id] ? faEye : faEyeSlash} />
+                    </button>
+                  </div>
+                ) : (
+                  '••••••••••'
+                )}
+              </td>
+              <td className="border border-gray-300 p-4">
+                {editingOrder === order._id ? (
+                  <div className="flex space-x-2">
                     <button
                       onClick={handleUpdateOrder}
-                      className="bg-green-500 text-white py-1 px-3 rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                      className="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                     >
+                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
                       Save
                     </button>
                     <button
                       onClick={handleCancelEdit}
-                      className="ml-2 bg-gray-500 text-white py-1 px-3 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                      className="bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                     >
                       Cancel
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <>
+                  <div className="flex space-x-2">
                     <button
                       onClick={() => handleEditClick(order)}
-                      className="bg-blue-500 text-white py-1 px-3 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
+                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteClick(order._id)}
-                      className="ml-2 bg-red-500 text-white py-1 px-3 rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                      className="bg-red-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                     >
+                      <FontAwesomeIcon icon={faTrash} className="mr-2" />
                       Delete
                     </button>
-                  </>
+                  </div>
                 )}
               </td>
             </tr>

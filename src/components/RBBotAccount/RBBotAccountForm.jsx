@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 
-const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+import { apiUrl } from '../../config'; // استيراد apiUrl
 
 const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
   const [formData, setFormData] = useState({
@@ -24,6 +24,7 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
     ea: false,
     sony: false
   });
+  const [emailError, setEmailError] = useState('');
 
   useEffect(() => {
     if (initialData && initialData._id) {
@@ -40,6 +41,9 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
       ...prevData,
       [name]: value
     }));
+    if (name === 'email') {
+      setEmailError('');
+    }
   };
 
   const handlePasswordToggle = (type) => {
@@ -52,17 +56,19 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const emailExists = await axios.get(`${API_BASE_URL}/rbbotaccounts/check-email/${formData.email}`);
-      if (emailExists.data.exists && !initialData._id) {
-        toast.error('Email already exists.');
-        return;
+      if (!initialData._id) {
+        const { data } = await axios.get(`${apiUrl}/rbbotaccounts/check-email/${formData.email}`);
+        if (data.exists) {
+          setEmailError('Email already exists.');
+          return;
+        }
       }
 
       if (initialData._id) {
-        await axios.put(`${API_BASE_URL}/rbbotaccounts/${initialData._id}`, formData);
+        await axios.put(`${apiUrl}/rbbotaccounts/${initialData._id}`, formData);
         toast.success('Account updated successfully!');
       } else {
-        await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
+        await axios.post(`${apiUrl}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
 
@@ -93,8 +99,9 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
               onChange={handleChange}
               placeholder="Email"
               required
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className={`mt-1 block w-full border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50`}
             />
+            {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
           </div>
 
           <div>

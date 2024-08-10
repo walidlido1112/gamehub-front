@@ -13,7 +13,7 @@ const OrderTotals = ({ orders }) => {
         <FaListAlt className="text-blue-500 mr-2" />
         Order Totals
       </h3>
-      <div className="flex space-x-4">
+      <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
         <div className="flex-1 bg-gray-100 p-4 rounded-md shadow-sm flex items-center justify-between">
           <div className="flex items-center">
             <FaListAlt className="text-green-500 mr-3" />

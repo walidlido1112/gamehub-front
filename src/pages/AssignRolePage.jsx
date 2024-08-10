@@ -5,7 +5,7 @@ import { faUser, faUserTag, faEdit, faTrash } from '@fortawesome/free-solid-svg-
 import Navbar from '../components/Shared/Navbar'; // Adjust the path if needed
 import Sidebar from '../components/Shared/Sidebar'; // Adjust the path if needed
 
-const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+import { apiUrl } from '../config'; // استيراد apiUrl
 
 const AssignRolePage = () => {
   const [allUsers, setAllUsers] = useState([]); // Save all users
@@ -17,7 +17,7 @@ const AssignRolePage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/users`);
+        const response = await axios.get(`${apiUrl}/users`);
         const allUsers = response.data;
         setAllUsers(allUsers);
         const employees = allUsers.filter(user => user.role === 'employee');
@@ -33,7 +33,7 @@ const AssignRolePage = () => {
   const handleAssignRole = async () => {
     try {
       console.log('Assigning role:', { userId: selectedUser, role });
-      await axios.post(`${API_BASE_URL}/assign-role`, { userId: selectedUser, role });
+      await axios.post(`${apiUrl}/assign-role`, { userId: selectedUser, role });
       alert('Role assigned successfully');
     } catch (error) {
       console.error('Failed to assign role:', error);
@@ -44,11 +44,11 @@ const AssignRolePage = () => {
     try {
       if (!editUser) return;
       console.log('Editing user:', editUser);
-      await axios.put(`${API_BASE_URL}/users/${editUser._id}`, editUser);
+      await axios.put(`${apiUrl}/users/${editUser._id}`, editUser);
       alert('User updated successfully');
       setEditUser(null);
       // Refresh users list
-      const updatedUsers = await axios.get(`${API_BASE_URL}/users`);
+      const updatedUsers = await axios.get(`${apiUrl}/users`);
       setAllUsers(updatedUsers.data);
       const employees = updatedUsers.data.filter(user => user.role === 'employee');
       setUsers(employees);
@@ -66,11 +66,11 @@ const AssignRolePage = () => {
 
     try {
       console.log('Deleting user:', editUser._id);
-      await axios.delete(`${API_BASE_URL}/users/${editUser._id}`);
+      await axios.delete(`${apiUrl}/users/${editUser._id}`);
       alert('User deleted successfully');
       setEditUser(null);
       // Refresh users list
-      const updatedUsers = await axios.get(`${API_BASE_URL}/users`);
+      const updatedUsers = await axios.get(`${apiUrl}/users`);
       setAllUsers(updatedUsers.data);
       const employees = updatedUsers.data.filter(user => user.role === 'employee');
       setUsers(employees);

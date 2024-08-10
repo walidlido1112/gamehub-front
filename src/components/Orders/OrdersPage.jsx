@@ -8,7 +8,7 @@ import './OrdersPage.css';
 import OrderTotals from '../Orders/OrderTotals';
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
 
-const API_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+import { apiUrl } from '../../config'; // استيراد apiUrl
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -19,7 +19,7 @@ const OrdersPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/orders`);
+      const { data } = await axios.get(`${apiUrl}/orders`);
       setOrders(data);
     } catch (error) {
       setError('Failed to fetch orders');
@@ -36,10 +36,10 @@ const OrdersPage = () => {
   const handleUpdateOrder = async (updatedOrder) => {
     try {
       if (selectedOrder) {
-        await axios.put(`${API_URL}/orders/${updatedOrder._id}`, updatedOrder);
+        await axios.put(`${apiUrl}/orders/${updatedOrder._id}`, updatedOrder);
         setOrders(orders.map(order => order._id === updatedOrder._id ? updatedOrder : order));
       } else {
-        const { data } = await axios.post(`${API_URL}/orders`, updatedOrder);
+        const { data } = await axios.post(`${apiUrl}/orders`, updatedOrder);
         setOrders([...orders, data]);
       }
       setSelectedOrder(null);
@@ -50,7 +50,7 @@ const OrdersPage = () => {
 
   const handleDeleteOrder = async (orderId) => {
     try {
-      await axios.delete(`${API_URL}/orders/${orderId}`);
+      await axios.delete(`${apiUrl}/orders/${orderId}`);
       setOrders(orders.filter(order => order._id !== orderId));
     } catch (error) {
       console.error('Failed to delete order', error);
@@ -66,7 +66,7 @@ const OrdersPage = () => {
       <div className="main-content">
         <Navbar />
         <OrderTotals orders={orders} />
-        <div className="content p-6">
+        <div className="content">
           <h1 className="header">Orders</h1>
           {error && <p className="error-message">{error}</p>}
           <div className="card">

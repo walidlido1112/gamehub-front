@@ -5,8 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import RBBotAccountForm from './RBBotAccountForm'; // Ensure this path is correct
 import { useNavigate } from 'react-router-dom';
-
-const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
+import { apiUrl } from '../../config'; // استيراد apiUrl
 
 // Configure the modal
 Modal.setAppElement('#root');
@@ -24,7 +23,7 @@ const RBBotAccountTable = () => {
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
+        const { data } = await axios.get(`${apiUrl}/rbbotaccounts`);
         setAccounts(data);
       } catch (error) {
         console.error('Failed to fetch accounts:', error);
@@ -55,14 +54,14 @@ const RBBotAccountTable = () => {
   const handleFormSubmit = async (formData) => {
     try {
       if (selectedAccount) {
-        await axios.put(`${API_BASE_URL}/rbbotaccounts/${selectedAccount._id}`, formData);
+        await axios.put(`${apiUrl}/rbbotaccounts/${selectedAccount._id}`, formData);
       } else {
-        await axios.post(`${API_BASE_URL}/rbbotaccounts`, formData);
+        await axios.post(`${apiUrl}/rbbotaccounts`, formData);
       }
       setSelectedAccount(null);
       setSearchQuery('');
       setDeviceSearchQuery('');
-      const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
+      const { data } = await axios.get(`${apiUrl}/rbbotaccounts`);
       setAccounts(data);
       setIsModalOpen(false);
       navigate('/rbbotaccounts'); // Redirect to RBBotAccountsPage
@@ -74,10 +73,10 @@ const RBBotAccountTable = () => {
   const handleDeleteSelected = async () => {
     try {
       await Promise.all(selectedAccounts.map(accountId =>
-        axios.delete(`${API_BASE_URL}/rbbotaccounts/${accountId}`)
+        axios.delete(`${apiUrl}/rbbotaccounts/${accountId}`)
       ));
       setSelectedAccounts([]);
-      const { data } = await axios.get(`${API_BASE_URL}/rbbotaccounts`);
+      const { data } = await axios.get(`${apiUrl}/rbbotaccounts`);
       setAccounts(data);
     } catch (error) {
       console.error('Failed to delete accounts:', error);
@@ -101,6 +100,8 @@ const RBBotAccountTable = () => {
       <div className="mb-6 flex items-center space-x-4">
         <input
           type="text"
+          id="search-query"
+          name="searchQuery"
           placeholder="Search by email or device number"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -108,6 +109,8 @@ const RBBotAccountTable = () => {
         />
         <input
           type="text"
+          id="device-search-query"
+          name="deviceSearchQuery"
           placeholder="Search by device number"
           value={deviceSearchQuery}
           onChange={handleDeviceSearchChange}
@@ -128,6 +131,8 @@ const RBBotAccountTable = () => {
             <th className="border border-gray-300 px-4 py-2">
               <input
                 type="checkbox"
+                id="select-all"
+                name="selectAll"
                 checked={selectedAccounts.length === accounts.length}
                 onChange={() => {
                   if (selectedAccounts.length === accounts.length) {
@@ -152,6 +157,8 @@ const RBBotAccountTable = () => {
               <td className="border border-gray-300 px-4 py-2">
                 <input
                   type="checkbox"
+                  id={`checkbox-${account._id}`}
+                  name={`checkbox-${account._id}`}
                   checked={selectedAccounts.includes(account._id)}
                   onChange={() => handleCheckboxChange(account._id)}
                   className="cursor-pointer"
@@ -161,6 +168,7 @@ const RBBotAccountTable = () => {
               <td
                 className="border border-gray-300 px-4 py-2 text-blue-600 hover:underline"
                 onClick={() => handleEmailClick(account)}
+                aria-label={`View details for ${account.email}`}
               >
                 {account.email}
               </td>
@@ -183,6 +191,7 @@ const RBBotAccountTable = () => {
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
+              aria-label="Close modal"
             >
               <FontAwesomeIcon icon={faTimes} />
             </button>

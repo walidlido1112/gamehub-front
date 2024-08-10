@@ -7,30 +7,31 @@
 
 .navbar .container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Center items horizontally */
   align-items: center;
+  position: relative; /* Needed for absolute positioning of mobile menu button */
 }
 
 .logo {
-  flex: 1; /* Allow logo to take up space */
+  position: absolute; /* Position the logo absolutely */
+  left: 1rem; /* Adjust left margin */
 }
 
 .logo img {
-  height: 30px; /* Adjust logo size */
+  height: 40px; /* Adjust logo size */
 }
 
 .links {
-  flex: 2; /* Allow links to take up more space */
   display: flex;
-  justify-content: flex-end; /* Align links to the right */
+  justify-content: center; /* Center links horizontally */
   align-items: center;
+  flex: 1;
 }
 
 .nav-link {
   color: #ffffff;
   transition: color 0.3s ease;
-  padding: 0.5rem 0.75rem; /* Reduced padding */
-  font-size: 0.875rem; /* Smaller font size */
+  margin: 0 0.5rem; /* Adjust spacing between links */
 }
 
 .nav-link:hover {
@@ -39,57 +40,62 @@
 
 .navbar .links.flex {
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 
-.navbar .links.md\:flex-row {
+.navbar .links.md\\:flex-row {
   flex-direction: row;
   align-items: center;
 }
 
 .navbar .links a {
-  margin-top: 0.5rem; /* Reduced margin */
+  margin-top: 0; /* Remove top margin on larger screens */
 }
 
 .navbar .links .text-lg {
   padding: 0.5rem 1rem;
-  font-size: 0.875rem; /* Smaller font size */
 }
 
 /* تحسين الشريط العلوي للأجهزة المحمولة */
 @media (max-width: 768px) {
   .navbar .container {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center; /* Center items vertically */
   }
 
   .navbar .logo {
+    position: static; /* Reset position for mobile */
     margin-bottom: 1rem;
   }
 
   .navbar .links {
     flex-direction: column;
     width: 100%;
+    text-align: center; /* Center text */
   }
 
   .navbar .links a {
     width: 100%;
-    text-align: left;
+    padding: 10px;
   }
 
   .navbar .links.flex-col {
-    display: flex;
-    align-items: flex-start;
+    align-items: center; /* Center items in column layout */
   }
 
   .navbar .links.flex-col a {
-    padding: 0.75rem 1rem;
+    padding: 10px;
     width: 100%;
   }
 
   .navbar .links .text-lg {
     padding: 0.75rem 1.5rem;
     width: 100%;
-    text-align: left;
+    text-align: center; /* Center text */
+  }
+}
+@media (max-width: 768px) {
+  .main-content {
+    display: contents;
   }
 }
