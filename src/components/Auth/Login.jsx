@@ -4,8 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-
-const API_URL = 'http://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/auth/login'; // تحديد عنوان URL الصحيح
+import { apiUrl } from '../../config'; // تأكد من استيراد apiUrl من config.js
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -21,7 +20,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // أرسل الطلب إلى عنوان URL الصحيح
-      const response = await axios.post(API_URL, formData);
+      const response = await axios.post(`${apiUrl}/auth/login`, formData);
       const { token, user } = response.data;
 
       localStorage.setItem('token', token);
