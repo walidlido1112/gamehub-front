@@ -19,8 +19,11 @@ const App = () => {
       <Router>
         <div>
           <Routes>
+            {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            
+            {/* Protected Routes for Admin */}
             <Route
               path="/dashboard"
               element={
@@ -46,14 +49,6 @@ const App = () => {
               }
             />
             <Route
-              path="/employee-dashboard"
-              element={
-                <ProtectedRoute role="employee">
-                  <EmployeeDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/assign-role"
               element={
                 <ProtectedRoute role="admin">
@@ -69,7 +64,19 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/" element={<Login />} /> {/* Default route */}
+            
+            {/* Protected Route for Employee */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute role="employee">
+                  <EmployeeDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Default Route */}
+            <Route path="/" element={<Login />} />
           </Routes>
           <ToastContainer />
         </div>
