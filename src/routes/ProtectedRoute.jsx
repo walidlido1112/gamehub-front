@@ -1,57 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-import { apiUrl } from '../config'; // تأكد من استيراد apiUrl من config.js
 
 const ProtectedRoute = ({ children, role }) => {
-  const { user, setUser, loading, setLoading } = useAuth();
-  const [loadingAuth, setLoadingAuth] = useState(true);
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          // التحقق من صحة التوكن مع الخادم
-          const response = await axios.get(`${apiUrl}/auth/verify`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (response.status === 200) {
-            // إذا كان التوكن صالحًا، قم بتحديث حالة المستخدم
-            setUser(response.data.user);
-          } else {
-            // إذا لم يكن التوكن صالحًا، قم بإزالة التوكن وارجع إلى صفحة تسجيل الدخول
-            localStorage.removeItem('token');
-            setUser(null);
-          }
-        } catch (error) {
-          // في حالة حدوث خطأ، قم بإزالة التوكن وارجع إلى صفحة تسجيل الدخول
-          localStorage.removeItem('token');
-          setUser(null);
-        }
-      } else {
-        setUser(null);
-      }
-
-      setLoadingAuth(false);
-    };
-
-    checkAuth();
-  }, [setUser]);
-
-  if (loading || loadingAuth) {
-    return <div>Loading...</div>; // أو يمكنك عرض عنصر تحميل آخر
+  if (loading) {
+    return <div>Loading...</div>; // Or a different loading indicator
   }
 
   if (!user) {
+    // Redirect to login page if no user is authenticated
     return <Navigate to="/login" />;
   }
 
   if (role && user.role !== role) {
+    // Redirect to home page if user role does not match
     return <Navigate to="/" />;
   }
 
