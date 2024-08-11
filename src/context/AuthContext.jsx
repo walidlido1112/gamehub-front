@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-
-import { apiUrl } from '../config'; // استيراد apiUrl
+import { apiUrl } from '../config'; // Ensure this path is correct
 
 const AuthContext = createContext();
 
@@ -14,20 +13,21 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get(`${apiUrl}/users/me`, {
+          // Verify token and get user details
+          const response = await axios.get(`${apiUrl}/auth/verify`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setUser(response.data); // تحديث حالة المستخدم
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // تحديث التوكن في إعدادات axios
+          setUser(response.data.user); // Set the user from the response
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Set default token for axios
         } catch (error) {
           console.error('User validation error:', error.response?.data || error.message);
-          localStorage.removeItem('token'); // إزالة التوكن إذا كان غير صالح
+          localStorage.removeItem('token'); // Remove invalid token
           setUser(null);
         }
       } else {
-        setUser(null); // إذا لم يكن هناك توكن، تعيين حالة المستخدم كـ null
+        setUser(null); // No token present
       }
-      setLoading(false); // تعيين حالة التحميل كـ false بعد الانتهاء
+      setLoading(false); // Stop loading after verification
     };
 
     checkUserLoggedIn();
@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post(`${apiUrl}/auth/login`, credentials);
       const { token, user } = response.data;
-      localStorage.setItem('token', token); // حفظ التوكن في localStorage
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // تحديث إعدادات axios
-      setUser(user); // تحديث حالة المستخدم
+      localStorage.setItem('token', token); // Save token to local storage
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Set default token for axios
+      setUser(user); // Set user state
       return response.data;
     } catch (error) {
       console.error('Login error:', error.response?.data || error.message);
@@ -48,9 +48,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization']; // إزالة التوكن من إعدادات axios
-    setUser(null);
+    localStorage.removeItem('token'); // Remove token from local storage
+    delete axios.defaults.headers.common['Authorization']; // Remove token from axios headers
+    setUser(null); // Clear user state
   };
 
   return (
