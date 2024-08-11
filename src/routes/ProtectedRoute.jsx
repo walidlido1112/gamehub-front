@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children, role }) => {
       if (token) {
         try {
           // التحقق من صحة التوكن مع الخادم
-          const response = await axios.get(`${apiUrl}/auth/verify`, {
+          const response = await axios.get(`${apiUrl}/auth/login`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
