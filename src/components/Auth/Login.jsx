@@ -1,5 +1,5 @@
 // src/components/Login/Login.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -10,14 +10,6 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
   const { setUser } = useAuth();
-
-  // Use effect to set the token in axios headers if it exists
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,16 +23,11 @@ const Login = () => {
       const response = await axios.post(`${apiUrl}/auth/login`, formData);
       const { token, user } = response.data;
 
-      // تخزين التوكن في localStorage
       localStorage.setItem('token', token);
-
-      // إعداد التوكن كـ default header لجميع الطلبات المستقبلية
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      // تخزين معلومات المستخدم
       setUser(user);
 
-      // الانتقال إلى الصفحة المناسبة بناءً على الدور
       if (user.role === 'admin') {
         navigate('/dashboard');
       } else if (user.role === 'employee') {

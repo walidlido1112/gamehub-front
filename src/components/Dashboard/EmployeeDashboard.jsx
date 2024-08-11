@@ -24,7 +24,6 @@ const EmployeeDashboard = () => {
       return;
     }
     
-
     const fetchAccounts = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/accounts', {
@@ -34,7 +33,13 @@ const EmployeeDashboard = () => {
         });
         console.log('Fetched Accounts:', response.data.accounts);
 
-        const filteredAccounts = response.data.accounts.filter(account => account.employee === user.id);
+        // Ensure `user.id` and `account.employee` are defined
+        const filteredAccounts = response.data.accounts.filter(account => 
+          user.id && account.employee 
+          ? account.employee.toString() === user.id.toString()
+          : false
+        );
+        console.log('Filtered Accounts:', filteredAccounts);
         setAccounts(filteredAccounts);
       } catch (error) {
         console.error('Failed to fetch accounts:', error.response?.data || error.message);
@@ -63,7 +68,7 @@ const EmployeeDashboard = () => {
       console.error('Failed to update status:', error.response?.data || error.message);
     }
   };
-      
+
   const handleLogout = () => {
     logout();
     localStorage.removeItem('token'); // Remove token on logout

@@ -67,7 +67,7 @@ const App = () => {
             
             {/* Protected Route for Employee */}
             <Route
-              path="/dashboard"
+              path="/employee-dashboard"
               element={
                 <ProtectedRoute role="employee">
                   <EmployeeDashboard />
