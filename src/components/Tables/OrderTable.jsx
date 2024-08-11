@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { apiUrl } from '../../config';
@@ -12,15 +13,15 @@ const OrderTable = () => {
     email: '',
     code: '',
     quantityRequested: '',
-    status: '',
     orderPrice: '',
     totalPrice: '',
     user: '',
-    password: '' // Add password field
+    password: ''
   });
   const [selectedOrders, setSelectedOrders] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
-  const [showPassword, setShowPassword] = useState({}); // Track visibility
+  const [showPassword, setShowPassword] = useState({});
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const fetchOrders = async () => {
     try {
@@ -51,12 +52,12 @@ const OrderTable = () => {
       email: order.email,
       code: order.code,
       quantityRequested: order.quantityRequested,
-      status: order.status,
       orderPrice: order.orderPrice,
       totalPrice: order.totalPrice,
       user: order.user || '',
-      password: order.password || '' // Set password in form data
+      password: order.password || ''
     });
+    setModalIsOpen(true);
   };
 
   const handleCancelEdit = () => {
@@ -65,12 +66,12 @@ const OrderTable = () => {
       email: '',
       code: '',
       quantityRequested: '',
-      status: '',
       orderPrice: '',
       totalPrice: '',
       user: '',
-      password: '' // Clear password field
+      password: ''
     });
+    setModalIsOpen(false);
   };
 
   const handleFormChange = (e) => {
@@ -87,6 +88,7 @@ const OrderTable = () => {
         prevOrders.map((order) => (order._id === updatedOrder._id ? updatedOrder : order))
       );
       setEditingOrder(null);
+      setModalIsOpen(false);
     } catch (error) {
       console.error('Failed to update order:', error);
     }
@@ -170,13 +172,12 @@ const OrderTable = () => {
               Select All
             </th>
             <th className="border border-gray-300 p-4 text-left">Email</th>
+            <th className="border border-gray-300 p-4 text-left">Password</th>
             <th className="border border-gray-300 p-4 text-left">Code</th>
             <th className="border border-gray-300 p-4 text-left">Quantity Requested</th>
-            <th className="border border-gray-300 p-4 text-left">Status</th>
             <th className="border border-gray-300 p-4 text-left">Order Price</th>
             <th className="border border-gray-300 p-4 text-left">Total Price</th>
             <th className="border border-gray-300 p-4 text-left">User</th>
-            <th className="border border-gray-300 p-4 text-left">Password</th> {/* New column */}
             <th className="border border-gray-300 p-4 text-left">Actions</th>
           </tr>
         </thead>
@@ -204,6 +205,29 @@ const OrderTable = () => {
                   />
                 ) : (
                   order.email
+                )}
+              </td>
+              <td className="border border-gray-300 p-4">
+                {editingOrder === order._id ? (
+                  <div className="relative">
+                    <input
+                      type={showPassword[order._id] ? 'text' : 'password'}
+                      name="password"
+                      id="password"
+                      value={formData.password}
+                      onChange={handleFormChange}
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => togglePasswordVisibility(order._id)}
+                      className="absolute right-2 top-2"
+                    >
+                      <FontAwesomeIcon icon={showPassword[order._id] ? faEye : faEyeSlash} />
+                    </button>
+                  </div>
+                ) : (
+                  '••••••••••'
                 )}
               </td>
               <td className="border border-gray-300 p-4">
@@ -236,23 +260,6 @@ const OrderTable = () => {
               </td>
               <td className="border border-gray-300 p-4">
                 {editingOrder === order._id ? (
-                  <select
-                    name="status"
-                    id="status"
-                    value={formData.status}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="shipped">Shipped</option>
-                    <option value="pending">Pending</option>
-                    <option value="delivered">Delivered</option>
-                  </select>
-                ) : (
-                  order.status
-                )}
-              </td>
-              <td className="border border-gray-300 p-4">
-                {editingOrder === order._id ? (
                   <input
                     type="number"
                     name="orderPrice"
@@ -262,7 +269,7 @@ const OrderTable = () => {
                     className="w-full p-2 border border-gray-300 rounded-md"
                   />
                 ) : (
-                  order.orderPrice
+                  `$${order.orderPrice}`
                 )}
               </td>
               <td className="border border-gray-300 p-4">
@@ -276,7 +283,7 @@ const OrderTable = () => {
                     className="w-full p-2 border border-gray-300 rounded-md"
                   />
                 ) : (
-                  order.totalPrice
+                  `$${order.totalPrice}`
                 )}
               </td>
               <td className="border border-gray-300 p-4">
@@ -291,77 +298,150 @@ const OrderTable = () => {
                     <option value="">Select User</option>
                     {users.map((user) => (
                       <option key={user._id} value={user._id}>
-                        {user.email}
+                        {user.username}
                       </option>
                     ))}
                   </select>
                 ) : (
-                  order.user
+                  order.user?.username || 'N/A'
                 )}
               </td>
               <td className="border border-gray-300 p-4">
-                {editingOrder === order._id ? (
-                  <div className="relative">
-                    <input
-                      type={showPassword[order._id] ? 'text' : 'password'}
-                      name="password"
-                      id="password"
-                      value={formData.password}
-                      onChange={handleFormChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => togglePasswordVisibility(order._id)}
-                      className="absolute right-2 top-2"
-                    >
-                      <FontAwesomeIcon icon={showPassword[order._id] ? faEye : faEyeSlash} />
-                    </button>
-                  </div>
-                ) : (
-                  '••••••••••'
-                )}
-              </td>
-              <td className="border border-gray-300 p-4">
-                {editingOrder === order._id ? (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={handleUpdateOrder}
-                      className="bg-green-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    >
-                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
-                      Save
-                    </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className="bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleEditClick(order)}
-                      className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(order._id)}
-                      className="bg-red-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                    >
-                      <FontAwesomeIcon icon={faTrash} className="mr-2" />
-                      Delete
-                    </button>
-                  </div>
-                )}
+                <button
+                  onClick={() => handleEditClick(order)}
+                  className="text-blue-500 hover:text-blue-700"
+                >
+                  <FontAwesomeIcon icon={faEdit} />
+                </button>
+                <button
+                  onClick={() => handleDeleteClick(order._id)}
+                  className="text-red-500 hover:text-red-700 ml-2"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Modal for Editing Order */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={handleCancelEdit}
+        contentLabel="Edit Order"
+        className="modal"
+        overlayClassName="modal-overlay"
+      >
+        <h2 className="text-2xl font-bold mb-4">Edit Order</h2>
+        <form onSubmit={handleUpdateOrder}>
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={formData.email}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4 relative">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type={showPassword[editingOrder] ? 'text' : 'password'}
+              name="password"
+              id="password"
+              value={formData.password}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            <button
+              type="button"
+              onClick={() => togglePasswordVisibility(editingOrder)}
+              className="absolute right-2 top-2"
+            >
+              <FontAwesomeIcon icon={showPassword[editingOrder] ? faEye : faEyeSlash} />
+            </button>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="code" className="block text-sm font-medium text-gray-700">Code</label>
+            <input
+              type="text"
+              name="code"
+              id="code"
+              value={formData.code}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="quantityRequested" className="block text-sm font-medium text-gray-700">Quantity Requested</label>
+            <input
+              type="number"
+              name="quantityRequested"
+              id="quantityRequested"
+              value={formData.quantityRequested}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="orderPrice" className="block text-sm font-medium text-gray-700">Order Price</label>
+            <input
+              type="number"
+              name="orderPrice"
+              id="orderPrice"
+              value={formData.orderPrice}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="totalPrice" className="block text-sm font-medium text-gray-700">Total Price</label>
+            <input
+              type="number"
+              name="totalPrice"
+              id="totalPrice"
+              value={formData.totalPrice}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="user" className="block text-sm font-medium text-gray-700">User</label>
+            <select
+              name="user"
+              id="user"
+              value={formData.user}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select User</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.username}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="bg-gray-500 text-white py-2 px-4 rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };

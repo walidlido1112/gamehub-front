@@ -11,7 +11,7 @@ const AccountTotals = ({ accountsData, employees }) => {
   const [pcPrice, setPcPrice] = useState(0);
 
   // Ensure accountsData is defined and contains accounts
-  const accounts = accountsData && accountsData.accounts ? accountsData.accounts : [];
+  const accounts = accountsData && accountsData.accounts ? accountsData.accounts : []; 
 
   const psAccounts = accounts.filter(account => account.type === 'ps');
   const pcAccounts = accounts.filter(account => account.type === 'pc');
@@ -118,9 +118,6 @@ const AccountTotals = ({ accountsData, employees }) => {
         detailData = [];
     }
 
-    console.log('detailData:', detailData); // For debugging
-    console.log('totalPrice:', totalPrice); // For debugging
-
     setSelectedDetail({ type: detailType, data: detailData, totalPrice: totalPrice });
     setModalIsOpen(true);
   };
@@ -212,7 +209,7 @@ const AccountTotals = ({ accountsData, employees }) => {
           onClick={() => handleDetailClick('totalSearches')}
         >
           <div className="flex items-center">
-            <FaSearch className="text-blue-500 mr-3 text-xl" />
+            <FaSearch className="text-indigo-500 mr-3 text-xl" />
             <span className="font-medium text-gray-700">Total Searches:</span>
           </div>
           <span className="text-gray-900 font-semibold">{totalSearches}</span>
@@ -225,56 +222,48 @@ const AccountTotals = ({ accountsData, employees }) => {
         className="fixed inset-0 bg-white p-6 mx-auto max-w-lg rounded-lg shadow-lg"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50"
       >
-        <h2 className="text-xl font-bold mb-4 text-gray-800">{selectedDetail?.type} Detail View</h2>
-        <button onClick={closeModal} className="absolute top-2 right-2 text-gray-600 hover:text-gray-900">
-          &times;
-        </button>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
-            <thead>
-              <tr>
-                {selectedDetail?.type === 'completedAccounts' ? (
-                  <>
-                    <th className="py-2 px-4 border-b text-left">Email</th>
-                    <th className="py-2 px-4 border-b text-left">Employee Name</th>
-                  </>
-                ) : (
-                  <>
-                    <th className="py-2 px-4 border-b text-left">Email</th>
-                    <th className="py-2 px-4 border-b text-left">Quantity</th>
-                    <th className="py-2 px-4 border-b text-left">Price</th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {selectedDetail?.data?.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-100">
-                  {selectedDetail?.type === 'completedAccounts' ? (
-                    <>
-                      <td className="py-2 px-4 border-b">{row[0]}</td>
-                      <td className="py-2 px-4 border-b">{row[1]}</td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="py-2 px-4 border-b">{row[0]}</td>
-                      <td className="py-2 px-4 border-b">{row[1]}</td>
-                      <td className="py-2 px-4 border-b">{row[2]}</td>
-                    </>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              {selectedDetail?.type === 'psAccounts' || selectedDetail?.type === 'pcAccounts' ? (
-                <tr>
-                  <td colSpan="2" className="py-2 px-4 border-t text-right font-bold">Total Price:</td>
-                  <td className="py-2 px-4 border-t font-bold">{selectedDetail?.totalPrice.toFixed(2)}</td>
-                </tr>
-              ) : null}
-            </tfoot>
-          </table>
-        </div>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">Detail View</h2>
+        {selectedDetail && (
+          <>
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-gray-700">{selectedDetail.type}</h3>
+              {selectedDetail.type === 'totalPsQuantity' || selectedDetail.type === 'totalPcQuantity' ? (
+                <div>
+                  {selectedDetail.data.map((item, index) => (
+                    <div key={index} className="flex justify-between mb-2 text-gray-700">
+                      <span>{item[0]}</span>
+                      <span>{item[1]}</span>
+                      <span>${item[2]}</span>
+                    </div>
+                  ))}
+                  <div className="mt-4 font-bold">Total Price: ${selectedDetail.totalPrice.toFixed(2)}</div>
+                </div>
+              ) : (
+                <ul className="list-disc list-inside">
+                  {selectedDetail.data.map((item, index) => (
+                    <li key={index} className="mb-2 text-gray-700">
+                      {selectedDetail.type === 'completedAccounts' ? (
+                        <div>
+                          <span className="font-medium">{item[0]}</span> - <span>{item[1]}</span>
+                        </div>
+                      ) : (
+                        <div>
+                          <span className="font-medium">{item[0]}</span> - <span>{item[1]}</span> - <span>${item[2]}</span>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <button
+              onClick={closeModal}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
+            >
+              Close
+            </button>
+          </>
+        )}
       </Modal>
     </div>
   );
