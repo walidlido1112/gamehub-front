@@ -74,11 +74,11 @@ const AccountsPage = () => {
               >
                 {showForm ? (
                   <>
-                    <FaArrowUp className="mr-2" /> Hide Form
+                    <FaArrowUp className="mr-2" /> 
                   </>
                 ) : (
                   <>
-                    <FaArrowDown className="mr-2" /> Show Form
+                    <FaArrowDown className="mr-2" /> 
                   </>
                 )}
               </button>
@@ -94,11 +94,11 @@ const AccountsPage = () => {
               >
                 {showTable ? (
                   <>
-                    <FaArrowUp className="mr-2" /> Hide Table
+                    <FaArrowUp className="mr-2" /> 
                   </>
                 ) : (
                   <>
-                    <FaArrowDown className="mr-2" /> Show Table
+                    <FaArrowDown className="mr-2" /> 
                   </>
                 )}
               </button>

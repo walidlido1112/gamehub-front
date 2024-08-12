@@ -8,8 +8,10 @@ import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 import AssignRolePage from './pages/AssignRolePage'; // Adjusted path
+import SnTool from './pages/SnTool'; // Add SnTool import
 import ProtectedRoute from './routes/ProtectedRoute';
 import RBBotAccounts from './components/RBBotAccount/RBBotAccountsPage'; // Adjusted path
+import SnipeAccounts from './/components/SnipeAccounts/SnipeAccounts'; // Import SnipeAccounts component
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -22,7 +24,7 @@ const App = () => {
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            
+
             {/* Protected Routes for Admin */}
             <Route
               path="/dashboard"
@@ -64,7 +66,23 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            
+            <Route
+              path="/sn-tool"
+              element={
+                <ProtectedRoute role="admin">
+                  <SnTool />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/snipeaccounts"
+              element={
+                <ProtectedRoute role="admin">
+                  <SnipeAccounts />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Protected Route for Employee */}
             <Route
               path="/employee-dashboard"

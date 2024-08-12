@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { apiUrl } from '../../config';
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
 const statusColors = {
@@ -10,32 +11,37 @@ const statusColors = {
   'on hold': 'bg-red-100 text-red-800',
 };
 
+const accountTypes = {
+  'admin': 'bg-yellow-100 text-yellow-800',
+  'user': 'bg-gray-100 text-gray-800',
+  // Add more types as needed
+};
+
 const EmployeeDashboard = () => {
   const { user, loading, logout } = useAuth();
   const [accounts, setAccounts] = useState([]);
-  const [showPassword, setShowPassword] = useState({}); // State for password visibility
+  const [showPassword, setShowPassword] = useState({});
 
   useEffect(() => {
     if (loading) return;
 
-    const token = localStorage.getItem('token'); // Retrieve token from localStorage
+    const token = localStorage.getItem('token');
     if (!token) {
       window.location.href = '/login';
       return;
     }
-    
+
     const fetchAccounts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/accounts', {
+        const response = await axios.get(`${apiUrl}/accounts`, {
           headers: {
-            Authorization: `Bearer ${token}`, // Use token from localStorage
+            Authorization: `Bearer ${token}`,
           },
         });
         console.log('Fetched Accounts:', response.data.accounts);
 
-        // Ensure `user.id` and `account.employee` are defined
-        const filteredAccounts = response.data.accounts.filter(account => 
-          user.id && account.employee 
+        const filteredAccounts = response.data.accounts.filter(account =>
+          user.id && account.employee
           ? account.employee.toString() === user.id.toString()
           : false
         );
@@ -44,7 +50,6 @@ const EmployeeDashboard = () => {
       } catch (error) {
         console.error('Failed to fetch accounts:', error.response?.data || error.message);
         if (error.response?.status === 401) {
-          // Handle unauthorized access
           window.location.href = '/login';
         }
       }
@@ -55,9 +60,9 @@ const EmployeeDashboard = () => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/accounts/${id}`, { status: newStatus }, {
+      const response = await axios.put(`${apiUrl}/accounts/${id}`, { status: newStatus }, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Use token from localStorage
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
       console.log('Status updated:', response.data);
@@ -71,7 +76,7 @@ const EmployeeDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    localStorage.removeItem('token'); // Remove token on logout
+    localStorage.removeItem('token');
     window.location.href = '/login';
   };
 
@@ -101,6 +106,7 @@ const EmployeeDashboard = () => {
                 <th className="py-2 px-4 text-left">البريد الإلكتروني</th>
                 <th className="py-2 px-4 text-left">كود</th>
                 <th className="py-2 px-4 text-left">كلمة المرور</th>
+                <th className="py-2 px-4 text-left">نوع الحساب</th>
                 <th className="py-2 px-4 text-left">حالة</th>
                 <th className="py-2 px-4 text-left">تعديل الحالة</th>
               </tr>
@@ -123,6 +129,11 @@ const EmployeeDashboard = () => {
                         onClick={() => togglePasswordVisibility(account._id)}
                       ></i>
                     </td>
+                    <td className="py-2 px-4 border-b">
+                      <span className={`px-2 py-1 rounded ${accountTypes[account.type] || 'bg-gray-200 text-gray-700'}`}>
+                        {account.type || 'Unknown'}
+                      </span>
+                    </td>
                     <td className="py-2 px-4 border-b">{account.status}</td>
                     <td className="py-2 px-4 border-b">
                       <select
@@ -141,7 +152,7 @@ const EmployeeDashboard = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="py-2 px-4 text-center">لا توجد حسابات لعرضها.</td>
+                  <td colSpan="6" className="py-2 px-4 text-center">لا توجد حسابات لعرضها.</td>
                 </tr>
               )}
             </tbody>

@@ -5,6 +5,7 @@ import AccountTotals from '../Accounts/AccountTotals';
 import OrdersTotal from '../Orders/OrderTotals'; // Import OrdersTotal
 import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
+import FinishedTables from '../../pages/FinishedTables'; // Import FinishedTables
 import './AdminDashboard.css';
 import { apiUrl } from '../../config';
 
@@ -12,9 +13,11 @@ const AdminDashboard = () => {
   const [accounts, setAccounts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [finishedTables, setFinishedTables] = useState([]); // Add state for finished tables
   const [error, setError] = useState('');
   const [showAccounts, setShowAccounts] = useState(true);
   const [showOrders, setShowOrders] = useState(true);
+  const [showFinishedTables, setShowFinishedTables] = useState(true); // Add state to toggle FinishedTables visibility
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -64,9 +67,25 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchFinishedTables = async () => {
+      try {
+        const { data } = await axios.get(`${apiUrl}/tables`);
+        if (Array.isArray(data)) {
+          setFinishedTables(data);
+        } else {
+          console.error('Finished tables data is not an array:', data);
+          setError('Finished tables data format is incorrect.');
+        }
+      } catch (error) {
+        setError('Failed to fetch finished tables.');
+        console.error('Failed to fetch finished tables:', error);
+      }
+    };
+
     fetchAccounts();
     fetchOrders();
     fetchEmployees();
+    fetchFinishedTables();
   }, []);
 
   return (
@@ -87,11 +106,11 @@ const AdminDashboard = () => {
               >
                 {showAccounts ? (
                   <>
-                    <FaArrowUp className="mr-2" /> Hide Accounts
+                    <FaArrowUp className="mr-2" /> 
                   </>
                 ) : (
                   <>
-                    <FaArrowDown className="mr-2" /> Show Accounts
+                    <FaArrowDown className="mr-2" /> 
                   </>
                 )}
               </button>
@@ -112,22 +131,46 @@ const AdminDashboard = () => {
               >
                 {showOrders ? (
                   <>
-                    <FaArrowUp className="mr-2" /> Hide Orders
+                    <FaArrowUp className="mr-2" /> 
                   </>
                 ) : (
                   <>
-                    <FaArrowDown className="mr-2" /> Show Orders
+                    <FaArrowDown className="mr-2" /> 
                   </>
                 )}
               </button>
             </div>
             {showOrders && (
               <div className="mt-6">
-                <OrdersTotal orders={orders} /> {/* Add OrdersTotal here */}
+                <OrdersTotal orders={orders} />
                 <div className="orders-list mt-4">
-                  
-                  
+                  {/* Add additional content here if needed */}
                 </div>
+              </div>
+            )}
+          </div>
+
+          <div className="card mt-6">
+            <div className="card-header">
+              <h2>Finished Tables</h2>
+              <button
+                onClick={() => setShowFinishedTables(!showFinishedTables)}
+                className="toggle-button"
+              >
+                {showFinishedTables ? (
+                  <>
+                    <FaArrowUp className="mr-2" /> 
+                  </>
+                ) : (
+                  <>
+                    <FaArrowDown className="mr-2" /> 
+                  </>
+                )}
+              </button>
+            </div>
+            {showFinishedTables && (
+              <div className="mt-6">
+                <FinishedTables tables={finishedTables} onDeleteTable={() => { /* Add delete handler if needed */ }} />
               </div>
             )}
           </div>
