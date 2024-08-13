@@ -1,6 +1,8 @@
 {
-    "rewrites": [
-      { "source": "/api/(.*)", "destination": "https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/$1" }
-    ]
-  }
-  
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api/$1"
+    }
+  ]
+}
