@@ -1,23 +1,22 @@
+// EditAccountModal.jsx
 import React, { useState } from 'react';
+import axios from 'axios';
+import { apiUrl } from '../../../config';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-const EditAccountModal = ({ account, onClose, onSave }) => {
-  const [email, setEmail] = useState(account.email);
-  const [rdp, setRdp] = useState(account.rdp);
-  const [searches, setSearches] = useState(account.searches);
+const EditAccountModal = ({ account, onClose, onUpdate }) => {
+  const [formData, setFormData] = useState({ ...account });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
+  };
 
   const handleSave = () => {
-    const updatedAccount = {
-      ...account,
-      email,
-      rdp,
-      searches
-    };
-    // Send the updated data to the server
-    axios.put(`${apiUrl}/snipeaccounts/${account._id}`, updatedAccount)
+    axios.put(`${apiUrl}/snipeaccounts/${account._id}`, formData)
       .then(() => {
-        onSave(updatedAccount); // Notify parent component of the update
+        onUpdate();
       })
       .catch(error => {
         console.error('Error updating account:', error);
@@ -25,53 +24,60 @@ const EditAccountModal = ({ account, onClose, onSave }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-semibold mb-4">Edit Account</h2>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">Edit Account</h2>
+        <label className="block mb-2">
+          Email:
           <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            type="text"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="ml-2 p-2 border rounded"
           />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="rdp" className="block text-sm font-medium text-gray-700">RDP</label>
-          <select
-            id="rdp"
-            value={rdp}
-            onChange={(e) => setRdp(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            {[...Array(10).keys()].map(num => (
-              <option key={num + 1} value={`rdp-0${num + 1}`}>{`rdp-0${num + 1}`}</option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <label htmlFor="searches" className="block text-sm font-medium text-gray-700">Searches</label>
+        </label>
+        <label className="block mb-2">
+          RDP:
+          <input
+            type="text"
+            name="rdp"
+            value={formData.rdp}
+            onChange={handleChange}
+            className="ml-2 p-2 border rounded"
+          />
+        </label>
+        <label className="block mb-2">
+          Searches:
           <input
             type="number"
-            id="searches"
-            value={searches}
-            onChange={(e) => setSearches(e.target.value)}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            name="searches"
+            value={formData.searches}
+            onChange={handleChange}
+            className="ml-2 p-2 border rounded"
           />
-        </div>
-        <div className="flex justify-end space-x-2">
+        </label>
+        <label className="block mb-2">
+          Coins:
+          <input
+            type="number"
+            name="coins"
+            value={formData.coins}
+            onChange={handleChange}
+            className="ml-2 p-2 border rounded"
+          />
+        </label>
+        <div className="flex justify-end mt-4">
           <button
             onClick={handleSave}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center"
+            className="bg-blue-500 text-white p-2 rounded mr-2 flex items-center"
           >
             <FontAwesomeIcon icon={faSave} className="mr-1" />
             Save
           </button>
           <button
             onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-2 rounded-md flex items-center"
+            className="bg-gray-500 text-white p-2 rounded flex items-center"
           >
             <FontAwesomeIcon icon={faTimes} className="mr-1" />
             Cancel

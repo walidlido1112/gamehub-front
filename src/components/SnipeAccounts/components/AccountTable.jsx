@@ -19,6 +19,10 @@ const AccountTable = () => {
   const [selectedRDP, setSelectedRDP] = useState('');
 
   useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = () => {
     axios.get(`${apiUrl}/snipeaccounts`)
       .then(response => {
         setAccountData(response.data);
@@ -31,7 +35,7 @@ const AccountTable = () => {
         setError(error);
         setLoading(false);
       });
-  }, []);
+  };
 
   useEffect(() => {
     const lowerCaseQuery = searchQuery.toLowerCase();
@@ -45,11 +49,7 @@ const AccountTable = () => {
   const startAccount = (accountId) => {
     axios.post(`${apiUrl}/snipeaccounts/starttime`, { id: accountId })
       .then(response => {
-        setAccountData(prevData => prevData.map(account =>
-          account._id === accountId
-            ? { ...account, status: 'in progress', startTime: response.data.startTime }
-            : account
-        ));
+        fetchData(); // إعادة تحميل البيانات بعد التحديث
       })
       .catch(error => {
         console.error('Error starting account:', error);
@@ -59,11 +59,7 @@ const AccountTable = () => {
   const stopAccount = (accountId) => {
     axios.post(`${apiUrl}/snipeaccounts/stop`, { id: accountId })
       .then(response => {
-        setAccountData(prevData => prevData.map(account =>
-          account._id === accountId
-            ? { ...account, status: 'completed today', stopTime: response.data.stopTime }
-            : account
-        ));
+        fetchData(); // إعادة تحميل البيانات بعد التحديث
       })
       .catch(error => {
         console.error('Error stopping account:', error);
@@ -80,11 +76,7 @@ const AccountTable = () => {
           onClick: () => {
             axios.post(`${apiUrl}/snipeaccounts/reset`, { id: accountId })
               .then(() => {
-                setAccountData(prevData => prevData.map(account =>
-                  account._id === accountId
-                    ? { ...account, status: 'not started', startTime: null, stopTime: null, searchCount: 0 }
-                    : account
-                ));
+                fetchData(); // إعادة تحميل البيانات بعد التحديث
               })
               .catch(error => {
                 console.error('Error resetting account:', error);
@@ -108,7 +100,7 @@ const AccountTable = () => {
           onClick: () => {
             axios.delete(`${apiUrl}/snipeaccounts/${accountId}`)
               .then(() => {
-                setAccountData(prevData => prevData.filter(account => account._id !== accountId));
+                fetchData(); // إعادة تحميل البيانات بعد التحديث
               })
               .catch(error => {
                 console.error('Error deleting account:', error);
@@ -189,6 +181,7 @@ const AccountTable = () => {
             <th className="px-4 py-2 text-left">Email</th>
             <th className="px-4 py-2 text-left">RDP</th>
             <th className="px-4 py-2 text-left">Searches</th>
+            <th className="px-4 py-2 text-left">Coins</th>
             <th className="px-4 py-2 text-left">Start Time</th>
             <th className="px-4 py-2 text-left">Stop Time</th>
             <th className="px-4 py-2 text-left">Time Elapsed</th>
@@ -206,6 +199,7 @@ const AccountTable = () => {
               <td className="px-4 py-2 text-lg font-semibold">{account.email}</td>
               <td className="px-4 py-2">{account.rdp}</td>
               <td className="px-4 py-2">{account.searches}</td>
+              <td className="px-4 py-2">{account.coins}</td>
               <td className="px-4 py-2">{account.startTime ? new Date(account.startTime).toLocaleString() : 'N/A'}</td>
               <td className="px-4 py-2">{account.stopTime ? new Date(account.stopTime).toLocaleString() : 'N/A'}</td>
               <td className="px-4 py-2">
@@ -271,14 +265,7 @@ const AccountTable = () => {
         <EditAccountModal
           account={selectedAccount}
           onClose={closeEditModal}
-          onUpdate={() => {
-            closeEditModal();
-            setAccountData(prevData => prevData.map(account =>
-              account._id === selectedAccount._id
-                ? { ...selectedAccount }
-                : account
-            ));
-          }}
+          onUpdate={fetchData} // إعادة تحميل البيانات بعد التعديل
         />
       )}
     </div>
