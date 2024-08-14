@@ -39,6 +39,14 @@ const AccountList = () => {
     setExpandedRdp(null);
   };
 
+  // Calculate total coins for the entire table
+  const totalCoins = accounts.reduce((total, account) => total + account.coins, 0);
+
+  // Calculate total coins for each RDP
+  const getTotalCoinsForRdp = (rdp) => {
+    return (groupedAccounts[rdp] || []).reduce((total, account) => total + account.coins, 0);
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
@@ -56,8 +64,17 @@ const AccountList = () => {
                 <FaChevronDown className="inline-block" />
               )}
             </span>
+            {expandedRdp === rdp && (
+              <div className="text-gray-700 ml-4">
+                <span>Total Coins: {getTotalCoinsForRdp(rdp)}</span>
+              </div>
+            )}
           </div>
         ))}
+      </div>
+
+      <div className="mt-6 p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+        <span className="text-lg font-semibold text-gray-800">Total Coins (All RDPs): {totalCoins}</span>
       </div>
 
       <Modal

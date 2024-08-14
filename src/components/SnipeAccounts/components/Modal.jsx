@@ -36,6 +36,10 @@ const Modal = ({ isOpen, onClose, accounts, rdp }) => {
   const completedCount = accounts.filter(account => account.status === 'completed today').length;
   const inProgressCount = accounts.filter(account => account.status === 'in progress').length;
 
+  // Calculate total coins and searches for the RDP
+  const totalCoins = accounts.reduce((total, account) => total + account.coins, 0);
+  const totalSearches = accounts.reduce((total, account) => total + (account.searchCount || 0), 0);
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
       <div
@@ -55,6 +59,8 @@ const Modal = ({ isOpen, onClose, accounts, rdp }) => {
           <p className="text-sm font-medium">Total Accounts: {totalCount}</p>
           <p className="text-sm font-medium">Completed: {completedCount}</p>
           <p className="text-sm font-medium">In Progress: {inProgressCount}</p>
+          <p className="text-sm font-medium">Total Coins: {totalCoins}</p>
+          <p className="text-sm font-medium">Total Searches: {totalSearches}</p>
         </div>
         <ul className="space-y-3 overflow-y-auto max-h-96">
           {accounts.map((account) => (
@@ -93,6 +99,10 @@ const Modal = ({ isOpen, onClose, accounts, rdp }) => {
                 Duration: {account.startTime && account.stopTime
                   ? `${Math.round((new Date(account.stopTime) - new Date(account.startTime)) / (1000 * 60))} minutes`
                   : 'N/A'}
+              </p>
+              <p className="text-sm">
+                <FaSearch className="inline-block mr-1 text-blue-400" />
+                Coins: {account.coins || 0}
               </p>
             </li>
           ))}
