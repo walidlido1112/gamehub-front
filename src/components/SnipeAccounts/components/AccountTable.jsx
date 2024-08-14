@@ -259,10 +259,10 @@ const AccountTable = () => {
 
   const getRowColor = (status, stopTime) => {
     if (status === 'in progress') return '#0f4fff'; // Light blue
-    if (status === 'completed today') {
+    if (status === 'completed today')return '#04e097'; {
       const stopDate = new Date(stopTime);
       const currentDate = new Date();
-      const isPast5Minutes = (currentDate - stopDate) > (5 * 60 * 1000);
+      const isPast5Minutes = (currentDate - stopDate) > (24 * 60 * 60 * 1000);
       return isPast5Minutes ? '#e6f4ea' : '#d0f5e2'; // Light green
     }
     if (status === 'reset') return '#fef5e6'; // Light yellow
@@ -274,7 +274,7 @@ const AccountTable = () => {
     if (status === 'completed today') {
       const stopDate = new Date(stopTime);
       const currentDate = new Date();
-      return (currentDate - stopDate) < (5 * 60 * 1000); // 5 minutes
+      return (currentDate - stopDate) < (24 * 60 * 60 * 1000); // 5 minutes
     }
     return false;
   };
