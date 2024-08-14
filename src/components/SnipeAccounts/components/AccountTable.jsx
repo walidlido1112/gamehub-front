@@ -6,6 +6,26 @@ import { faPlay, faStop, faEdit, faTrash, faCheck, faUndo } from '@fortawesome/f
 import EditAccountModal from './EditAccountModal';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Button,
+  Typography,
+  Grid,
+  Checkbox,
+  TablePagination
+} from '@mui/material';
+import { motion } from 'framer-motion';
 
 const AccountTable = () => {
   const [accountData, setAccountData] = useState([]);
@@ -17,6 +37,10 @@ const AccountTable = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [dropdownRDP, setDropdownRDP] = useState([]);
   const [selectedRDP, setSelectedRDP] = useState('');
+  const [selectedAccounts, setSelectedAccounts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [accountsPerPage] = useState(15);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -27,6 +51,7 @@ const AccountTable = () => {
       .then(response => {
         setAccountData(response.data);
         setFilteredData(response.data);
+        setTotalCount(response.data.length);
         const rdpOptions = [...new Set(response.data.map(account => account.rdp))];
         setDropdownRDP(rdpOptions);
         setLoading(false);
@@ -48,70 +73,170 @@ const AccountTable = () => {
 
   const startAccount = (accountId) => {
     axios.post(`${apiUrl}/snipeaccounts/starttime`, { id: accountId })
-      .then(response => {
-        fetchData(); // إعادة تحميل البيانات بعد التحديث
-      })
-      .catch(error => {
-        console.error('Error starting account:', error);
-      });
+        .then(() => {
+            fetchData();
+        })
+        .catch(error => {
+            console.error('Error starting account:', error);
+        });
   };
 
   const stopAccount = (accountId) => {
     axios.post(`${apiUrl}/snipeaccounts/stop`, { id: accountId })
-      .then(response => {
-        fetchData(); // إعادة تحميل البيانات بعد التحديث
-      })
-      .catch(error => {
-        console.error('Error stopping account:', error);
-      });
+        .then(() => {
+            fetchData();
+        })
+        .catch(error => {
+            console.error('Error stopping account:', error);
+        });
   };
 
   const resetAccount = (accountId) => {
+    axios.post(`${apiUrl}/snipeaccounts/reset`, { id: accountId })
+        .then(() => {
+            fetchData();
+        })
+        .catch(error => {
+            console.error('Error resetting account:', error);
+        });
+  };
+
+  const deleteAccount = (accountId) => {
+    axios.delete(`${apiUrl}/snipeaccounts/${accountId}`)
+        .then(() => {
+            fetchData();
+        })
+        .catch(error => {
+            console.error('Error deleting account:', error);
+        });
+  };
+
+  const startAccounts = () => {
     confirmAlert({
-      title: 'Confirm Reset',
-      message: 'Are you sure you want to reset this account?',
+      title: 'Confirm Start',
+      message: 'Are you sure you want to start the selected accounts?',
       buttons: [
         {
           label: 'Yes',
           onClick: () => {
-            axios.post(`${apiUrl}/snipeaccounts/reset`, { id: accountId })
+            const startPromises = selectedAccounts.map(accountId =>
+              axios.post(`${apiUrl}/snipeaccounts/starttime`, { id: accountId })
+            );
+            Promise.all(startPromises)
               .then(() => {
-                fetchData(); // إعادة تحميل البيانات بعد التحديث
+                fetchData();
+                setSelectedAccounts([]);
               })
               .catch(error => {
-                console.error('Error resetting account:', error);
+                console.error('Error starting accounts:', error);
               });
           }
         },
         {
-          label: 'No',
+          label: 'No'
         }
       ]
     });
   };
 
-  const deleteAccount = (accountId) => {
+  const stopAccounts = () => {
     confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this account?',
+      title: 'Confirm Stop',
+      message: 'Are you sure you want to stop the selected accounts?',
       buttons: [
         {
           label: 'Yes',
           onClick: () => {
-            axios.delete(`${apiUrl}/snipeaccounts/${accountId}`)
+            const stopPromises = selectedAccounts.map(accountId =>
+              axios.post(`${apiUrl}/snipeaccounts/stop`, { id: accountId })
+            );
+            Promise.all(stopPromises)
               .then(() => {
-                fetchData(); // إعادة تحميل البيانات بعد التحديث
+                fetchData();
+                setSelectedAccounts([]);
               })
               .catch(error => {
-                console.error('Error deleting account:', error);
+                console.error('Error stopping accounts:', error);
               });
           }
         },
         {
-          label: 'No',
+          label: 'No'
         }
       ]
     });
+  };
+
+  const resetAccounts = () => {
+    confirmAlert({
+      title: 'Confirm Reset',
+      message: 'Are you sure you want to reset the selected accounts?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            const resetPromises = selectedAccounts.map(accountId =>
+              axios.post(`${apiUrl}/snipeaccounts/reset`, { id: accountId })
+            );
+            Promise.all(resetPromises)
+              .then(() => {
+                fetchData();
+                setSelectedAccounts([]);
+              })
+              .catch(error => {
+                console.error('Error resetting accounts:', error);
+              });
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
+    });
+  };
+
+  const deleteAccounts = () => {
+    confirmAlert({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete the selected accounts?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            const deletePromises = selectedAccounts.map(accountId =>
+              axios.delete(`${apiUrl}/snipeaccounts/${accountId}`)
+            );
+            Promise.all(deletePromises)
+              .then(() => {
+                fetchData();
+                setSelectedAccounts([]);
+              })
+              .catch(error => {
+                console.error('Error deleting accounts:', error);
+              });
+          }
+        },
+        {
+          label: 'No'
+        }
+      ]
+    });
+  };
+
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedAccounts(filteredData.slice(currentPage * accountsPerPage, (currentPage + 1) * accountsPerPage).map(account => account._id));
+    } else {
+      setSelectedAccounts([]);
+    }
+  };
+
+  const handleRowSelect = (event, accountId) => {
+    if (event.target.checked) {
+      setSelectedAccounts(prevSelected => [...prevSelected, accountId]);
+    } else {
+      setSelectedAccounts(prevSelected => prevSelected.filter(id => id !== accountId));
+    }
   };
 
   const openEditModal = (account) => {
@@ -125,22 +250,23 @@ const AccountTable = () => {
   };
 
   if (loading) {
-    return <p className="text-center text-gray-500">Loading...</p>;
+    return <Typography variant="h6" align="center" color="textSecondary">Loading...</Typography>;
   }
 
   if (error) {
-    return <p className="text-center text-red-500">Error fetching data: {error.message}</p>;
+    return <Typography variant="h6" align="center" color="error">Error fetching data: {error.message}</Typography>;
   }
 
   const getRowColor = (status, stopTime) => {
-    if (status === 'in progress') return 'bg-blue-500 text-white';
+    if (status === 'in progress') return '#0f4fff'; // Light blue
     if (status === 'completed today') {
       const stopDate = new Date(stopTime);
       const currentDate = new Date();
-      const isPast24Hours = (currentDate - stopDate) > (24 * 60 * 60 * 1000);
-      return isPast24Hours ? 'bg-green-100' : 'bg-green-500 text-white';
+      const isPast5Minutes = (currentDate - stopDate) > (5 * 60 * 1000);
+      return isPast5Minutes ? '#e6f4ea' : '#d0f5e2'; // Light green
     }
-    return 'bg-white';
+    if (status === 'reset') return '#fef5e6'; // Light yellow
+    return 'white'; // Default
   };
 
   const isStartButtonDisabled = (status, stopTime) => {
@@ -148,126 +274,217 @@ const AccountTable = () => {
     if (status === 'completed today') {
       const stopDate = new Date(stopTime);
       const currentDate = new Date();
-      return (currentDate - stopDate) < (24 * 60 * 60 * 1000);
+      return (currentDate - stopDate) < (5 * 60 * 1000); // 5 minutes
     }
     return false;
   };
 
-  return (
-    <div className="overflow-x-auto">
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Search by email or RDP"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 border rounded mr-4"
-        />
-        <select
-          value={selectedRDP}
-          onChange={(e) => setSelectedRDP(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="">Select RDP</option>
-          {dropdownRDP.map(rdp => (
-            <option key={rdp} value={rdp}>{rdp}</option>
-          ))}
-        </select>
-      </div>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="px-4 py-2 text-left">#</th>
-            <th className="px-4 py-2 text-left">Email</th>
-            <th className="px-4 py-2 text-left">RDP</th>
-            <th className="px-4 py-2 text-left">Searches</th>
-            <th className="px-4 py-2 text-left">Coins</th>
-            <th className="px-4 py-2 text-left">Start Time</th>
-            <th className="px-4 py-2 text-left">Stop Time</th>
-            <th className="px-4 py-2 text-left">Time Elapsed</th>
-            <th className="px-4 py-2 text-left">Status</th>
-            <th className="px-4 py-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData.map((account, index) => (
-            <tr
-              key={account._id}
-              className={`${getRowColor(account.status, account.stopTime)} px-4 py-2 border-b border-gray-300`}
-            >
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2 text-lg font-semibold">{account.email}</td>
-              <td className="px-4 py-2">{account.rdp}</td>
-              <td className="px-4 py-2">{account.searches}</td>
-              <td className="px-4 py-2">{account.coins}</td>
-              <td className="px-4 py-2">{account.startTime ? new Date(account.startTime).toLocaleString() : 'N/A'}</td>
-              <td className="px-4 py-2">{account.stopTime ? new Date(account.stopTime).toLocaleString() : 'N/A'}</td>
-              <td className="px-4 py-2">
-                {account.startTime && account.stopTime
-                  ? `${Math.round((new Date(account.stopTime) - new Date(account.startTime)) / 60000)} mins`
-                  : 'N/A'
-                }
-              </td>
-              <td className="px-4 py-2">
-                {account.status === 'in progress' && (
-                  <>
-                    <FontAwesomeIcon icon={faPlay} className="mr-1" />
-                    In Progress
-                  </>
-                )}
-                {account.status === 'completed today' && (
-                  <>
-                    <FontAwesomeIcon icon={faCheck} className="mr-1" />
-                    Completed 
-                  </>
-                )}
-              </td>
-              <td className="px-4 py-2 flex space-x-2">
-                <button
-                  onClick={() => startAccount(account._id)}
-                  className="bg-blue-500 text-white p-2 rounded flex items-center"
-                  disabled={isStartButtonDisabled(account.status, account.stopTime)}
-                >
-                  <FontAwesomeIcon icon={faPlay} />
-                </button>
-                <button
-                  onClick={() => stopAccount(account._id)}
-                  className="bg-red-500 text-white p-2 rounded flex items-center"
-                  disabled={account.status !== 'in progress'}
-                >
-                  <FontAwesomeIcon icon={faStop} />
-                </button>
-                <button
-                  onClick={() => openEditModal(account)}
-                  className="bg-yellow-500 text-white p-2 rounded flex items-center"
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </button>
-                <button
-                  onClick={() => deleteAccount(account._id)}
-                  className="bg-red-600 text-white p-2 rounded flex items-center"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
-                <button
-                  onClick={() => resetAccount(account._id)}
-                  className="bg-gray-500 text-white p-2 rounded flex items-center"
-                >
-                  <FontAwesomeIcon icon={faUndo} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  const handleChangePage = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
 
-      {isEditModalOpen && (
+  return (
+    <div>
+      <Typography variant="h4" gutterBottom>Account Management</Typography>
+      <Grid container spacing={2} mb={2}>
+        <Grid item xs={12} md={6}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl fullWidth>
+            <InputLabel>RDP</InputLabel>
+            <Select
+              value={selectedRDP}
+              onChange={(e) => setSelectedRDP(e.target.value)}
+              label="RDP"
+            >
+              <MenuItem value="">All</MenuItem>
+              {dropdownRDP.map(rdp => (
+                <MenuItem key={rdp} value={rdp}>{rdp}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+      <TableContainer component={Paper} sx={{ maxHeight: 3000 }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <Checkbox
+                  onChange={handleSelectAll}
+                  checked={selectedAccounts.length === filteredData.length}
+                />
+              </TableCell>
+              <TableCell>#</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>RDP</TableCell>
+              <TableCell>Searches</TableCell>
+              <TableCell>Coins</TableCell>
+              <TableCell>Start Time</TableCell>
+              <TableCell>Stop Time</TableCell>
+              <TableCell>Time Elapsed</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredData.slice(currentPage * accountsPerPage, (currentPage + 1) * accountsPerPage).map((account, index) => (
+              <motion.tr
+                key={account._id}
+                style={{ backgroundColor: getRowColor(account.status, account.stopTime) }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <TableCell>
+                  <Checkbox
+                    checked={selectedAccounts.includes(account._id)}
+                    onChange={(e) => handleRowSelect(e, account._id)}
+                  />
+                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{index + 1}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{account.email}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{account.rdp}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{account.searches}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>{account.coins}</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>
+                  {account.startTime ? new Date(account.startTime).toLocaleString() : 'N/A'}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>
+                  {account.stopTime ? new Date(account.stopTime).toLocaleString() : 'N/A'}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>
+                  {account.startTime && account.stopTime
+                    ? `${Math.round((new Date(account.stopTime) - new Date(account.startTime)) / 60000)} mins`
+                    : 'N/A'
+                  }
+                </TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>
+                  <span style={{
+                    color: account.status === 'in progress' ? 'white' :
+                      account.status === 'completed today' ? 'black' : 'inherit',
+                    fontWeight: 'bold'
+                  }}>
+                    {account.status === 'in progress' ? (
+                      <>
+                        <FontAwesomeIcon icon={faPlay} className="mr-1" />
+                        In Progress
+                      </>
+                    ) : account.status === 'completed today' ? (
+                      <>
+                        <FontAwesomeIcon icon={faCheck} className="mr-1" />
+                        Completed
+                      </>
+                    ) : 'N/A'}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    onClick={() => startAccount(account._id)}
+                    variant="contained"
+                    color="primary"
+                    disabled={isStartButtonDisabled(account.status, account.stopTime)}
+                    sx={{ mr: 1 }}
+                  >
+                    <FontAwesomeIcon icon={faPlay} />
+                  </Button>
+                  <Button
+                    onClick={() => stopAccount(account._id)}
+                    variant="contained"
+                    color="error"
+                    disabled={account.status !== 'in progress'}
+                    sx={{ mr: 1 }}
+                  >
+                    <FontAwesomeIcon icon={faStop} />
+                  </Button>
+                  <Button
+                    onClick={() => openEditModal(account)}
+                    variant="contained"
+                    color="warning"
+                    sx={{ mr: 1 }}
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                  </Button>
+                  <Button
+                    onClick={() => deleteAccount(account._id)}
+                    variant="contained"
+                    color="error"
+                    sx={{ mr: 1 }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
+                  <Button
+                    onClick={() => resetAccount(account._id)}
+                    variant="contained"
+                    color="secondary"
+                  >
+                    <FontAwesomeIcon icon={faUndo} />
+                  </Button>
+                </TableCell>
+              </motion.tr>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[15]}
+        component="div"
+        count={totalCount}
+        rowsPerPage={accountsPerPage}
+        page={currentPage}
+        onPageChange={handleChangePage}
+      />
+      {isEditModalOpen && selectedAccount && (
         <EditAccountModal
-          account={selectedAccount}
+          open={isEditModalOpen}
           onClose={closeEditModal}
-          onUpdate={fetchData} // إعادة تحميل البيانات بعد التعديل
+          account={selectedAccount}
+          onUpdate={fetchData}
         />
       )}
+      <Grid container spacing={2} mt={2}>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={startAccounts}
+            disabled={selectedAccounts.length === 0}
+          >
+            <FontAwesomeIcon icon={faPlay} /> Start Selected
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={stopAccounts}
+            disabled={selectedAccounts.length === 0}
+          >
+            <FontAwesomeIcon icon={faStop} /> Stop Selected
+          </Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={resetAccounts}
+            disabled={selectedAccounts.length === 0}
+          >
+            <FontAwesomeIcon icon={faUndo} /> Reset Selected
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={deleteAccounts}
+            disabled={selectedAccounts.length === 0}
+          >
+            <FontAwesomeIcon icon={faTrash} /> Delete Selected
+          </Button>
+        </Grid>
+      </Grid>
     </div>
   );
 };

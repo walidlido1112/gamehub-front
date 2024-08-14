@@ -3,10 +3,11 @@ import axios from 'axios';
 import AccountForm from './components/AccountForm';
 import AccountTable from './components/AccountTable';
 import AccountList from './components/AccountList';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import './SnipeAccounts.css'; // Add custom styles if needed
+import { useNavigate } from 'react-router-dom';
+import './SnipeAccounts.css';
 import { apiUrl } from '../../config';
-import { FaChevronUp, FaChevronDown } from 'react-icons/fa'; // Ensure these are imported
+import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
+import { motion } from 'framer-motion'; // Import framer-motion
 
 const SnipeAccounts = () => {
   const [accounts, setAccounts] = useState([]);
@@ -14,7 +15,7 @@ const SnipeAccounts = () => {
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(true);
   const [showTable, setShowTable] = useState(true);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -43,7 +44,7 @@ const SnipeAccounts = () => {
   const toggleTable = () => setShowTable(!showTable);
 
   const goToDashboard = () => {
-    navigate('/dashboard'); // Navigate to the dashboard page
+    navigate('/dashboard');
   };
 
   return (
@@ -58,9 +59,14 @@ const SnipeAccounts = () => {
           </button>
           <h1 className="text-3xl font-bold mb-6">Snipe Accounts</h1>
           {error && <p className="text-red-500 mb-4">{error}</p>}
-          
+
           {/* Account Table */}
-          <div className="card mb-6 flex flex-col">
+          <motion.div
+            className="card mb-6 flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <div className="card-header flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Accounts List</h2>
               <button onClick={toggleTable} className="bg-blue-500 text-white p-2 rounded flex items-center">
@@ -81,10 +87,15 @@ const SnipeAccounts = () => {
                 onAccountSelect={handleAccountSelect} 
               />
             </div>
-          </div>
+          </motion.div>
 
           {/* Account Form */}
-          <div className="card mb-6 flex flex-col">
+          <motion.div
+            className="card mb-6 flex flex-col"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <div className="card-header flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Account Form</h2>
               <button onClick={toggleForm} className="bg-blue-500 text-white p-2 rounded flex items-center">
@@ -106,7 +117,7 @@ const SnipeAccounts = () => {
                 onClose={() => setSelectedAccount(null)}
               />
             </div>
-          </div>
+          </motion.div>
 
           <div className="mt-6">
             <AccountList />

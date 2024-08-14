@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import AccountForm from '../Forms/AccountForm';
 import AccountTable from '../Tables/AccountTable';
 import AccountTotals from './AccountTotals';
@@ -8,6 +9,20 @@ import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import './AccountsPage.css';
 import { apiUrl } from '../../config';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.6 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.4 } },
+};
+
+const buttonVariants = {
+  hover: { scale: 1.1, color: '#005bb5', transition: { duration: 0.3 } },
+};
 
 const AccountsPage = () => {
   const [accounts, setAccounts] = useState([]);
@@ -58,57 +73,76 @@ const AccountsPage = () => {
   };
 
   return (
-    <div className="accounts-page">
+    <div 
+      style={{ 
+        backgroundImage: 'url("https://example.com/path/to/your/background.jpg")', // Replace with your background image URL
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center', 
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <Sidebar />
       <div className="main-content">
         <Navbar />
-        <div className="content p-6">
+        <motion.div 
+          className="content p-6"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
           <h1 className="header">Accounts</h1>
           {error && <p className="error-message">{error}</p>}
-          <div className="card">
+          <motion.div 
+            className="card"
+            variants={cardVariants}
+          >
             <div className="card-header">
               <h2>Account Form</h2>
-              <button
+              <motion.button
                 onClick={() => setShowForm(!showForm)}
                 className="toggle-button"
+                variants={buttonVariants}
+                whileHover="hover"
               >
                 {showForm ? (
-                  <>
-                    <FaArrowUp className="mr-2" /> 
-                  </>
+                  <FaArrowUp className="mr-2" />
                 ) : (
-                  <>
-                    <FaArrowDown className="mr-2" /> 
-                  </>
+                  <FaArrowDown className="mr-2" />
                 )}
-              </button>
+              </motion.button>
             </div>
             {showForm && <AccountForm account={selectedAccount} />}
-          </div>
-          <div className="card mt-6">
+          </motion.div>
+          <motion.div 
+            className="card mt-6"
+            variants={cardVariants}
+          >
             <div className="card-header">
               <h2>Accounts List</h2>
-              <button
+              <motion.button
                 onClick={() => setShowTable(!showTable)}
                 className="toggle-button"
+                variants={buttonVariants}
+                whileHover="hover"
               >
                 {showTable ? (
-                  <>
-                    <FaArrowUp className="mr-2" /> 
-                  </>
+                  <FaArrowUp className="mr-2" />
                 ) : (
-                  <>
-                    <FaArrowDown className="mr-2" /> 
-                  </>
+                  <FaArrowDown className="mr-2" />
                 )}
-              </button>
+              </motion.button>
             </div>
             {showTable && <AccountTable accounts={accounts} onAccountSelect={handleAccountSelect} />}
-          </div>
-          <div className="mt-6">
+          </motion.div>
+          <motion.div 
+            className="mt-6"
+            variants={cardVariants}
+          >
             <AccountTotals accountsData={{ accounts }} employees={employees} />
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
