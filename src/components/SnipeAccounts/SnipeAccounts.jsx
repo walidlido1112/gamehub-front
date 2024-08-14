@@ -57,7 +57,6 @@ const SnipeAccounts = () => {
           >
             Go to Dashboard
           </button>
-          <h1 className="text-3xl font-bold mb-6">Snipe Accounts</h1>
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
           {/* Account Table */}

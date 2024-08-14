@@ -285,7 +285,6 @@ const AccountTable = () => {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>Account Management</Typography>
       <Grid container spacing={2} mb={2}>
         <Grid item xs={12} md={6}>
           <TextField

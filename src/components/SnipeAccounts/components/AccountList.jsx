@@ -9,12 +9,24 @@ const AccountList = () => {
   const [expandedRdp, setExpandedRdp] = useState(null);
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState('');
 
   useEffect(() => {
+    // Fetch accounts data
     fetch(`${apiUrl}/snipeaccounts`)
       .then((response) => response.json())
       .then((data) => setAccounts(data))
       .catch((error) => console.error('Error fetching accounts:', error));
+
+    // Set current date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    setCurrentDate(formattedDate);
   }, []);
 
   // Group accounts by RDP
@@ -49,6 +61,10 @@ const AccountList = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      <div className="text-center mb-4">
+        <p className="text-xl font-semibold text-gray-800">Date: {currentDate}</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         {Object.keys(groupedAccounts).map((rdp) => (
           <div
