@@ -2,7 +2,24 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { apiUrl } from '../../config';
-import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
+import { 
+  Button, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Typography, 
+  Paper, 
+  IconButton, 
+  MenuItem, 
+  Select, 
+  InputAdornment, 
+  TextField 
+} from "@mui/material";
+import { Visibility, VisibilityOff, Logout, Edit } from "@mui/icons-material";
+import { motion } from "framer-motion";
 
 const statusColors = {
   'in progress': 'bg-blue-100 text-blue-800',
@@ -89,74 +106,98 @@ const EmployeeDashboard = () => {
       {user && (
         <>
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold">
+            <Typography variant="h4">
               مرحبا، {user.name}!
-            </h1>
-            <button 
+            </Typography>
+            <Button 
               onClick={handleLogout} 
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+              variant="contained" 
+              color="error"
+              startIcon={<Logout />}
             >
-              <i className="fas fa-sign-out-alt"></i> Logout
-            </button>
+              Logout
+            </Button>
           </div>
-          <h2 className="text-xl font-semibold mb-4">حساباتك المخصصة</h2>
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-gray-100 border-b">
-                <th className="py-2 px-4 text-left">البريد الإلكتروني</th>
-                <th className="py-2 px-4 text-left">كود</th>
-                <th className="py-2 px-4 text-left">كلمة المرور</th>
-                <th className="py-2 px-4 text-left">نوع الحساب</th>
-                <th className="py-2 px-4 text-left">حالة</th>
-                <th className="py-2 px-4 text-left">تعديل الحالة</th>
-              </tr>
-            </thead>
-            <tbody>
-              {accounts.length > 0 ? (
-                accounts.map((account) => (
-                  <tr key={account._id} className={`hover:bg-gray-50 ${statusColors[account.status] || 'bg-gray-50'}`}>
-                    <td className="py-2 px-4 border-b">{account.email}</td>
-                    <td className="py-2 px-4 border-b">{account.code}</td>
-                    <td className="py-2 px-4 border-b flex items-center">
-                      <input
-                        type={showPassword[account._id] ? 'text' : 'password'}
-                        value={account.password}
-                        readOnly
-                        className="border border-gray-300 rounded p-1 w-full"
-                      />
-                      <i
-                        className={`fas ${showPassword[account._id] ? 'fa-eye-slash' : 'fa-eye'} ml-2 cursor-pointer`}
-                        onClick={() => togglePasswordVisibility(account._id)}
-                      ></i>
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      <span className={`px-2 py-1 rounded ${accountTypes[account.type] || 'bg-gray-200 text-gray-700'}`}>
-                        {account.type || 'Unknown'}
-                      </span>
-                    </td>
-                    <td className="py-2 px-4 border-b">{account.status}</td>
-                    <td className="py-2 px-4 border-b">
-                      <select
-                        value={account.status}
-                        onChange={(e) => handleStatusChange(account._id, e.target.value)}
-                        className="form-select border border-gray-300 rounded p-1"
+          <Typography variant="h5" gutterBottom>
+            حساباتك المخصصة
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>البريد الإلكتروني</TableCell>
+                  <TableCell>كود</TableCell>
+                  <TableCell>كلمة المرور</TableCell>
+                  <TableCell>نوع الحساب</TableCell>
+                  <TableCell>حالة</TableCell>
+                  <TableCell>تعديل الحالة</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {accounts.length > 0 ? (
+                  accounts.map((account) => (
+                    <TableRow key={account._id} className={statusColors[account.status] || 'bg-gray-50'}>
+                      <TableCell>{account.email}</TableCell>
+                      <TableCell>{account.code}</TableCell>
+                      <TableCell>
+                        <TextField
+                          type={showPassword[account._id] ? 'text' : 'password'}
+                          value={account.password}
+                          readOnly
+                          variant="outlined"
+                          size="small"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() => togglePasswordVisibility(account._id)}
+                                >
+                                  {showPassword[account._id] ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <span className={`px-2 py-1 rounded ${accountTypes[account.type] || 'bg-gray-200 text-gray-700'}`}>
+                          {account.type || 'Unknown'}
+                        </span>
+                      </TableCell>
+                      <TableCell>{account.status}</TableCell>
+                      <TableCell>
+                        <Select
+                          value={account.status}
+                          onChange={(e) => handleStatusChange(account._id, e.target.value)}
+                          size="small"
+                        >
+                          <MenuItem value="in progress">In Progress</MenuItem>
+                          <MenuItem value="in testing">In Testing</MenuItem>
+                          <MenuItem value="completed">Completed</MenuItem>
+                          <MenuItem value="on hold">On Hold</MenuItem>
+                        </Select>
+                        <IconButton color="primary">
+                          <Edit />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="py-2 px-4 text-center">
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
                       >
-                        <option value="in progress">In Progress</option>
-                        <option value="in testing">In Testing</option>
-                        <option value="completed">Completed</option>
-                        <option value="on hold">On Hold</option>
-                      </select>
-                      <i className="fas fa-pencil-alt ml-2 text-blue-600 cursor-pointer"></i>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="py-2 px-4 text-center">لا توجد حسابات لعرضها.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                        <Typography variant="h6">لا توجد حسابات لعرضها.</Typography>
+                      </motion.div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </>
       )}
     </div>

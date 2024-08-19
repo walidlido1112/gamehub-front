@@ -32,15 +32,29 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // تحقق من صحة البيانات
+    if (!formData.email || !formData.password) {
+      toast.error('يرجى إدخال البريد الإلكتروني وكلمة المرور');
+      return;
+    }
+    
+    console.log('Form data being sent:', formData);
+    
     try {
       const response = await axios.post(`${apiUrl}/auth/login`, formData);
       const { token, user } = response.data;
-
+  
+      // تخزين الرمز المميز في التخزين المحلي
       localStorage.setItem('token', token);
+  
+      // تعيين الرمز المميز في ترويسة الطلبات التالية
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
+  
+      // تعيين حالة المستخدم
       setUser(user);
-
+  
+      // توجيه المستخدم بناءً على الدور
       if (user.role === 'admin') {
         navigate('/dashboard');
       } else if (user.role === 'employee') {
@@ -50,10 +64,13 @@ const Login = () => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error(error.response?.data?.message || 'Login failed');
+  
+      // تحسين عرض رسائل الأخطاء
+      const message = error.response?.data?.message || 'Login failed';
+      toast.error(message);
     }
   };
-
+    
   return (
     <div 
       style={{ 

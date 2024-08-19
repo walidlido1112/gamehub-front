@@ -6,14 +6,15 @@ import { toast } from 'react-toastify';
 
 import { apiUrl } from '../../config'; // استيراد apiUrl
 
-const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
+const RBBotAccountForm = memo(({ initialData = {}, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     email: '',
     passwordType: '',
     gmailPassword: '',
     eaPassword: '',
     sonyPassword: '',
-    codes: '',
+    eaCodes: '',
+    sonyCodes: '',
     googleAuthEA: '',
     googleAuthSony: '',
     deviceNumber: '',
@@ -25,6 +26,13 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
     sony: false
   });
   const [emailError, setEmailError] = useState('');
+
+  // قائمة الأجهزة
+  const deviceOptions = [
+    ...Array.from({ length: 30 }, (_, i) => `ps4-${String(i + 1).padStart(2, '0')}`),
+    'Plus Account',
+    'Game Account'
+  ];
 
   useEffect(() => {
     if (initialData && initialData._id) {
@@ -76,6 +84,10 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
         onSubmit(); // Call onSubmit if provided
       }
 
+      if (onClose) {
+        onClose(); // Close modal after submit if onClose is provided
+      }
+
     } catch (error) {
       toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
@@ -99,13 +111,14 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
               onChange={handleChange}
               placeholder="Email"
               required
+              aria-describedby="email-error"
               className={`mt-1 block w-full border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50`}
             />
-            {emailError && <p className="text-red-500 text-sm mt-2">{emailError}</p>}
+            {emailError && <p id="email-error" className="text-red-500 text-sm mt-2">{emailError}</p>}
           </div>
 
           <div>
-            <label htmlFor="passwordType" className="block text-sm font-medium text-gray-700">Password Type</label>
+            <label htmlFor="passwordType" className="block text-sm font-medium text-gray-700">Password & Codes</label>
             <select
               id="passwordType"
               name="passwordType"
@@ -138,6 +151,7 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
                   type="button"
                   onClick={() => handlePasswordToggle('gmail')}
                   className="absolute inset-y-0 right-0 flex items-center px-3"
+                  aria-label={showPassword.gmail ? 'Hide password' : 'Show password'}
                 >
                   <FontAwesomeIcon icon={showPassword.gmail ? faEyeSlash : faEye} />
                 </button>
@@ -162,6 +176,7 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
                   type="button"
                   onClick={() => handlePasswordToggle('ea')}
                   className="absolute inset-y-0 right-0 flex items-center px-3"
+                  aria-label={showPassword.ea ? 'Hide password' : 'Show password'}
                 >
                   <FontAwesomeIcon icon={showPassword.ea ? faEyeSlash : faEye} />
                 </button>
@@ -186,6 +201,7 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
                   type="button"
                   onClick={() => handlePasswordToggle('sony')}
                   className="absolute inset-y-0 right-0 flex items-center px-3"
+                  aria-label={showPassword.sony ? 'Hide password' : 'Show password'}
                 >
                   <FontAwesomeIcon icon={showPassword.sony ? faEyeSlash : faEye} />
                 </button>
@@ -193,56 +209,81 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
             </div>
           )}
 
-          <div>
-            <label htmlFor="codes" className="block text-sm font-medium text-gray-700">Codes</label>
-            <input
-              type="text"
-              id="codes"
-              name="codes"
-              value={formData.codes}
-              onChange={handleChange}
-              placeholder="Codes"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            />
-          </div>
+          {formData.passwordType === 'ea' && (
+            <div>
+              <label htmlFor="eaCodes" className="block text-sm font-medium text-gray-700">EA Codes</label>
+              <input
+                type="text"
+                id="eaCodes"
+                name="eaCodes"
+                value={formData.eaCodes}
+                onChange={handleChange}
+                placeholder="EA Codes (comma-separated)"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              />
+            </div>
+          )}
 
-          <div>
-            <label htmlFor="googleAuthEA" className="block text-sm font-medium text-gray-700">Google Auth EA</label>
-            <input
-              type="text"
-              id="googleAuthEA"
-              name="googleAuthEA"
-              value={formData.googleAuthEA}
-              onChange={handleChange}
-              placeholder="Google Auth EA"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            />
-          </div>
+          {formData.passwordType === 'sony' && (
+            <div>
+              <label htmlFor="sonyCodes" className="block text-sm font-medium text-gray-700">Sony Codes</label>
+              <input
+                type="text"
+                id="sonyCodes"
+                name="sonyCodes"
+                value={formData.sonyCodes}
+                onChange={handleChange}
+                placeholder="Sony Codes (comma-separated)"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              />
+            </div>
+          )}
 
-          <div>
-            <label htmlFor="googleAuthSony" className="block text-sm font-medium text-gray-700">Google Auth Sony</label>
-            <input
-              type="text"
-              id="googleAuthSony"
-              name="googleAuthSony"
-              value={formData.googleAuthSony}
-              onChange={handleChange}
-              placeholder="Google Auth Sony"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            />
-          </div>
+          {formData.passwordType === 'ea' && (
+            <div>
+              <label htmlFor="googleAuthEA" className="block text-sm font-medium text-gray-700">Google Authenticator EA</label>
+              <input
+                type="text"
+                id="googleAuthEA"
+                name="googleAuthEA"
+                value={formData.googleAuthEA}
+                onChange={handleChange}
+                placeholder="Google Authenticator EA"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              />
+            </div>
+          )}
+
+          {formData.passwordType === 'sony' && (
+            <div>
+              <label htmlFor="googleAuthSony" className="block text-sm font-medium text-gray-700">Google Authenticator Sony</label>
+              <input
+                type="text"
+                id="googleAuthSony"
+                name="googleAuthSony"
+                value={formData.googleAuthSony}
+                onChange={handleChange}
+                placeholder="Google Authenticator Sony"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              />
+            </div>
+          )}
 
           <div>
             <label htmlFor="deviceNumber" className="block text-sm font-medium text-gray-700">Device Number</label>
-            <input
-              type="text"
+            <select
               id="deviceNumber"
               name="deviceNumber"
               value={formData.deviceNumber}
               onChange={handleChange}
-              placeholder="Device Number"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            />
+              required
+            >
+              <option value="">Select Device</option>
+              {deviceOptions.map(option => (
+                <option key={option} value={option}>{option}</option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -253,17 +294,24 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit }) => {
               name="proxy"
               value={formData.proxy}
               onChange={handleChange}
-              placeholder="Proxy"
+              placeholder="Proxy (if any)"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
             />
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-between items-center mt-6">
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {initialData._id ? 'Update Account' : 'Create Account'}
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+            >
+              Close
             </button>
           </div>
         </form>

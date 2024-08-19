@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { apiUrl } from '../config'; // استيراد apiUrl
+const API_BASE_URL = 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com/api';
 
 const AuthContext = createContext();
 
@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get(`${apiUrl}/users/me`, {
+          const response = await axios.get(`${API_BASE_URL}/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(response.data); // تحديث حالة المستخدم
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post(`${apiUrl}/auth/login`, credentials);
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
       const { token, user } = response.data;
       localStorage.setItem('token', token); // حفظ التوكن في localStorage
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // تحديث إعدادات axios

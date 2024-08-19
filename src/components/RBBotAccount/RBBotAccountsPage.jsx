@@ -3,15 +3,18 @@ import Navbar from '../Shared/Navbar';
 import Sidebar from '../Shared/Sidebar';
 import RBBotAccountTable from './RBBotAccountTable';
 import RBBotAccountForm from './RBBotAccountForm';
+import RBBotAccountManager from './RBBotAccountManager'; // استيراد مكون إدارة الحسابات
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa';
 import './RBBotAccountsPage.css';
 
 const RBBotAccountsPage = () => {
   const [showForm, setShowForm] = useState(true);
   const [showTable, setShowTable] = useState(true);
+  const [showManager, setShowManager] = useState(true); // حالة لعرض مكون إدارة الحسابات
 
   const toggleForm = () => setShowForm(!showForm);
   const toggleTable = () => setShowTable(!showTable);
+  const toggleManager = () => setShowManager(!showManager); // دالة لتبديل عرض مكون إدارة الحسابات
 
   return (
     <div className="rbbot-accounts-page flex min-h-screen bg-gray-100">
@@ -42,7 +45,7 @@ const RBBotAccountsPage = () => {
               )}
             </div>
 
-            <div className="card bg-white shadow-lg rounded-lg p-6 max-w-3xl mx-auto">
+            <div className="card bg-white shadow-lg rounded-lg p-6 mb-8 max-w-3xl mx-auto">
               <div className="card-header flex justify-between items-center">
                 <h2 className="text-3xl font-semibold text-gray-800">Account List</h2>
                 <button onClick={toggleTable} className="text-gray-600 hover:text-gray-900 focus:outline-none">
@@ -55,6 +58,21 @@ const RBBotAccountsPage = () => {
                 </div>
               )}
             </div>
+
+            <div className="card bg-white shadow-lg rounded-lg p-6 mb-8 max-w-3xl mx-auto">
+              <div className="card-header flex justify-between items-center">
+                <h2 className="text-3xl font-semibold text-gray-800">Manage RBBot Accounts</h2>
+                <button onClick={toggleManager} className="text-gray-600 hover:text-gray-900 focus:outline-none">
+                  {showManager ? <FaChevronUp /> : <FaChevronDown />}
+                </button>
+              </div>
+              {showManager && (
+                <div className="card-content mt-4">
+                  <RBBotAccountManager />
+                </div>
+              )}
+            </div>
+
           </div>
         </main>
       </div>

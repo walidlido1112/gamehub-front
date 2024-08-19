@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import RBBotAccountForm from './RBBotAccountForm'; // Ensure this path is correct
 import { useNavigate } from 'react-router-dom';
-import { apiUrl } from '../../config'; // استيراد apiUrl
+import { apiUrl } from '../../config'; // Import apiUrl
 
 // Configure the modal
 Modal.setAppElement('#root');
@@ -95,8 +95,19 @@ const RBBotAccountTable = () => {
     setShowPasswords(prev => !prev);
   };
 
+  const accountCount = accounts.length;
+  const deviceCount = new Set(accounts.map(account => account.deviceNumber)).size;
+
   return (
     <div className="p-6 bg-gray-50">
+      <div className="mb-6">
+        <p className="text-lg font-semibold text-gray-800">
+          Total Accounts: {accountCount}
+        </p>
+        <p className="text-lg font-semibold text-gray-800">
+          Unique Devices: {deviceCount}
+        </p>
+      </div>
       <div className="mb-6 flex items-center space-x-4">
         <input
           type="text"
@@ -142,6 +153,7 @@ const RBBotAccountTable = () => {
                   }
                 }}
                 className="cursor-pointer"
+                aria-label="Select all accounts"
               />
             </th>
             <th className="border border-gray-300 px-4 py-2">#</th>
@@ -153,6 +165,8 @@ const RBBotAccountTable = () => {
             <tr
               key={account._id}
               className="hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleEmailClick(account)}
+              aria-label={`Account details for ${account.email}`}
             >
               <td className="border border-gray-300 px-4 py-2">
                 <input
@@ -162,55 +176,58 @@ const RBBotAccountTable = () => {
                   checked={selectedAccounts.includes(account._id)}
                   onChange={() => handleCheckboxChange(account._id)}
                   className="cursor-pointer"
+                  aria-label={`Select ${account.email}`}
                 />
               </td>
               <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td
-                className="border border-gray-300 px-4 py-2 text-blue-600 hover:underline"
-                onClick={() => handleEmailClick(account)}
-                aria-label={`View details for ${account.email}`}
-              >
-                {account.email}
+              <td className="border border-gray-300 px-4 py-2 text-blue-600 hover:underline">
+                <button
+                  onClick={() => handleEmailClick(account)} // Call handleEmailClick
+                  className="w-full text-left"
+                >
+                  {account.email}
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {selectedAccount && (
-        <Modal
-          isOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
-          contentLabel="Account Details"
-          className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
-          overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Account Details"
+        className="fixed inset-0 bg-gray-800 bg-opacity-70 flex justify-center items-center"
+        overlayClassName="fixed inset-0 bg-gray-800 bg-opacity-70"
+      >
+        <div
+          className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative"
+          aria-hidden={!isModalOpen}
         >
-          <div
-            className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative"
-            aria-hidden={isModalOpen ? 'false' : 'true'} // Ensure modal content is not hidden
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
+            aria-label="Close modal"
           >
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-2 right-2 p-2 bg-gray-300 rounded-full hover:bg-gray-400"
-              aria-label="Close modal"
-            >
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Details</h2>
-            <button
-              onClick={togglePasswordVisibility}
-              className="mb-4 text-blue-600 hover:underline"
-            >
-              <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
-              <span className="ml-2">{showPasswords ? 'Hide Passwords' : 'Show Passwords'}</span>
-            </button>
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Account Details</h2>
+          <button
+            onClick={togglePasswordVisibility}
+            className="mb-4 text-blue-600 hover:underline"
+            aria-label={showPasswords ? 'Hide passwords' : 'Show passwords'}
+          >
+            <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
+            <span className="ml-2">{showPasswords ? 'Hide Passwords' : 'Show Passwords'}</span>
+          </button>
+          {selectedAccount && (
             <RBBotAccountForm
               initialData={selectedAccount}
               onSubmit={handleFormSubmit}
-              showPasswords={showPasswords} // Pass the state to the form
+              onClose={() => setIsModalOpen(false)}
             />
-          </div>
-        </Modal>
-      )}
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

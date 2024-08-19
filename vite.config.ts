@@ -1,4 +1,3 @@
-// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -7,9 +6,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://gamehub-backend-5c3f456a5ad4.herokuapp.com', // عنوان خادم Heroku
+        target: 'http://localhost:5000', // استبدل بالـ URL الخاص بالخادم
         changeOrigin: true,
-        secure: true, // استخدم true إذا كنت تستخدم HTTPS
+        secure: false,
       },
     },
   },
