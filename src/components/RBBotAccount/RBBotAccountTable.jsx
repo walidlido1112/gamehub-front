@@ -18,6 +18,10 @@ const RBBotAccountTable = () => {
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false); // To toggle password visibility
+  const [deviceList, setDeviceList] = useState([]); // List of devices
+  const [selectedDevice, setSelectedDevice] = useState(''); // Currently selected device
+  const [currentPage, setCurrentPage] = useState(1);
+  const [accountsPerPage] = useState(10); // Number of accounts per page
   const navigate = useNavigate(); // Initialize the navigate function
 
   useEffect(() => {
@@ -25,6 +29,9 @@ const RBBotAccountTable = () => {
       try {
         const { data } = await axios.get(`${apiUrl}/rbbotaccounts`);
         setAccounts(data);
+        // Extract unique device numbers
+        const devices = [...new Set(data.map(account => account.deviceNumber))];
+        setDeviceList(devices);
       } catch (error) {
         console.error('Failed to fetch accounts:', error);
       }
@@ -34,10 +41,17 @@ const RBBotAccountTable = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
   };
 
   const handleDeviceSearchChange = (e) => {
     setDeviceSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page on device search
+  };
+
+  const handleDeviceChange = (e) => {
+    setSelectedDevice(e.target.value);
+    setCurrentPage(1); // Reset to first page on device selection
   };
 
   const handleEmailClick = (account) => {
@@ -48,8 +62,14 @@ const RBBotAccountTable = () => {
   const filteredAccounts = accounts.filter((account) =>
     (account.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
      account.deviceNumber.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    (selectedDevice ? account.deviceNumber === selectedDevice : true) &&
     account.deviceNumber.toLowerCase().includes(deviceSearchQuery.toLowerCase())
   );
+
+  // Pagination calculations
+  const indexOfLastAccount = currentPage * accountsPerPage;
+  const indexOfFirstAccount = indexOfLastAccount - accountsPerPage;
+  const currentAccounts = filteredAccounts.slice(indexOfFirstAccount, indexOfLastAccount);
 
   const handleFormSubmit = async (formData) => {
     try {
@@ -97,6 +117,7 @@ const RBBotAccountTable = () => {
 
   const accountCount = accounts.length;
   const deviceCount = new Set(accounts.map(account => account.deviceNumber)).size;
+  const totalPages = Math.ceil(filteredAccounts.length / accountsPerPage);
 
   return (
     <div className="p-6 bg-gray-50">
@@ -127,6 +148,18 @@ const RBBotAccountTable = () => {
           onChange={handleDeviceSearchChange}
           className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <select
+          id="device-select"
+          name="deviceSelect"
+          value={selectedDevice}
+          onChange={handleDeviceChange}
+          className="p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select Device</option>
+          {deviceList.map(device => (
+            <option key={device} value={device}>{device}</option>
+          ))}
+        </select>
         <button
           onClick={handleDeleteSelected}
           disabled={selectedAccounts.length === 0}
@@ -136,62 +169,64 @@ const RBBotAccountTable = () => {
           <span className="ml-2">Delete Selected</span>
         </button>
       </div>
-      <table className="w-full border-collapse border border-gray-300">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border border-gray-300 px-4 py-2">
-              <input
-                type="checkbox"
-                id="select-all"
-                name="selectAll"
-                checked={selectedAccounts.length === accounts.length}
-                onChange={() => {
-                  if (selectedAccounts.length === accounts.length) {
-                    setSelectedAccounts([]);
-                  } else {
-                    setSelectedAccounts(accounts.map(account => account._id));
-                  }
-                }}
-                className="cursor-pointer"
-                aria-label="Select all accounts"
-              />
-            </th>
-            <th className="border border-gray-300 px-4 py-2">#</th>
-            <th className="border border-gray-300 px-4 py-2">Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAccounts.map((account, index) => (
-            <tr
-              key={account._id}
-              className="hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleEmailClick(account)}
-              aria-label={`Account details for ${account.email}`}
-            >
-              <td className="border border-gray-300 px-4 py-2">
-                <input
-                  type="checkbox"
-                  id={`checkbox-${account._id}`}
-                  name={`checkbox-${account._id}`}
-                  checked={selectedAccounts.includes(account._id)}
-                  onChange={() => handleCheckboxChange(account._id)}
-                  className="cursor-pointer"
-                  aria-label={`Select ${account.email}`}
-                />
-              </td>
-              <td className="border border-gray-300 px-4 py-2">{index + 1}</td>
-              <td className="border border-gray-300 px-4 py-2 text-blue-600 hover:underline">
-                <button
-                  onClick={() => handleEmailClick(account)} // Call handleEmailClick
-                  className="w-full text-left"
-                >
-                  {account.email}
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+          <thead className="bg-gray-100 border-b border-gray-300">
+            <tr>
+              <th className="p-3 text-left">#</th>
+              <th className="p-3 text-left">Email</th>
+              <th className="p-3 text-left">Device</th>
+              <th className="p-3 text-center">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentAccounts.map((account, index) => (
+              <tr
+                key={account._id}
+                className={`border-b border-gray-300 ${selectedAccounts.includes(account._id) ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+              >
+                <td className="p-3">{indexOfFirstAccount + index + 1}</td>
+                <td className="p-3">{account.email}</td>
+                <td className="p-3">{account.deviceNumber}</td>
+                <td className="p-3 text-center">
+                  <button
+                    onClick={() => handleEmailClick(account)}
+                    className="text-blue-600 hover:underline"
+                    aria-label={`View details for ${account.email}`}
+                  >
+                    <FontAwesomeIcon icon={faEye} />
+                  </button>
+                  <input
+                    type="checkbox"
+                    checked={selectedAccounts.includes(account._id)}
+                    onChange={() => handleCheckboxChange(account._id)}
+                    className="ml-2"
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-6 flex justify-between items-center">
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="text-lg font-semibold text-gray-800">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
