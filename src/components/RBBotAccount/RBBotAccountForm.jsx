@@ -31,7 +31,11 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit, onClose }) => {
   const deviceOptions = [
     ...Array.from({ length: 30 }, (_, i) => `ps4-${String(i + 1).padStart(2, '0')}`),
     'Plus Account',
-    'Game Account'
+    'Game Account',
+    'Pc account',
+    'ultimate account',
+    'walid account',
+    'New account'
   ];
 
   useEffect(() => {
