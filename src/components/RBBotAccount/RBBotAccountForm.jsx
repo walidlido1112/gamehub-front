@@ -83,15 +83,29 @@ const RBBotAccountForm = memo(({ initialData = {}, onSubmit, onClose }) => {
         await axios.post(`${apiUrl}/rbbotaccounts`, formData);
         toast.success('Account created successfully!');
       }
-
+      
+      // إعادة تعيين النموذج بعد النجاح
+      setFormData({
+        email: '',
+        passwordType: '',
+        gmailPassword: '',
+        eaPassword: '',
+        sonyPassword: '',
+        eaCodes: '',
+        sonyCodes: '',
+        googleAuthEA: '',
+        googleAuthSony: '',
+        deviceNumber: '',
+        proxy: ''
+      });
+      
       if (onSubmit) {
         onSubmit(); // Call onSubmit if provided
       }
-
+      
       if (onClose) {
         onClose(); // Close modal after submit if onClose is provided
       }
-
     } catch (error) {
       toast.error('Failed to save account.');
       console.error('Failed to save account:', error);
