@@ -18,8 +18,9 @@ import {
   InputAdornment, 
   TextField 
 } from "@mui/material";
-import { Visibility, VisibilityOff, Logout, Edit } from "@mui/icons-material";
+import { Visibility, VisibilityOff, Logout, Edit, ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import SnipeAccounts from '../SnipeAccounts/SnipeAccounts'; // Import the SnipeAccounts component
 
 const statusColors = {
   'in progress': 'bg-blue-100 text-blue-800',
@@ -38,6 +39,7 @@ const EmployeeDashboard = () => {
   const { user, loading, logout } = useAuth();
   const [accounts, setAccounts] = useState([]);
   const [showPassword, setShowPassword] = useState({});
+  const [showSnipeAccounts, setShowSnipeAccounts] = useState(false); // State to toggle SnipeAccounts
 
   useEffect(() => {
     if (loading) return;
@@ -101,6 +103,10 @@ const EmployeeDashboard = () => {
     setShowPassword(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const toggleSnipeAccounts = () => {
+    setShowSnipeAccounts(prev => !prev);
+  };
+
   return (
     <div className="container mx-auto p-4">
       {user && (
@@ -121,83 +127,106 @@ const EmployeeDashboard = () => {
           <Typography variant="h5" gutterBottom>
             حساباتك المخصصة
           </Typography>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>البريد الإلكتروني</TableCell>
-                  <TableCell>كود</TableCell>
-                  <TableCell>كلمة المرور</TableCell>
-                  <TableCell>نوع الحساب</TableCell>
-                  <TableCell>حالة</TableCell>
-                  <TableCell>تعديل الحالة</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {accounts.length > 0 ? (
-                  accounts.map((account) => (
-                    <TableRow key={account._id} className={statusColors[account.status] || 'bg-gray-50'}>
-                      <TableCell>{account.email}</TableCell>
-                      <TableCell>{account.code}</TableCell>
-                      <TableCell>
-                        <TextField
-                          type={showPassword[account._id] ? 'text' : 'password'}
-                          value={account.password}
-                          readOnly
-                          variant="outlined"
-                          size="small"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  onClick={() => togglePasswordVisibility(account._id)}
-                                >
-                                  {showPassword[account._id] ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <span className={`px-2 py-1 rounded ${accountTypes[account.type] || 'bg-gray-200 text-gray-700'}`}>
-                          {account.type || 'Unknown'}
-                        </span>
-                      </TableCell>
-                      <TableCell>{account.status}</TableCell>
-                      <TableCell>
-                        <Select
-                          value={account.status}
-                          onChange={(e) => handleStatusChange(account._id, e.target.value)}
-                          size="small"
+          
+          {/* Button to toggle SnipeAccounts */}
+          <Button 
+            onClick={toggleSnipeAccounts} 
+            variant="contained" 
+            color="primary"
+            startIcon={showSnipeAccounts ? <ArrowDropUp /> : <ArrowDropDown />}
+            className="mb-4"
+          >
+            {showSnipeAccounts ? 'Hide Snipe Accounts' : 'Show Snipe Accounts'}
+          </Button>
+
+          {showSnipeAccounts ? (
+            <motion.div
+              className="card mb-6 flex flex-col"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <SnipeAccounts />
+            </motion.div>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>البريد الإلكتروني</TableCell>
+                    <TableCell>كود</TableCell>
+                    <TableCell>كلمة المرور</TableCell>
+                    <TableCell>نوع الحساب</TableCell>
+                    <TableCell>حالة</TableCell>
+                    <TableCell>تعديل الحالة</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {accounts.length > 0 ? (
+                    accounts.map((account) => (
+                      <TableRow key={account._id} className={statusColors[account.status] || 'bg-gray-50'}>
+                        <TableCell>{account.email}</TableCell>
+                        <TableCell>{account.code}</TableCell>
+                        <TableCell>
+                          <TextField
+                            type={showPassword[account._id] ? 'text' : 'password'}
+                            value={account.password}
+                            readOnly
+                            variant="outlined"
+                            size="small"
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    onClick={() => togglePasswordVisibility(account._id)}
+                                  >
+                                    {showPassword[account._id] ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                </InputAdornment>
+                              ),
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <span className={`px-2 py-1 rounded ${accountTypes[account.type] || 'bg-gray-200 text-gray-700'}`}>
+                            {account.type || 'Unknown'}
+                          </span>
+                        </TableCell>
+                        <TableCell>{account.status}</TableCell>
+                        <TableCell>
+                          <Select
+                            value={account.status}
+                            onChange={(e) => handleStatusChange(account._id, e.target.value)}
+                            size="small"
+                          >
+                            <MenuItem value="in progress">In Progress</MenuItem>
+                            <MenuItem value="in testing">In Testing</MenuItem>
+                            <MenuItem value="completed">Completed</MenuItem>
+                            <MenuItem value="on hold">On Hold</MenuItem>
+                          </Select>
+                          <IconButton color="primary">
+                            <Edit />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} className="py-2 px-4 text-center">
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.5 }}
                         >
-                          <MenuItem value="in progress">In Progress</MenuItem>
-                          <MenuItem value="in testing">In Testing</MenuItem>
-                          <MenuItem value="completed">Completed</MenuItem>
-                          <MenuItem value="on hold">On Hold</MenuItem>
-                        </Select>
-                        <IconButton color="primary">
-                          <Edit />
-                        </IconButton>
+                          <Typography variant="h6">لا توجد حسابات لعرضها.</Typography>
+                        </motion.div>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={6} className="py-2 px-4 text-center">
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <Typography variant="h6">لا توجد حسابات لعرضها.</Typography>
-                      </motion.div>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </>
       )}
     </div>
